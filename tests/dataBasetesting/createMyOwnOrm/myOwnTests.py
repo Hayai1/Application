@@ -1,7 +1,7 @@
 
 from myOrm import Database, Column, Table, ForeignKey, PrimaryKey
 import os
-DB_PATH = 'tests/dataBasetesting/createMyOwnOrmAttempt2/dataBaseConn/dataBase.db'
+DB_PATH = 'tests/dataBasetesting/createMyOwnOrm/dataBaseConn/dataBase.db'
 
 if os.path.exists(DB_PATH):
         os.remove(DB_PATH)
@@ -44,14 +44,14 @@ instance of said table you want to insert a record too
 player1 = CHARACTER(name = "kenshi", HP = 100)
 player2 = CHARACTER(name = "zeldora", HP = 100)
 player3 = CHARACTER(name = "strings", HP = 100)
-player4 = CHARACTER(name = "kirito", HP = 100)
+player4 = CHARACTER(name = "lizzy", HP = 100)
 player5 = CHARACTER(name = "eren", HP = 100)
-world1 = WORLD(seed = 38529523087)
+world1  = WORLD(seed = 38529523087)
+
 characterSaveData1 = CHARACTERPOSITION(characterid = 1, 
                                        worldid = 1, 
                                        xPos = 45.5, 
                                        yPos=32.1)
-
 db.saveRecord(player1)
 db.saveRecord(player2)
 db.saveRecord(player3)
