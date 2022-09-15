@@ -91,7 +91,7 @@ class Table:
         return cls.__name__.lower()
 
     @classmethod
-    def _get_create_sql():
+    def _get_create_sql(cls):
         fields = [
             ("id", "INTEGER PRIMARY KEY AUTOINCREMENT")
         ]
