@@ -18,6 +18,11 @@ player = Player(0,0)
  
 done = False
 true_scroll = [0,0]
+
+
+
+
+   
 # -------- Main Program Loop -----------
 while not done:
     screen.fill(BLACK)
@@ -51,8 +56,9 @@ while not done:
     for room in worldgen.rooms:
         surface.blit(room.roomImg,(room.x-scroll[0],room.y-scroll[1]))
         for rect in room.rects:
-            #pygame.draw.rect(surface,RED,pygame.Rect(rect.x-scroll[0],rect.y-scroll[1],rect.width,rect.height))
+            pygame.draw.rect(surface,RED,pygame.Rect(rect.x-scroll[0],rect.y-scroll[1],rect.width,rect.height))
             rects.append(rect)
+    
     player.move(rects)
     player.drawPlayer(surface,scroll)
 

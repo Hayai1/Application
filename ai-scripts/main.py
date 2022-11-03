@@ -2,8 +2,6 @@
 #12/6/2011
 #driver file. Main Loop is defined here.
 
-
-from turtle import Turtle
 import pygame
 
 
@@ -12,6 +10,8 @@ from Map import *
 
 import Player
 from Player import *
+import enemy
+from enemy import *
 
 import AITEST
 from AITEST import *
@@ -39,7 +39,7 @@ while (not quitGame):
         start[1] = (int(start[1])*32)+PLAYER_W/2
         end[0] = (int(end[0])*32)+32
         end[1] = (int(end[1])*32)+16
-        enemy = Player(start[1], start[0],0)
+        enemy1 = Enemy(start[1], start[0],0)
         player = Player(end[1], end[0], 0)
         enemyXVelocity = 0
         playerXVelocity = 0
@@ -58,13 +58,13 @@ while (not quitGame):
         #<--------------------------------move through Ai Path-------------------------->
         if (not solve.is_alive()):
             if (solveObj.path is not None and currentStep/NODE_THRESHOLD < len(solveObj.path)):
-                if (solveObj.path[int(currentStep/NODE_THRESHOLD)].y < enemy.location.bottom):
-                    enemy.jump()
-                elif (enemy.yVelocity < 0):
-                    enemy.yVelocity = 0
-                if (solveObj.path[int(currentStep/NODE_THRESHOLD)].x > enemy.location.center[0]):
+                if (solveObj.path[int(currentStep/NODE_THRESHOLD)].y < enemy1.location.bottom):
+                    enemy1.jump()
+                elif (enemy1.yVelocity < 0):
+                    enemy1.yVelocity = 0
+                if (solveObj.path[int(currentStep/NODE_THRESHOLD)].x > enemy1.location.center[0]):
                     enemyXVelocity = MAX_SPEED
-                elif (solveObj.path[int(currentStep/NODE_THRESHOLD)].x < enemy.location.center[0]):
+                elif (solveObj.path[int(currentStep/NODE_THRESHOLD)].x < enemy1.location.center[0]):
                     enemyXVelocity = -1*MAX_SPEED
                 else:
                     enemyXVelocity = 0
@@ -74,10 +74,10 @@ while (not quitGame):
                 nextSolve = True
         #<------------------------------------------------------------------------------->
         #<------------------------------solve for path----------------------------------->
-        if nextSolve and player.inAggroRange(enemy) and not player.inAttackRange(enemy):
+        if nextSolve and player.inAggroRange(enemy1) and not player.inAttackRange(enemy1):
             solve = threading.Thread(target=solveObj.solve, 
                                     args=(s, 
-                                          (enemy.location.y, enemy.location.x), 
+                                          (enemy1.location.y, enemy1.location.x), 
                                           (player.location.y, player.location.x)
                                         ,))
             solve.start()
@@ -105,7 +105,7 @@ while (not quitGame):
 
 
         #Move the player
-        enemy.move(enemyXVelocity, s)
+        enemy1.move(enemyXVelocity, s)
         player.move(playerXVelocity, s)
         #Adjust the camera
         view.center = player.location.center
@@ -124,12 +124,12 @@ while (not quitGame):
         if (solveObj.path is not None):
             drawPath(screen, solveObj.path, view)
         player.draw(screen, view,[0,0,200])
-        if player.inAggroRange(enemy) and not player.inAttackRange(enemy):
-            enemy.draw(screen, view, [0,200,0])
-        elif player.inAttackRange(enemy):
-            enemy.draw(screen,view,[200,0,0])
+        if player.inAggroRange(enemy1) and not player.inAttackRange(enemy1):
+            enemy1.draw(screen, view, [0,200,0])
+        elif player.inAttackRange(enemy1):
+            enemy1.draw(screen,view,[200,0,0])
         else:
-            enemy.draw(screen,view,(255,255,255))
+            enemy1.draw(screen,view,(255,255,255))
         pygame.display.flip()
         clock.tick(FPS)
     pygame.display.quit()

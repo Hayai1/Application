@@ -2,8 +2,8 @@ import Map
 
 from Map import *
 
-import Player
-from Player import *
+import enemy
+from enemy import *
 
 import copy
 from heapq import heappush, heappop
@@ -55,7 +55,7 @@ class solveClass:
         #initialize
         openList = []
         closedList = list()
-        start = Node(start[1], start[0], 0, 0, end,Player(start[1]-PLAYER_W/2,start[0]-PLAYER_W,0))
+        start = Node(start[1], start[0], 0, 0, end,Enemy(start[1]-PLAYER_W/2,start[0]-PLAYER_W,0))
         heappush(openList,start)
         done = False
         while not done:

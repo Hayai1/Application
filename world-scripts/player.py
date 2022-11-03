@@ -1,5 +1,12 @@
-from turtle import left
 import pygame
+#Player attributes, plus some other globals that shouldn't be here...
+PLAYER_W = 27
+PLAYER_COL = [0,0,200]
+JUMP_FORCE = -9
+#JUMP_FORCE = -13
+GRAVITY = 30
+MAX_SPEED = 4
+FPS = 60
 
 class Player:
     left = False
@@ -13,6 +20,17 @@ class Player:
         self.x = x
         self.y = y
         self.rect = pygame.Rect(self.x,self.y,16,16)
+    
+    def inAggroRange(self,character):
+        if abs(self.location.x - character.location.x) < 150 and abs(self.location.y - character.location.y) < 150:
+            return True
+        else:
+            return False
+    def inAttackRange(self,character):
+        if abs(self.location.x - character.location.x) < 100 and abs(self.location.y - character.location.y) < 100:
+            return True
+        else:
+            return False
 
     def drawPlayer(self,surface,scroll):
         pygame.draw.rect(surface,(0,0,255),pygame.Rect(self.rect.x-scroll[0],self.rect.y-scroll[1],self.rect.width,self.rect.height))

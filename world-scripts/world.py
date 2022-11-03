@@ -102,6 +102,29 @@ class World:
     def __init__(self,roomAmount):
         self.roomAmount = roomAmount
         self.genWorld()
+    @property
+    def WorldIn01(self):
+        rects = []
+        for room in self.rooms:
+            for rect in room.rects:
+                rects.append([int(rect.x/16),int(rect.y/16)])
+        x = [i[0] for i in rects]
+        y = [i[1] for i in rects]
+
+        world = [[0 for i in range(max(x)+1)] for j in range(max(y)+1)]
+
+        for rect in rects:
+            world[rect[1]][rect[0]] = 1
+
+        '''
+        f = open("world-scripts/map.txt", "w")
+        for i in world:
+            for j in i:
+                f.write(str(j))
+            f.write("\n")
+        f.close()
+        '''
+        return world
         
     def genWorld(self):
         for i in range(0,self.roomAmount):
