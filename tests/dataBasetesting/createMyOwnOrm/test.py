@@ -1,13 +1,15 @@
-from multiprocessing.sharedctypes import Value
+# use this for testing python syntax #
+class Table:
+    def __init__(self,x) -> None:
+        self.x = x
+class QueryTools:
+    class Where():
+        pass
+    class set():
+        pass
+def update(param):
+    print(param[Table])
+    print(param[QueryTools.Where])
+table = Table(19)
 
-
-data = {'name1':"dylan",
-        'name2':"erin",
-        'name3':"lizzy"}
-
-x = "4"
-x.isnumeric()
-print(type(str(x)))
-value = 0
-
-print(str(value))
+update({Table : table.x, QueryTools.set : 'name = 10 and hp = 100 and characterID = 1', QueryTools.Where : 'condtion'})

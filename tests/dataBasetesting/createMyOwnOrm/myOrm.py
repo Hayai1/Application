@@ -8,6 +8,8 @@ CREATE_TABLE_SQL = "CREATE TABLE {name} ({fields});"
 INSERT_SQL = 'INSERT INTO {name} ({fields}) VALUES ({placeholders});'
 SELECT_ALL_SQL = 'SELECT {fields} FROM {name};'
 SELECT_WHERE_SQL = 'SELECT {fields} FROM {name} WHERE {query};'
+REMOVE_WHERE_SQL = 'DELETE FROM {table_name} WHERE {query}'
+UPDATE_WHERE_SQL = 'UPDATE {table_name} set {fields} WHERE {query}'
 
 SQLITE_TYPE_MAP = {
     int: "INTEGER",
@@ -51,17 +53,29 @@ class Database:
     """
     returns all the records from a table given as an arg
     """
-    def getWhere(self, **kwargs):
+    def getWhere(self, query):
+        return self._execute(query[Table]._get_select_where_sql(query[QueryTools.Where])).fetchall()
+    """
+    returns records from a specified table with a specified condition
+    """
+    def remove(self, **kwargs):
         tableAndCondition={}
         for key, value in kwargs.items():
             tableAndCondition[key] = value
         table = tableAndCondition['table']
         del tableAndCondition['table']
         Condition = tableAndCondition
-        return self._execute(table._get_select_where_sql(Condition)).fetchall()
-    """
-    returns records from a specified table with a specified condition
-    """
+        return self._execute(table._get_remove_sql(Condition)).fetchall()
+
+    def update(self, **kwargs):
+        tableAndCondition={}
+        for key, value in kwargs.items():
+            tableAndCondition[key] = value
+        table = tableAndCondition['table']
+        del tableAndCondition['table']
+        Condition = tableAndCondition
+        return self._execute(table._get_update_sql(Condition)).fetchall()
+
 
 class Table:
     def __init__(self, **kwargs):
@@ -142,21 +156,29 @@ class Table:
     """
     @classmethod
     def _get_select_where_sql(cls, condition):
+        sql = SELECT_WHERE_SQL.format(fields="*",name=cls._get_name(),query=condition)
+        return sql
+    """
+    returns sql for selecting a record from a specified table
+    and specified condition
+    """
+    @classmethod
+    def _get_remove_sql(cls, condition):
         fields = ""
         for key in condition:
             value = condition[key]
             valueType = type(value)
-            if key == "le":
+            if key == "logicExpression":
                 fields =  fields + value + " "
             elif type(value) == int:
                 fields = fields + key + " = " + str(value) + " "
             elif valueType == str:
                 fields = fields + key + " = '" + value  + "' "
-        return SELECT_WHERE_SQL.format(fields="*",name=cls._get_name(),query=fields)
-    """
-    returns sql for selecting a record from a specified table
-    and specified condition
-    """
+        return REMOVE_WHERE_SQL.format(table_name=cls._get_name(),query=fields)
+    @classmethod
+    def _get_update_sql(cls, condition):
+        pass
+
 class Column:
     def __init__(self, type):
         self.type =type
@@ -176,3 +198,10 @@ class PrimaryKey:
 
     def get_primaryKeyAutomaticIncrement(self):
         return self.primaryKeyAutomaticIncrement
+
+
+class QueryTools:
+    class Where:
+        pass
+    class set:
+        pass
