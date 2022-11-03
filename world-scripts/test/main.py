@@ -33,11 +33,17 @@ def loadMap(path):
             map.append(line)
     return map
 def drawMap(map):
-    pass
+    rects = []
+    for y in range(len(map)):
+        for x in range(len(map[y])):
+            if map[y][x] == '1':
+                rects.append(pygame.Rect(x * 32, y * 32, 32, 32))
+    return rects 
 
 path = 'world-scripts/test/map.txt'
-loadMap(path)
-
+map = loadMap(path)
+print(map)
+rectMap = drawMap(map)
 while not done:
 
     for event in pygame.event.get():
@@ -48,9 +54,10 @@ while not done:
     
     # Game stuff
     # Update screen
-
-    pygame.display.flip()
-
+    for i in rectMap:
+        pygame.draw.rect(screen, (255, 255, 255), i)
+    pygame.display.update()
+    
     clock.tick(60)
 
 pygame.quit()

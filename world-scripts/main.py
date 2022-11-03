@@ -20,9 +20,9 @@ done = False
 true_scroll = [0,0]
 
 
+print(worldgen.WorldIn01)
 
-
-   
+pygame.quit()
 # -------- Main Program Loop -----------
 while not done:
     screen.fill(BLACK)
