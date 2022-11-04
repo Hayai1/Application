@@ -9,25 +9,25 @@ MAX_SPEED = 4
 FPS = 60
 
 class Player:
-    left = False
-    right = False
-    jump = False
-    airTimer = 0
-    velocity = [0,0]
-    acceleration = [0,0]
-
-    def __init__(self,x,y):
+    def __init__(self,x,y,rectsToCollide):
+        self.left = False
+        self.right = False
+        self.triggerJump = False
+        self.airTimer = 0
+        self.velocity = [0,0]
+        self.acceleration = [0,0]
         self.x = x
         self.y = y
         self.rect = pygame.Rect(self.x,self.y,16,16)
+        self.rectsToCollide = rectsToCollide
     
     def inAggroRange(self,character):
-        if abs(self.location.x - character.location.x) < 150 and abs(self.location.y - character.location.y) < 150:
+        if abs(self.rect.x - character.rect.x) < 150 and abs(self.rect.y - character.rect.y) < 150:
             return True
         else:
             return False
     def inAttackRange(self,character):
-        if abs(self.location.x - character.location.x) < 100 and abs(self.location.y - character.location.y) < 100:
+        if abs(self.rect.x - character.rect.x) < 100 and abs(self.rect.y - character.rect.y) < 100:
             return True
         else:
             return False
@@ -51,15 +51,16 @@ class Player:
             self.velocity[0] -= 2
         if self.right:
             self.velocity[0] += 2
-        
-    def move(self,tiles):
+    def jump(self):
+        if self.airTimer < 6:
+            self.acceleration[1] = -5
+    def move(self):
         collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
         self.updateVelocity()
-        if self.jump:
-            if self.airTimer < 6:
-                self.acceleration[1] = -5
+        if self.triggerJump:
+            self.jump()
         self.rect.x += self.velocity[0]
-        collisions = self.getCollisions(tiles)
+        collisions = self.getCollisions(self.rectsToCollide)
         for tile in collisions:
             if self.velocity[0] > 0:
                 self.rect.right = tile.left
@@ -68,7 +69,7 @@ class Player:
                 self.rect.left = tile.right
                 collisionTypes['left'] = True
         self.rect.y += self.velocity[1]
-        collisions = self.getCollisions(tiles)
+        collisions = self.getCollisions(self.rectsToCollide)
         for tile in collisions:
             if self.velocity[1] > 0:
                 self.rect.bottom = tile.top

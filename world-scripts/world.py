@@ -1,7 +1,7 @@
 import pygame
 import random
 BLACK = (0, 0, 0)
-
+collidable = (1,2,3)
 class SpriteSheet:
     def __init__(self,spriteSheetFile):
         """Load the sheet."""
@@ -111,10 +111,10 @@ class World:
         x = [i[0] for i in rects]
         y = [i[1] for i in rects]
 
-        world = [[0 for i in range(max(x)+1)] for j in range(max(y)+1)]
+        world = [[4 for i in range(max(x)+1)] for j in range(max(y)+1)]
 
         for rect in rects:
-            world[rect[1]][rect[0]] = 1
+            world[rect[1]][rect[0]] = 3
 
         '''
         f = open("world-scripts/map.txt", "w")
