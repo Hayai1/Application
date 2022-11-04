@@ -87,6 +87,7 @@ class Player:
         else:
             self.airTimer += 1
         self.velocity = [0,0]
+    
     def moveAi(self, xVel, map):
 
         #first move left/right
