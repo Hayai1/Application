@@ -37,7 +37,7 @@ for room in worldgen.rooms:
     for rect in room.rects:
         rects.append(rect)
 player1 = Player(0,0,rects)
-enemy1 = Player(start[1], start[0],rects)
+enemy1 = Enemy(start[1], start[0],rects)
 enemyXVelocity = 0
 playerXVelocity = 0
 currentStep = 0
@@ -59,9 +59,9 @@ while not done:
             elif (enemy1.velocity[1] < 0):
                 enemy1.velocity[1] = 0
             if (solveObj.path[int(currentStep/NODE_THRESHOLD)].x > enemy1.rect.center[0]):
-                enemy1.velocity[0] = MAX_SPEED
+                enemy1.velocity[0] = enemy1.MAX_SPEED
             elif (solveObj.path[int(currentStep/NODE_THRESHOLD)].x < enemy1.rect.center[0]):
-                enemy1.velocity[0] = -1*MAX_SPEED
+                enemy1.velocity[0] = -1*enemy1.MAX_SPEED
             else:
                 enemy1.velocity[0] = 0
             currentStep += 1

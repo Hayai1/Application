@@ -2,8 +2,8 @@ import world
 
 from world import *
 
-import player
-from player import *
+import enemy
+from enemy import *
 
 import copy
 from heapq import heappush, heappop
@@ -55,7 +55,7 @@ class solveClass:
         #initialize
         openList = []
         closedList = list()
-        start = Node(start[1], start[0], 0, 0, end,Player(start[1]-PLAYER_W/2,start[0]-PLAYER_W,rects))
+        start = Node(start[1], start[0], 0, 0, end,Enemy(start[1]-27/2,start[0]-27,rects))
         heappush(openList,start)
         done = False
         while not done:
@@ -108,18 +108,18 @@ class solveClass:
             newPlayer.jump()
         elif (direction == 'UP_LEFT'):
             newPlayer.jump()
-            xVel= -1*MAX_SPEED
+            xVel= -1*newPlayer.MAX_SPEED
         elif (direction == 'LEFT'):
             if(newPlayer.velocity[1] < 0):
                 newPlayer.velocity[1] = 0
-            xVel = -1*MAX_SPEED
+            xVel = -1*newPlayer.MAX_SPEED
         elif (direction == 'UP_RIGHT'):
             newPlayer.jump()
-            xVel = MAX_SPEED
+            xVel = newPlayer.MAX_SPEED
         elif (direction == 'RIGHT'):
             if(newPlayer.velocity[1] < 0):
                 newPlayer.velocity[1] = 0
-            xVel = MAX_SPEED
+            xVel = newPlayer.MAX_SPEED
         for i in range(NODE_THRESHOLD):
             newPlayer.moveAi(xVel,myMap)
         if (newPlayer.rect.x == cur.state.rect.x and
