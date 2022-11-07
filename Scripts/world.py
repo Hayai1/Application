@@ -41,6 +41,7 @@ class Room:
         self.roomImg = []
         self.rects = []
         self.GenerateRoom(RoomFile)
+    
      
     def getRoomData(self,RoomFile):
         with open(RoomFile) as data:
@@ -87,6 +88,7 @@ class Room:
         for i in room:
             surface.blit(i[0], i[1])
         return surface
+    
 
 
 '''
@@ -102,6 +104,11 @@ class World:
     def __init__(self,roomAmount):
         self.roomAmount = roomAmount
         self.genWorld()
+    def update(self,surface,scroll):
+        self.draw(scroll,surface)
+    def draw(self,scroll,surface):
+        for room in self.rooms:
+            surface.blit(room.roomImg,(room.x-scroll[0],room.y-scroll[1]))
     @property
     def WorldIn01(self):
         rects = []
@@ -116,6 +123,12 @@ class World:
         for rect in rects:
             world[rect[1]][rect[0]] = 3
         return world
+    def getRects(self):
+        rects = []
+        for room in self.rooms:
+            for rect in room.rects:
+                rects.append(rect)
+        return rects
         
     def genWorld(self):
         for i in range(0,self.roomAmount):

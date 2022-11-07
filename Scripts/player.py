@@ -5,3 +5,6 @@ from character import Character
 
 class Player(Character):
     name = "Player"
+    def update(self,surface,scroll):
+        self.move()
+        self.drawPlayer(surface,scroll)

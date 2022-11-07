@@ -9,7 +9,7 @@ pygame.display.set_caption('game base')
 
 screen = pygame.display.set_mode((500,500),0,32)
 curveSurface = pygame.Surface((300,300))
-
+Surface = pygame.Surface((300,300))
 class BezierCurve:
     def __init__(self,p0,p1,p2):
         self.x0,self.y0 = p0
@@ -19,8 +19,9 @@ class BezierCurve:
         self.colour = [255,0,0]
         self.alph = 0
         curveSurface.set_colorkey((0,0,0))
-
-
+    def lineSlash(self):
+        points = [[0,0],[0,100],[100,100],[100,0]]
+        return points
     def gencurve(self,constant):
         frontPoints = []
         backPoints = []
@@ -58,12 +59,15 @@ points = curve.gencurve(50)#where 50 is the constant
 
 while True:
     screen.fill((0,0,0))
+    curveSurface.fill((0,0,0))
     
     
     
-    curve.slash()
-    curveSurface.set_alpha(curve.alph)
-    pygame.draw.polygon(curveSurface,curve.colour,points)
+    #curve.slash()
+    #curveSurface.set_alpha(curve.alph)
+    #pygame.draw.polygon(curveSurface,curve.colour,points)
+    points = curve.lineSlash()
+    pygame.draw.polygon(Surface,curve.colour,points)
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -75,7 +79,9 @@ while True:
         if event.type == pygame.MOUSEBUTTONUP:
             print(curve.x1,curve.y1)   
             curve.initNewslash()
-        
+            
+    mx,my = pygame.mouse.get_pos()
+ 
     screen.blit(pygame.transform.rotate(pygame.transform.scale(curveSurface,(400,400)), 270),curve.curvepos)
     pygame.display.update()
     mainClock.tick(60)

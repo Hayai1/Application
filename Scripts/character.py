@@ -9,7 +9,9 @@ class Character(object):
     MAX_SPEED = 4
     FPS = 60
     collidable = (1,2,3)
-    def __init__(self,x,y,rectsToCollide):
+    def __init__(self,x,y,rectsToCollide,playerWidth=16,playerHeight=32):
+        self.playerWidth = playerWidth
+        self.playerHeight = playerHeight
         self.left = False
         self.right = False
         self.triggerJump = False

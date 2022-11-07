@@ -1,8 +1,44 @@
 import character
 from character import Character
-
+import threading
 
 class Enemy(Character):
+    currentStep = 0
+    nextSolve = False
+    def __init__(self,rects,playerWidth):
+        self.start = [0,0]
+        self.end = [0,0]
+        self.start[0] = (int(self.start[0])*32)+playerWidth
+        self.start[1] = (int(self.start[1])*32)+playerWidth/2
+        self.end[0] = (int(self.end[0])*32)+32
+        self.end[1] = (int(self.end[1])*32)+16
+        super().__init__(x=self.start[0],y=self.start[1],rects=rects,playerWidth=playerWidth)
+
+    def update(self,solveObj, solve, NODE_THRESHOLD,player1,s,rects,surface,scroll):
+        self.triggerJump = False
+        if (not solve.is_alive()):
+            if (solveObj.path is not None and self.currentStep/NODE_THRESHOLD < len(solveObj.path)):
+                if (solveObj.path[int(self.currentStep/NODE_THRESHOLD)].y < self.rect.bottom):
+                    self.triggerJump = True
+                elif (self.velocity[1] < 0):
+                    self.velocity[1] = 0
+                if (solveObj.path[int(self.currentStep/NODE_THRESHOLD)].x > self.rect.center[0]):
+                    self.velocity[0] =  self.MAX_SPEED
+                elif (solveObj.path[int(self.currentStep/NODE_THRESHOLD)].x < self.rect.center[0]):
+                    self.velocity[0] = -1*self.MAX_SPEED
+                else:
+                    self.velocity[0] = 0
+                self.currentStep += 1
+            else:
+                self.velocity[0] = 0
+                self.nextSolve = True
+        if self.nextSolve and player1.inAggroRange(self) and not player1.inAttackRange(self):
+            solve = threading.Thread(target=solveObj.solve, args=(s, (self.rect.y, self.rect.x), (player1.rect.y, player1.rect.x), rects,))
+            solve.start()
+            self.currentStep = 0
+            self.nextSolve = False
+        self.move()
+        self.drawPlayer(surface,scroll)
     def moveAi(self, xVel, map):
 
         #first move left/right
