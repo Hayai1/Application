@@ -1,15 +1,4 @@
 import pygame
-<<<<<<< HEAD:Scripts/character.py
-=======
-#Player attributes, plus some other globals that shouldn't be here...
-PLAYER_W = 27
-PLAYER_COL = [0,0,200]
-JUMP_FORCE = -9
-#JUMP_FORCE = -13
-GRAVITY = 30
-MAX_SPEED = 4
-FPS = 60
->>>>>>> parent of 524b6f0 (sort of working ai test):world-scripts/player.py
 
 class Character(object):
     PLAYER_W = 27
@@ -97,11 +86,8 @@ class Character(object):
             self.acceleration = [0,0]
         else:
             self.airTimer += 1
-<<<<<<< HEAD:Scripts/character.py
         self.velocity = [0,0]
     
     
-=======
->>>>>>> parent of 524b6f0 (sort of working ai test):world-scripts/player.py
 
         
