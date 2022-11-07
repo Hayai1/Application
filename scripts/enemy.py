@@ -1,8 +1,5 @@
-import pygame
-import world
-
-from world import *
-#Player attributes, plus some other globals that shouldn't be here...
+from character import Character
+import threading
 PLAYER_W = 27
 PLAYER_COL = [0,0,200]
 JUMP_FORCE = -9
@@ -10,95 +7,96 @@ JUMP_FORCE = -9
 GRAVITY = 30
 MAX_SPEED = 4
 FPS = 60
-
-class Enemy:
-    #Constructor
-    def __init__(self,x,y):
-        self.location = pygame.Rect(x, y, 16, 16)
-        self.jumping = False
-        self.yVelocity = 0
-
-    def __init__(self,x,y,yVelocity):
-        self.location = pygame.Rect(x, y, 16, 16)
-        self.jumping = False
-        self.yVelocity = yVelocity
-
-    def inAggroRange(self,character):
-        if abs(self.location.x - character.location.x) < 150 and abs(self.location.y - character.location.y) < 150:
-            return True
-        else:
-            return False
-    def inAttackRange(self,character):
-        if abs(self.location.x - character.location.x) < 100 and abs(self.location.y - character.location.y) < 100:
-            return True
-        else:
-            return False
-        
-    #Draw player to the screen as a rectangle
-    def drawPlayer(self,surface,scroll):
-        pygame.draw.rect(surface,(0,0,255),pygame.Rect(self.location.x-scroll[0],self.location.y-scroll[1],self.location.width,self.location.height))
-
-    #Move player left or right and apply gravity,
-        #making sure the player does not collide with a wall
-    def move(self, xVel, map):
+collidable = (1,2,3)
+class Enemy(Character):
+    def moveAi(self, xVel, map):
 
         #first move left/right
-        self.location.move_ip(xVel, 0)
+        self.rect.move_ip(xVel, 0)
 
         #if the new position hits a collidable object...
         #(hits the left side)
-        if (self.location.left < 0 or
-            map[int(self.location.top/32)][int(self.location.left/32)] in collidable or
-            map[int(self.location.bottom/32)][int(self.location.left/32)] in collidable):
+        if (self.rect.left < 0 or
+            map[int(self.rect.top/32)][int(self.rect.left/32)] in collidable or
+            map[int(self.rect.bottom/32)][int(self.rect.left/32)] in collidable):
 
             #move it back enough pixels to be clear
-            self.location.left += 32 - self.location.left%32
+            self.rect.left += 32 - self.rect.left%32
 
         #(hits the right side)
-        elif (self.location.right >= len(map[0])*32 or
-              map[int(self.location.top/32)][int(self.location.right/32)] in collidable or
-              map[int(self.location.bottom/32)][int(self.location.right/32)] in collidable):
-            self.location.right -= self.location.right%32 + 1
+        elif (self.rect.right >= len(map[0])*32 or
+              map[int(self.rect.top/32)][int(self.rect.right/32)] in collidable or
+              map[int(self.rect.bottom/32)][int(self.rect.right/32)] in collidable):
+            self.rect.right -= self.rect.right%32 + 1
 
 
         #Adjust y coordinate
-        self.location.move_ip(0, self.yVelocity)
+        self.rect.move_ip(0, self.velocity[1])
 
         #if it has hit ground...
-        if (self.location.bottom >= len(map)*32 or
-            map[int((self.location.bottom)/32)][int(self.location.left/32)] in collidable or
-            map[int((self.location.bottom)/32)][int(self.location.right/32)] in collidable):
+        if (self.rect.bottom >= len(map)*32 or
+            map[int((self.rect.bottom)/32)][int(self.rect.left/32)] in collidable or
+            map[int((self.rect.bottom)/32)][int(self.rect.right/32)] in collidable):
 
             #make sure it doesn't fall through
             #also, now the player is able to jumping
-            self.location.bottom -= self.location.bottom%32 + 1
+            self.rect.bottom -= self.rect.bottom%32 + 1
             self.yVelocity = 0
-            self.jumping = False
+            self.triggerJump = False
             
         #if it hits the ceiling...
-        elif (self.location.top < 0 or
-              map[int(self.location.top/32)][int(self.location.left/32)] in collidable or
-              map[int(self.location.top/32)][int(self.location.right/32)] in collidable):
+        elif (self.rect.top < 0 or
+              map[int(self.rect.top/32)][int(self.rect.left/32)] in collidable or
+              map[int(self.rect.top/32)][int(self.rect.right/32)] in collidable):
 
             #just make it fall, perhapse reverse its velocity?
-            self.location.top += 32 - self.location.top%32
+            self.rect.top += 32 - self.rect.top%32
             self.yVelocity = 0
 
 
         #update the y velocity by the appropriate gravity
-        self.yVelocity += GRAVITY/FPS
+        self.velocity[1] += GRAVITY/FPS
 
         #make sure that if the player is truly falling, he can't jumping
-        if (self.yVelocity > 2*GRAVITY/FPS):
-            self.jumping = True
+        if (self.velocity[1] > 2*GRAVITY/FPS):
+            self.triggerJump = True
 
         #don't let him fall too fast
-        if (self.yVelocity > 15):
-            self.yVelocity = 10
-
+        if (self.velocity[1] > 15):
+            self.velocity[1] = 10
+    def update(self,ai,NODE_THRESHOLD,world1,player1):
+        self.triggerJump = False
+        if ai.solve != None:
+            if (not ai.solve.is_alive()):
+                if (ai.path is not None and ai.currentStep/NODE_THRESHOLD < len(ai.path)):
+                    if (ai.path[int(ai.currentStep/NODE_THRESHOLD)].y < self.rect.bottom):
+                        self.triggerJump = True
+                    elif (self.velocity[1] < 0):
+                        self.velocity[1] = 0
+                    if (ai.path[int(ai.currentStep/NODE_THRESHOLD)].x > self.rect.center[0]):
+                        self.velocity[0] = MAX_SPEED
+                    elif (ai.path[int(ai.currentStep/NODE_THRESHOLD)].x < self.rect.center[0]):
+                        self.velocity[0] = -1*MAX_SPEED
+                    else:
+                        self.velocity[0] = 0
+                    ai.currentStep += 1
+                else:
+                    self.velocity[0] = 0
+                    ai.nextSolve = True
+        if ai.nextSolve and player1.inAggroRange(self) and not player1.inAttackRange(self):
+            ai.solve = threading.Thread(target=ai.getPath, 
+                                    args=(world1.RectPositions, 
+                                            (self.rect.y, self.rect.x), 
+                                            (player1.rect.y, player1.rect.x)
+                                        ,))
+            ai.solve.start()
+            ai.currentStep = 0
+            ai.nextSolve = False
     def jump(self):
-        if (not self.jumping):
-                self.yVelocity = JUMP_FORCE
-                self.jumping = True
-    
+        if (not self.triggerJump):
+                self.velocity[1] = JUMP_FORCE
+                self.triggerJump = True
 
+
+
+        

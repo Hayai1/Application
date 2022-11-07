@@ -2,8 +2,8 @@ import world
 
 from world import *
 
-import player
-from player import *
+import enemy
+from enemy import *
 
 import copy
 from heapq import heappush, heappop
@@ -48,14 +48,18 @@ def keyFunction(x):
     return x.f
 
 class solveClass:
-    path = []
-    pathFound = False
-    def solve(self, myMap, start, end,rects):
+    def __init__(self):
+        self.currentStep = 0
+        self.solve = None#the solve function thread is stored here
+        self.nextSolve = True#when ready to solve again
+        self.path = []
+        self.pathFound = False
+    def getPath(self, myMap, start, end):
         t0 = pygame.time.get_ticks()
         #initialize
         openList = []
         closedList = list()
-        start = Node(start[1], start[0], 0, 0, end,Player(start[1]-PLAYER_W/2,start[0]-PLAYER_W,rects))
+        start = Node(start[1], start[0], 0, 0, end,Enemy(start[1]-PLAYER_W/2,start[0]-PLAYER_W))
         heappush(openList,start)
         done = False
         while not done:
@@ -127,8 +131,6 @@ class solveClass:
             return None
         newNode = Node(newPlayer.rect.center[0], newPlayer.rect.bottom, cur, cur.g + NODE_THRESHOLD,cur.destination, newPlayer)
         return newNode
-
-
 
 
 

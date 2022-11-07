@@ -102,6 +102,11 @@ class World:
     def __init__(self,roomAmount):
         self.roomAmount = roomAmount
         self.genWorld()
+        self.RectPositions = self.WorldIn01
+        self.rects = []
+        for room in self.rooms:
+            for rect in room.rects:
+                self.rects.append(rect)
     @property
     def WorldIn01(self):
         rects = []
