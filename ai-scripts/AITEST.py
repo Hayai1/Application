@@ -53,19 +53,28 @@ class solveClass:
     def solve(self, myMap, start, end):
         t0 = pygame.time.get_ticks()
         #initialize
+
         openList = []
+        '''
+        consists on nodes that have been visited but not expanded (meaning that sucessors have not been
+        explored yet). This is the list of pending tasks.
+        '''
         closedList = list()
+        '''
+        consists on nodes that have been visited and expanded (sucessors have been explored already and
+        included in the open list, if this was the case).
+        '''
         start = Node(start[1], start[0], 0, 0, end,Enemy(start[1]-PLAYER_W/2,start[0]-PLAYER_W,0))
         heappush(openList,start)
         done = False
         while not done:
-            if (pygame.time.get_ticks() - t0)/1000 > 0.5:
-                self.path = []
-                return None
-            cur = heappop(openList)
-            closedList.append(cur)
-            for i in primaryDirections:
-                nextNode = self.canMove(i, myMap, cur)
+            #if (pygame.time.get_ticks() - t0)/1000 > 0.5:
+                #self.path = []
+                #return None
+            cur = heappop(openList)#get the node with the lowest f value
+            closedList.append(cur)#add it to the closed list
+            for i in primaryDirections:#for each direction
+                nextNode = self.canMove(i, myMap, cur)#get the node that would result from moving in that direction
                 if (nextNode is None):
                     continue
                 if (nextNode not in closedList):
@@ -107,10 +116,10 @@ class solveClass:
             newPlayer.jump()
             xVel = MAX_SPEED
         elif (direction == 'RIGHT'):
-            if(newPlayer.yVelocity < 0):
-                newPlayer.yVelocity = 0
+            if(newPlayer.yVelocity < 0):#if the player is jumping
+                newPlayer.yVelocity = 0#stop jumping
             xVel = MAX_SPEED
-        for i in range(NODE_THRESHOLD):
+        for i in range(NODE_THRESHOLD):#simulate the player moving for NODE_THRESHOLD frames (5)
             newPlayer.move(xVel, myMap)
         if (newPlayer.location.x == cur.state.location.x and
             newPlayer.location.y == cur.state.location.y):
