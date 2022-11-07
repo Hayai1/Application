@@ -107,6 +107,9 @@ class World:
         for room in self.rooms:
             for rect in room.rects:
                 self.rects.append(rect)
+    def update(self,surface, camera):
+        for room in self.rooms:
+            surface.blit(room.roomImg,(room.x-camera.scroll[0],room.y-camera.scroll[1]))
     @property
     def WorldIn01(self):
         rects = []

@@ -64,7 +64,7 @@ class Enemy(Character):
         #don't let him fall too fast
         if (self.velocity[1] > 15):
             self.velocity[1] = 10
-    def update(self,ai,NODE_THRESHOLD,world1,player1):
+    def update(self,ai,NODE_THRESHOLD,world1,player1,surface,camera):
         self.triggerJump = False
         if ai.solve != None:
             if (not ai.solve.is_alive()):
@@ -92,6 +92,8 @@ class Enemy(Character):
             ai.solve.start()
             ai.currentStep = 0
             ai.nextSolve = False
+        self.move(world1.rects)
+        self.drawPlayer(surface,camera.scroll)
     def jump(self):
         if (not self.triggerJump):
                 self.velocity[1] = JUMP_FORCE

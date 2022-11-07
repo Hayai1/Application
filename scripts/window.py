@@ -10,5 +10,11 @@ class Window:
         self.clock = pygame.time.Clock()
     def createNewSurface(self,size):
         return pygame.Surface(size)
+    def update(self,surface):
+        self.screen.blit(pygame.transform.scale(surface,self.windowSize),(0,0))
+    
+        # --- Limit to 60 frames per second
+        pygame.display.update()
+        self.clock.tick(self.fps)
         
         
