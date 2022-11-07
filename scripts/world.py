@@ -34,7 +34,7 @@ class SpriteSheet:
 
 class Room:
     def __init__(self,roomType,RoomFile,loc):
-        self.RoomSpriteSheet = SpriteSheet("world-scripts/roomSpriteSheet.png")
+        self.RoomSpriteSheet = SpriteSheet("assets/spriteSheets/roomSpriteSheet.png")
         self.roomType = roomType
         self.x = loc[0]
         self.y = loc[1]
@@ -115,15 +115,6 @@ class World:
 
         for rect in rects:
             world[rect[1]][rect[0]] = 3
-
-        '''
-        f = open("world-scripts/map.txt", "w")
-        for i in world:
-            for j in i:
-                f.write(str(j))
-            f.write("\n")
-        f.close()
-        '''
         return world
         
     def genWorld(self):
@@ -150,7 +141,7 @@ class World:
                 if newPos[0] >= 0 and newPos[1] >= 0:
                     self.currentPosition = newPos
                     self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
-                    newRoom = Room('1','world-scripts/rooms/1.txt',loc=[(newPos[0]*xMultiplier),newPos[1]*yMultiplier])
+                    newRoom = Room('1','data/worldData/rooms/1.txt',loc=[(newPos[0]*xMultiplier),newPos[1]*yMultiplier])
                     self.rooms.append(newRoom)
             elif rndNum == 3 or rndNum ==4 :#right
                 newPos = [self.currentPosition[0]+1,self.currentPosition[1]]
@@ -167,7 +158,7 @@ class World:
                 if newPos[0] >= 0 and newPos[1] >= 0:
                     self.currentPosition = newPos
                     self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
-                    newRoom = Room('1','world-scripts/rooms/1.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
+                    newRoom = Room('1','data/worldData/rooms/1.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
                     self.rooms.append(newRoom)
             elif rndNum == 5:#down
                 newPos = [self.currentPosition[0],self.currentPosition[1]+1]
@@ -184,14 +175,14 @@ class World:
                     if len(self.rooms)-2 > 0:
                         aboveRoom = self.rooms[len(self.rooms)-1]
                         if aboveRoom.roomType == '1':
-                            newRoom = Room('2NoTop','world-scripts/rooms/2NoTop.txt',loc=[aboveRoom.x,aboveRoom.y])
+                            newRoom = Room('2NoTop','data/worldData/rooms/2NoTop.txt',loc=[aboveRoom.x,aboveRoom.y])
                             self.rooms[len(self.rooms)-1] = newRoom
                         elif aboveRoom.roomType == '3':
-                            newRoom = Room('2Top','world-scripts/rooms/2Top.txt',loc=[aboveRoom.x,aboveRoom.y])
+                            newRoom = Room('2Top','data/worldData/rooms/2Top.txt',loc=[aboveRoom.x,aboveRoom.y])
                             self.rooms[len(self.rooms)-1] = newRoom
                     self.currentPosition = newPos
                     self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
-                    newRoom = Room('3','world-scripts/rooms/3.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
+                    newRoom = Room('3','data/worldData/rooms/3.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
                     self.rooms.append(newRoom)
         
         '''
