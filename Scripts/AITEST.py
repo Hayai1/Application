@@ -60,17 +60,7 @@ class solveClass:
         done = False
         while not done:
             if (pygame.time.get_ticks() - t0)/1000 > 0.5:
-                self.path = list()
-                self.path.append(closedList[len(closedList)-1])
-                prev = self.path[0].p
-                while (prev != start):
-                    self.path.append(prev)
-                    prev = prev.p
-                self.path.append(start)
-                self.path.reverse()
-                t = (pygame.time.get_ticks() - t0)/1000
-                print(t, "seconds")
-                self.pathFound = True
+                self.path = []
                 return None
             cur = heappop(openList)
             closedList.append(cur)
@@ -108,7 +98,11 @@ class solveClass:
             newPlayer.jump()
         elif (direction == 'UP_LEFT'):
             newPlayer.jump()
+<<<<<<< HEAD:Scripts/AITEST.py
             xVel= -1*newPlayer.MAX_SPEED
+=======
+            xVel = -1*MAX_SPEED
+>>>>>>> parent of 524b6f0 (sort of working ai test):world-scripts/AITEST.py
         elif (direction == 'LEFT'):
             if(newPlayer.velocity[1] < 0):
                 newPlayer.velocity[1] = 0
@@ -121,7 +115,7 @@ class solveClass:
                 newPlayer.velocity[1] = 0
             xVel = newPlayer.MAX_SPEED
         for i in range(NODE_THRESHOLD):
-            newPlayer.moveAi(xVel,myMap)
+            newPlayer.move()
         if (newPlayer.rect.x == cur.state.rect.x and
             newPlayer.rect.y == cur.state.rect.y):
             return None
