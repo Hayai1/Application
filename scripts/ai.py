@@ -72,8 +72,6 @@ class solveClass:
                     prev = prev.p
                 self.path.append(start)
                 self.path.reverse()
-                t = (pygame.time.get_ticks() - t0)/1000
-                print(t, "seconds")
                 self.pathFound = True
                 return None
             cur = heappop(openList)
