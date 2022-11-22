@@ -1,14 +1,5 @@
 import pygame
 from character import Character
-#Player attributes, plus some other globals that shouldn't be here...
-PLAYER_W = 27
-PLAYER_COL = [0,0,200]
-JUMP_FORCE = -9
-#JUMP_FORCE = -13
-GRAVITY = 30
-MAX_SPEED = 4
-FPS = 60
-collidable = (1,2,3)
 
 class Player(Character):
     

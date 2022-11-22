@@ -1,13 +1,4 @@
 import pygame
-#Player attributes, plus some other globals that shouldn't be here...
-PLAYER_W = 27
-PLAYER_COL = [0,0,200]
-JUMP_FORCE = -9
-#JUMP_FORCE = -13
-GRAVITY = 30
-MAX_SPEED = 4
-FPS = 60
-collidable = (1,2,3)
 
 class Character:
     def __init__(self,x,y):
@@ -20,9 +11,6 @@ class Character:
         self.x = x
         self.y = y
         self.rect = pygame.Rect(self.x,self.y,16,16)
-    
-    
-
     def drawPlayer(self,surface,scroll):
         pygame.draw.rect(surface,(0,0,255),pygame.Rect(self.rect.x-scroll[0],self.rect.y-scroll[1],self.rect.width,self.rect.height))
     def getCollisions(self,tiles):
