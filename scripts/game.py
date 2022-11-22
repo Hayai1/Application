@@ -5,7 +5,7 @@ from scripts.player import Player
 from scripts.window import Window
 from scripts.camera import Camera
 from scripts.input import Input
-BLACK = (0, 0, 0)
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -21,7 +21,7 @@ class Game:
             self.window.screen.fill((0,0,0))
             self.input.update(self.player)
             self.camera.update()
-            self.surface.fill(BLACK)
+            self.surface.fill((0,0,0))
             self.world.update(self.surface, self.camera)
             self.player.update(self.world,self.surface,self.camera)
             self.window.update(self.surface)
