@@ -12,6 +12,7 @@ class Character:
         self.flip = False
         self.rect = pygame.Rect(self.x,self.y,16,16)
         self.animations = self.getAnimations()
+        
     def draw(self,surface,scroll):
         img = self.animations.getImg()
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))

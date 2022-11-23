@@ -136,16 +136,15 @@ class World:
             if rndNum == 1 or rndNum == 2:#left
                 newPos = [self.currentPosition[0]-1,self.currentPosition[1]]
                 while findingEmptySpace:
-                    while findingEmptySpace:
-                        findingEmptySpace = False
-                        if self.nodes == []:
+                    findingEmptySpace = False
+                    if self.nodes == []:
+                        break
+                    for room in self.nodes:
+                        room = [room[0]/xMultiplier,room[1]/yMultiplier]
+                        if newPos == room:
+                            newPos = [newPos[0]-1,newPos[1]]
+                            findingEmptySpace = True
                             break
-                        for room in self.nodes:
-                            room = [room[0]/xMultiplier,room[1]/yMultiplier]
-                            if newPos == room:
-                                newPos = [newPos[0]-1,newPos[1]]
-                                findingEmptySpace = True
-                                break
                 if newPos[0] >= 0 and newPos[1] >= 0:
                     self.currentPosition = newPos
                     self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
@@ -192,7 +191,4 @@ class World:
                     self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
                     newRoom = Room('3','data/worldData/rooms/3.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
                     self.rooms.append(newRoom)
-        
-        '''
-        there is a bug rigth now with the first couple of rooms so that needs fixing
-        '''
+
