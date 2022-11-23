@@ -4,26 +4,30 @@ class Animations:
         self.rootAnimPath = rootAnimPath
         self.animationFrames = {}
         self.animationDatabase = {}
-        
+        self.frame = 0
+        self.state = 'idle'
     def getAnimation(self,animName,frameDurations):
         animationFrameData = []
         n = 0
         for frame in frameDurations:
-            animationFrameId = animName + '_' + str(n)
-            img_loc = self.rootAnimPath + '/' + animationFrameId + '.png'
-            # player_animations/idle/idle_0.png
-            animation_image = pygame.image.load(img_loc).convert()
-            animation_image.set_colorkey((255,255,255))
-            self.animationFrames[animationFrameId] = animation_image.copy()
+            animationFrameId = animName + str(n)
+            imgLoc = f"{self.rootAnimPath}/{animName}/{animationFrameId}.png"
+            animationImage = pygame.image.load(imgLoc).convert()
+            animationImage.set_colorkey((0,0,0))
+            self.animationFrames[animationFrameId] = animationImage.copy()
             for i in range(frame):
                 animationFrameData.append(animationFrameId)
             n += 1
-        return animationFrameData
-
-    def change_action(action_var,frame,new_value):
-        if action_var != new_value:
-            action_var = new_value
-            frame = 0
-        return action_var,frame
-
-Animations()
+        self.animationDatabase[animName] = animationFrameData
+    def getImg(self):
+        if len(self.animationDatabase[self.state])-1 == self.frame:
+            self.frame = 0
+        else:
+            self.frame += 1
+        img = self.animationFrames[self.animationDatabase[self.state][self.frame]]
+        return img
+    def changeState(self,newState):
+        if self.state != newState:
+            self.state = newState
+            self.frame = 0
+        return self.state,self.frame
