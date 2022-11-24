@@ -1,18 +1,25 @@
 import pygame
 class Character:
-    def __init__(self,x,y):
+    def __init__(self,room):
         self.left = False
         self.right = False
         self.triggerJump = False
         self.airTimer = 0
         self.velocity = [0,0]
         self.acceleration = [0,0]
-        self.x = x
-        self.y = y
+        self.pos = self.getStartLocation(room)
+        self.x = self.pos[0]
+        self.y = self.pos[1]
         self.flip = False
         self.rect = pygame.Rect(self.x,self.y,16,16)
         self.animations = self.getAnimations()
         
+    def getStartLocation(self,room):
+        x = room.rects[0].x 
+        y = room.rects[0].y
+        x += 8*16
+        y+= 16
+        return [x,y]
     def draw(self,surface,scroll):
         img = self.animations.getImg()
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))

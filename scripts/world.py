@@ -1,45 +1,15 @@
 import pygame
 import random
-BLACK = (0, 0, 0)
-collidable = (1,2,3)
-class SpriteSheet:
-    def __init__(self,spriteSheetFile):
-        """Load the sheet."""
-        try:
-            self.sheet = pygame.image.load(spriteSheetFile).convert()
-        except pygame.error as e:
-            print(f"Unable to load spritesheet image: {spriteSheetFile}")
-            raise SystemExit(e)
-    def image_at(self, rectangle, colorkey = None):
-        """Load a specific image from a specific rectangle."""
-        # Loads image from x, y, x+offset, y+offset.
-        rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert()
-        image.blit(self.sheet, (0, 0), rect)
-        if colorkey is not None:
-            if colorkey == -1:
-                colorkey = image.get_at((0,0))
-            image.set_colorkey(colorkey, pygame.RLEACCEL)
-        return image
-
-    def images_at(self, rects, colorkey = None):
-        """Load a whole bunch of images and return them as a list."""
-        return [self.image_at(rect, colorkey) for rect in rects]
-
-    def load_strip(self, rect, image_count, colorkey = None):
-        """Load a whole strip of images, and return them as a list."""
-        tups = [(rect[0]+rect[2]*x, rect[1], rect[2], rect[3])
-                for x in range(image_count)]
-        return self.images_at(tups, colorkey)
-
+from scripts.spriteSheet import SpriteSheet
 class Room:
     def __init__(self,roomType,RoomFile,loc):
-        self.RoomSpriteSheet = SpriteSheet("assets/spriteSheets/roomSpriteSheet.png")
+        self.spriteSheet = SpriteSheet("assets/spriteSheets/roomSpriteSheet.png")
         self.roomType = roomType
         self.x = loc[0]
         self.y = loc[1]
         self.roomImg = []
         self.rects = []
+        self.parent = None
         self.GenerateRoom(RoomFile)
      
     def getRoomData(self,RoomFile):
@@ -48,7 +18,7 @@ class Room:
 
 
     def addImageToArray(self,room,imglocInSpriteSheet,TileLocation):
-        room.append([self.RoomSpriteSheet.image_at(imglocInSpriteSheet,BLACK),TileLocation])
+        room.append([self.spriteSheet.image_at(imglocInSpriteSheet,(0,0,0)),TileLocation])
         return room
 
     def GetCoordinatesInSpriteSheet(self,Tile,location,ifNum='0'):#this uses recusion to find the location of the tile in the spritesheet
@@ -124,63 +94,53 @@ class World:
         for rect in rects:
             world[rect[1]][rect[0]] = 3
         return world
-        
+
+    def travel(self,pos,xDirection,yDirection,xMultiplier,yMultiplier,):
+        pos = [pos[0]+xDirection,pos[1]+yDirection]#move current postion to the left
+        if not self.nodes == []:
+            for room in self.nodes:
+                room = [room[0]/xMultiplier,room[1]/yMultiplier]
+                if pos == room:
+                    pos = self.travel(pos,xDirection,yDirection,xMultiplier,yMultiplier)
+                    break
+        return pos
     def genWorld(self):
-        for i in range(0,self.roomAmount):
+        for i in range(0,self.roomAmount):#generate "roomAmount" of rooms
+            #length of the room is 20x8 16x16 tiles
             roomLength = 20
             roomHeight = 8
             xMultiplier = roomLength*16
             yMultiplier = roomHeight*16
+            #------------------------------->
+            #generate a random number to move down or sideways by
             rndNum = random.randint(1,5)
-            findingEmptySpace = True
-            if rndNum == 1 or rndNum == 2:#left
-                newPos = [self.currentPosition[0]-1,self.currentPosition[1]]
-                while findingEmptySpace:
-                    findingEmptySpace = False
-                    if self.nodes == []:
+            #--------------------------------------------->
+            if rndNum is 1 or rndNum is 2:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
+                newPos = self.travel(self.currentPosition,-1,0,xMultiplier,yMultiplier)
+                self.currentPosition = newPos
+                self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
+                newRoom = Room('1','data/worldData/rooms/1.txt',loc=[(newPos[0]*xMultiplier),newPos[1]*yMultiplier])
+                for room in self.rooms:
+                    if room.x == newPos[0] + xMultiplier and room.y == newPos[1]:
+                        room.parent = newRoom
                         break
-                    for room in self.nodes:
-                        room = [room[0]/xMultiplier,room[1]/yMultiplier]
-                        if newPos == room:
-                            newPos = [newPos[0]-1,newPos[1]]
-                            findingEmptySpace = True
-                            break
-                if newPos[0] >= 0 and newPos[1] >= 0:
-                    self.currentPosition = newPos
-                    self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
-                    newRoom = Room('1','data/worldData/rooms/1.txt',loc=[(newPos[0]*xMultiplier),newPos[1]*yMultiplier])
-                    self.rooms.append(newRoom)
-            elif rndNum == 3 or rndNum ==4 :#right
-                newPos = [self.currentPosition[0]+1,self.currentPosition[1]]
-                while findingEmptySpace:
-                    findingEmptySpace = False
-                    if self.nodes == []:
+                self.rooms.append(newRoom)
+            elif rndNum is 3 or rndNum  is 4 :#else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
+                newPos = self.travel(self.currentPosition,1,0,xMultiplier,yMultiplier)
+                self.currentPosition = newPos
+                self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
+                newRoom = Room('1','data/worldData/rooms/1.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
+                for room in self.rooms:
+                    if room.x == newPos[0] + xMultiplier and room.y == newPos[1]:
+                        room.parent = newRoom
                         break
-                    for room in self.nodes:
-                        room = [room[0]/xMultiplier,room[1]/yMultiplier]
-                        if newPos == room:
-                            newPos = [newPos[0]+1,newPos[1]]
-                            findingEmptySpace = True
-                            break
-                if newPos[0] >= 0 and newPos[1] >= 0:
-                    self.currentPosition = newPos
-                    self.nodes.append([newPos[0]*xMultiplier,newPos[1]*yMultiplier])
-                    newRoom = Room('1','data/worldData/rooms/1.txt',loc=[newPos[0]*xMultiplier,newPos[1]*yMultiplier])
-                    self.rooms.append(newRoom)
-            elif rndNum == 5:#down
-                newPos = [self.currentPosition[0],self.currentPosition[1]+1]
-                while findingEmptySpace:
-                    findingEmptySpace = False
-                    if self.nodes == []:
-                        break
-                    for room in self.nodes:
-                        if newPos == room:
-                            newPos = [newPos[0],newPos[1]+1]
-                            findingEmptySpace = True
-                            break    
+                self.rooms.append(newRoom)
+            elif rndNum == 5:#else if random number is 5 then place a room directly down
+                newPos = self.travel(self.currentPosition,0,1,xMultiplier,yMultiplier)    
+                
                 if newPos[0] >= 0 and newPos[1] >= 0:
                     if len(self.rooms)-2 > 0:
-                        aboveRoom = self.rooms[len(self.rooms)-1]
+                        aboveRoom = self.rooms[-1]
                         if aboveRoom.roomType == '1':
                             newRoom = Room('2NoTop','data/worldData/rooms/2NoTop.txt',loc=[aboveRoom.x,aboveRoom.y])
                             self.rooms[len(self.rooms)-1] = newRoom
