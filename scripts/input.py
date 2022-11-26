@@ -1,22 +1,26 @@
 import pygame
 
 class Input:
-    def update(self,player1):
+    def update(self,player):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    player1.left = True
+                    player.left = True
                 if event.key == pygame.K_RIGHT:
-                    player1.right = True
+                    player.right = True
                 if event.key == pygame.K_UP:
-                    player1.triggerJump = True
+                    player.triggerJump = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    player1.left = False
+                    player.left = False
                 if event.key == pygame.K_RIGHT:
-                    player1.right= False
+                    player.right= False
                 if event.key == pygame.K_UP:
-                    player1.triggerJump = False
+                    player.triggerJump = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    player.weapons['sword'].swing(player.x,player.y)
+            

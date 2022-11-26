@@ -12,7 +12,7 @@ class Game:
         self.window = Window((700,500),"Nea Project",60)
         self.surface = self.window.createNewSurface((300,200))
         self.world = World(50)
-        self.player = Player(self.world.rooms[0])
+        self.player = Player(self.world.rooms[0],'assets/spriteSheets/oldRoomSpriteSheet.png','assets/spriteSheets/oldRoomSpriteSheet.png')
         self.camera = Camera(self.player)
         self.input = Input()
     def runGame(self):
