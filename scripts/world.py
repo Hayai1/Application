@@ -72,7 +72,7 @@ class World:
     def __init__(self,roomAmount):
         self.roomAmount = roomAmount
         self.genWorld()
-        self.RectPositions = self.WorldIn01
+        
         self.rects = []
         for room in self.rooms:
             for rect in room.rects:
@@ -80,21 +80,7 @@ class World:
     def update(self,surface, camera):
         for room in self.rooms:
             surface.blit(room.roomImg,(room.x-camera.scroll[0],room.y-camera.scroll[1]))
-    @property
-    def WorldIn01(self):
-        rects = []
-        for room in self.rooms:
-            for rect in room.rects:
-                rects.append([int(rect.x/16),int(rect.y/16)])
-        x = [i[0] for i in rects]
-        y = [i[1] for i in rects]
-
-        world = [[4 for i in range(max(x)+1)] for j in range(max(y)+1)]
-
-        for rect in rects:
-            world[rect[1]][rect[0]] = 3
-        return world
-
+  
     def travel(self,pos,xDirection,yDirection,xMultiplier,yMultiplier,):
         pos = [pos[0]+xDirection,pos[1]+yDirection]#move current postion to the left
         if not self.nodes == []:

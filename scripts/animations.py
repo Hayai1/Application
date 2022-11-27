@@ -26,6 +26,8 @@ class Animations:
             self.frame += 1
         img = self.animationFrames[self.animationDatabase[self.state][self.frame]]
         return img
+    def getCurrentImg(self):
+        return self.animationDatabase[self.state][self.frame]
     def changeState(self,newState):
         if self.state != newState:
             self.state = newState

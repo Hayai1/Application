@@ -1,4 +1,4 @@
-import pygame,math,random
+import pygame,math
 from scripts.coreFuncs import *
 class Vfx:
     class Arc:
@@ -49,8 +49,8 @@ class Vfx:
             self.spacing += self.motion * 0.01
             if self.time > self.duration:
                 self.alive = False
-                return False
-            return True
+                return True
+            return False
 
         def render(self, surf, offset=(0, 0)):
             if self.time > 0:
