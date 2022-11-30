@@ -23,11 +23,12 @@ class Sword(Item):
         if self.arcDone:
             self.arc = self.newArc()
             self.arcDone = False
+    
+    def draw(self,surface,scroll,x,y,flip):
+        surface.blit(pygame.transform.flip(self.slashSurface,flip,False),(x-50+8-scroll[0], y-50+8-scroll[1]))
         
-    def update(self):
+    def update(self,surface,scroll,x,y,flip):
         self.slashSurface.fill((0,0,0))
-        
-
         if self.arc is not None:
             self.ArcDone = self.arc.update()
             self.arc.render(self.slashSurface)
@@ -35,3 +36,4 @@ class Sword(Item):
                 self.arc = None
         else:
             self.arcDone = True
+        self.draw(surface,scroll,x,y,flip)

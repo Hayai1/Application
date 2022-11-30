@@ -23,6 +23,7 @@ class Character:
     def draw(self,surface,scroll):
         img = self.animations.getImg()
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))
+
     def getCollisions(self,tiles):
         collisions = []
         for tile in tiles:
@@ -37,6 +38,7 @@ class Character:
             self.velocity[0] -= 2
         if self.right:
             self.velocity[0] += 2
+            
     def playerJump(self):
         if self.airTimer < 6:
             self.acceleration[1] = -5

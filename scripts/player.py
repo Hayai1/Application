@@ -15,7 +15,7 @@ class Player(Character):
         animations.getAnimation('attack',[6,6,6,6,4,4,4])
         return animations
 
-    def update(self,world,surface,camera):
+    def update(self,surface,camera,world):
         self.move(world.rects)
         if not self.attack:
             if self.velocity[0] == 0:
@@ -26,34 +26,23 @@ class Player(Character):
             if self.velocity[0] < 0:
                 self.flip = True
                 self.animations.changeState('run')
+
         if self.attack:
             self.animations.changeState('attack')
             currentImg = self.animations.getCurrentImg()
             if currentImg == 'attack4':
                 self.weapons['sword'].swing()
             elif currentImg == 'attack6':
-                self.attack = False 
-        self.weapons['sword'].update()
-        surface.blit(pygame.transform.flip(self.weapons['sword'].slashSurface,self.flip,False),(self.rect.x-50-camera.scroll[0], self.rect.y-50-camera.scroll[1]))
+                self.attack = False
+            
+
+        self.weapons['sword'].update(surface,camera.scroll,self.rect.x,self.rect.y,self.flip)
         if self.weapons['sword'].arcDone:
            self.takeInputs = True
         else:
             self.takeInputs = False
         self.velocity = [0,0]
         self.draw(surface,camera.scroll)
-
-
-    def inAggroRange(self,character):
-        if abs(self.rect.x - character.rect.x) < 150 and abs(self.rect.y - character.rect.y) < 150:
-            return True
-        else:
-            return False
-    def inAttackRange(self,character):
-        if abs(self.rect.x - character.rect.x) < 100 and abs(self.rect.y - character.rect.y) < 100:
-            return True
-        else:
-            return False
-
     
 
 

@@ -2,6 +2,25 @@ import pygame,math
 from scripts.coreFuncs import *
 class Vfx:
     class Arc:
+        '''
+        pos : where the curve is 
+        radius : lenth of the curve from it's center to its edge 
+        spacing : 
+        startAngle : the direction the curve will be facing
+        speed : 
+        curveRate : the rate of curviture 
+        scale : size of the curve
+        start : where the curve starts from when it's created
+        end : where the curve ends at the end of its life
+        duration :
+        color : colour of the curve
+        fade : how fast the curve fades
+        arcStretch :how much the curve is stretched out
+        widthDecay : how fast the curves width disapears
+        motion : how fast the curve moves through the air
+        decay :
+        angleWidth :
+        '''
         def __init__(self, pos, radius, spacing, startAngle, speed, curveRate, scale, start=0, end=1, duration=30, color=(255, 255, 255), fade=0.3, arcStretch=0, widthDecay=50, motion=0, decay=['up', 60], angleWidth=0.2):
             self.startAngle = startAngle
             self.speed = speed
@@ -68,23 +87,4 @@ class Vfx:
                 pygame.draw.polygon(surf, color, points)
 
 
-'''
-pos : where the curve is 
-radius : lenth of the curve from it's center to its edge 
-spacing : 
-startAngle : the direction the curve will be facing
-speed : 
-curveRate : the rate of curviture 
-scale : size of the curve
-start : where the curve starts from when it's created
-end : where the curve ends at the end of its life
-duration :
-color : colour of the curve
-fade : how fast the curve fades
-arcStretch :how much the curve is stretched out
-widthDecay : how fast the curves width disapears
-motion : how fast the curve moves through the air
-decay :
-angleWidth :
-'''
 
