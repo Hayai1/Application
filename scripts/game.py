@@ -10,7 +10,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.window = Window((700,500),"Nea Project",60)
-        self.world = World(50)
+        self.world = World(self.window.surface,50)
         self.player = Player(self.world.rooms[0],'assets/spriteSheets/oldRoomSpriteSheet.png','assets/spriteSheets/oldRoomSpriteSheet.png')
         self.camera = Camera(self.player)
         self.input = Input(self.player)
