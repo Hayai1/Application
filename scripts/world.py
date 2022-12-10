@@ -11,9 +11,11 @@ a 2Top = a room witha  a left, right bottom and top exit
 a 3 = a room with a left, right and top exit
 '''
 class World:
-    def __init__(self,screen,roomAmount):
+    def __init__(self,screen,camera,roomAmount):
         self.particleMangager = Vfx.particleManager(screen)
         self.roomAmount = roomAmount
+        self.camera = camera
+        self.screen = screen
         self.roomLocations = []
         self.rooms = []
         self.rects = []
@@ -26,10 +28,10 @@ class World:
             for rect in room.rects:
                 self.rects.append(rect)
     
-    def update(self,surface, camera):
+    def update(self):
         for room in self.rooms:
-            surface.blit(room.roomImg,(room.x-camera.scroll[0],room.y-camera.scroll[1]))
-        self.particleMangager.update(camera.scroll)
+            self.screen.blit(room.roomImg,(room.x-self.camera.scroll[0],room.y-self.camera.scroll[1]))
+        self.particleMangager.update(self.camera.scroll)
 
     def travel(self,pos,xDirection,yDirection,xMultiplier,yMultiplier,):
         pos = [pos[0]+xDirection,pos[1]+yDirection]#move current postion to the left

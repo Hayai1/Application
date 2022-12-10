@@ -2,11 +2,15 @@ import pygame
 from scripts.character import Character
 from scripts.animations import Animations
 from scripts.sword import Sword
+from scripts.input import Input
 class Player(Character):
-    def __init__(self, swordThumbnailPath, swordUseImgPath):
+    def __init__(self,surface,camera, swordThumbnailPath=None, swordUseImgPath=None):
+        self.surface =surface
+        self.camera = camera
         self.weapons = {'sword' : Sword(swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
         self.attack = False
+        self.input = Input(self)
         super().__init__()
     def getAnimations(self):
         animations = Animations('assets/playerAnimations')
@@ -15,8 +19,9 @@ class Player(Character):
         animations.getAnimation('attack',[6,6,6,6,4,4,4])
         return animations
 
-    def update(self,surface,camera,world):
-        self.move(world.rects)
+    def update(self):
+        self.input.update()
+        self.move(self.rectsToCollideWith)
         if not self.attack:
             if self.velocity[0] == 0:
                 self.animations.changeState('idle')
@@ -36,13 +41,13 @@ class Player(Character):
                 self.attack = False
             
 
-        self.weapons['sword'].update(surface,camera.scroll,self.rect.x,self.rect.y,self.flip)
+        self.weapons['sword'].update(self.surface,self.camera.scroll,self.rect.x,self.rect.y,self.flip)
         if self.weapons['sword'].arcDone:
            self.takeInputs = True
         else:
             self.takeInputs = False
         self.velocity = [0,0]
-        self.draw(surface,camera.scroll)
+        self.draw(self.surface,self.camera.scroll)
     
 
 
