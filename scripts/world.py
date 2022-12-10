@@ -4,12 +4,6 @@ import random
 from scripts.vfx import Vfx
 from scripts.room import Room
 
-'''
-a 1 room = a room with a left and right exit
-a 2NoTop = a room with a left, right and bottom exit
-a 2Top = a room witha  a left, right bottom and top exit
-a 3 = a room with a left, right and top exit
-'''
 class World:
     def __init__(self,screen,camera,roomAmount):
         self.particleMangager = Vfx.particleManager(screen)

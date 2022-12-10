@@ -5,7 +5,7 @@ from scripts.sword import Sword
 from scripts.input import Input
 class Player(Character):
     def __init__(self,surface,camera, swordThumbnailPath=None, swordUseImgPath=None):
-        self.surface =surface
+        self.surface = surface
         self.camera = camera
         self.weapons = {'sword' : Sword(swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
