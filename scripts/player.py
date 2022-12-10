@@ -3,11 +3,11 @@ from scripts.character import Character
 from scripts.animations import Animations
 from scripts.sword import Sword
 class Player(Character):
-    def __init__(self, room, swordThumbnailPath, swordUseImgPath):
+    def __init__(self, swordThumbnailPath, swordUseImgPath):
         self.weapons = {'sword' : Sword(swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
         self.attack = False
-        super().__init__(room)
+        super().__init__()
     def getAnimations(self):
         animations = Animations('assets/playerAnimations')
         animations.getAnimation('run',[4,4,4,4,4])

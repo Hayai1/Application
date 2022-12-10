@@ -1,25 +1,36 @@
 import pygame
 class Character:
-    def __init__(self,room):
+    def __init__(self):
         self.left = False
         self.right = False
         self.triggerJump = False
         self.airTimer = 0
         self.velocity = [0,0]
         self.acceleration = [0,0]
-        self.pos = self.getStartLocation(room)
-        self.x = self.pos[0]
-        self.y = self.pos[1]
         self.flip = False
-        self.rect = pygame.Rect(self.x,self.y,16,16)
+        self.rect = None
+        self.rectsToCollideWith = None
         self.animations = self.getAnimations()
-        
-    def getStartLocation(self,room):
+    def setRectsToCollideWith(self,rects):
+        self.rectsToCollideWith = rects
+    @property
+    def x(self):
+        return self.rect.x
+    @property
+    def y(self):
+        return self.rect.y
+    @x.setter
+    def x(self,value):
+        self.rect.x = value
+    @y.setter
+    def y(self,value):
+        self.rect.y = value
+    def setPlayerStartLoc(self,room):
         x = room.rects[0].x 
         y = room.rects[0].y
         x += 8*16
         y+= 16
-        return [x,y]
+        self.rect = pygame.Rect(x,y,16,16)
     def draw(self,surface,scroll):
         img = self.animations.getImg()
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))
