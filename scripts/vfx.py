@@ -107,7 +107,7 @@ class Vfx:
             for particlesToRemove in deadParticles:
                 self.particles.remove(particlesToRemove)
         def newParticle(self):
-            self.particles.append(Vfx.Particle([random.uniform(0,1920), 0], [-0.5,0.5],[-0.001,0.001], 1, (125, 249, 255), 100))
+            self.particles.append(Vfx.Particle([random.uniform(0,1920), 0], [-0.5,0.5],[-0.001,0.001], random.uniform(0.1,1), (125, 249, 255), 100))
 
 
 

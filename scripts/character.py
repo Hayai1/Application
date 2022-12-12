@@ -1,15 +1,15 @@
 import pygame
 class Character:
-    def __init__(self):
+    def __init__(self,x,y,width,height,velocity,acceleration=[0,0]):
         self.left = False
         self.right = False
         self.triggerJump = False
         self.airTimer = 0
-        self.velocity = [0,0]
-        self.acceleration = [0,0]
         self.flip = False
-        self.rect = None
-        self.rectsToCollideWith = None
+        self.velocity = velocity
+        self.acceleration = acceleration
+        self.rect = pygame.Rect(x,y,width,height)
+        self.rectsToCollideWith = []
         self.animations = self.getAnimations()
     def setRectsToCollideWith(self,rects):
         self.rectsToCollideWith = rects
@@ -25,12 +25,7 @@ class Character:
     @y.setter
     def y(self,value):
         self.rect.y = value
-    def setPlayerStartLoc(self,room):
-        x = room.rects[0].x 
-        y = room.rects[0].y
-        x += 8*16
-        y+= 16
-        self.rect = pygame.Rect(x,y,16,16)
+    
     def draw(self,surface,scroll):
         img = self.animations.getImg()
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))
@@ -86,3 +81,6 @@ class Character:
             self.acceleration = [0,0]
         else:
             self.airTimer += 1
+        movement = self.velocity
+        self.velocity = [0,0]
+        return movement
