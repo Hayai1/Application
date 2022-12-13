@@ -19,6 +19,12 @@ class Character:
     @property
     def y(self):
         return self.rect.y
+    @property
+    def width(self):
+        return self.rect.width
+    @property
+    def height(self):
+        return self.rect.height
     @x.setter
     def x(self,value):
         self.rect.x = value
