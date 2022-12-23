@@ -16,6 +16,7 @@ class Enemy(Character):
         self.solve = False
         self.nextNode = None
         self.name ="enemy"
+        self.skipNode = False
         super().__init__(x, y, width, height,velocity,acceleration)
         self.currentNode = self.graph.getNodeCloseTo(self)
     def getAnimations(self):
@@ -43,11 +44,11 @@ class Enemy(Character):
                     self.frame += 1
                     self.frameToGetNextNode = 16*abs(gx)
                 else:
-                    self.path = None
-                    self.nodePointer = 0
-                    self.nextNode = None
-            if self.frame >= self.frameToGetNextNode:#if frame is equal to the frame to get to the next node then:
+                    self.skipNode = True
+                
+            if self.frame >= self.frameToGetNextNode or self.skipNode:#if frame is equal to the frame to get to the next node then:
                 #reset the frame and get the next node to visit
+                self.skipNode = False
                 self.frame = 0
                 if self.nodePointer < len(self.path) - 1:#if the ai hasn't reached the last node in the path then get the next node to move too
                     self.nodePointer += 1
@@ -61,17 +62,7 @@ class Enemy(Character):
         else:
             self.timeSinceLastSolve += 1
             
-            #get to the closest node to make sure the ai doesnt get stuck
-            '''
-            self.currentNode = self.graph.getNodeCloseTo(self)
-            self.currentNode.color = (255,0,0)
-            if self.currentNode.x > self.rect.x:
-                    self.left = False
-                    self.right = True
-            elif self.currentNode.x < self.rect.x:
-                    self.right = False
-                    self.left = True#
-            ''' 
+            #get to the closest node to make sure the ai doesnt get stuck 
         self.move(tiles)
         screen.blit(self.img, (self.rect.x - scroll[0],self.rect.y - scroll[1]))
     def getAggro(self,player):

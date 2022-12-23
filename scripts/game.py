@@ -18,16 +18,10 @@ class Game:
         self.enemy = Enemy(self.world.rects[0].x+8*16,self.world.rects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0])
         self.player.setRectsToCollideWith(self.world.rects)
         self.camera.set_target(self.player)
-
     def update(self):
         self.camera.update()
         self.world.update()
-
-        start = time.time()
         self.enemy.update(self.player,self.window.surface,self.camera.scroll,self.world.rects)
-        end = time.time()
-        enemyUpdateDelay = end - start
-
         self.player.update()
         self.window.update()
         
