@@ -13,7 +13,7 @@ class Game:
         pygame.init()
         self.window = Window((700,500),"Nea Project",60)
         self.camera = Camera()
-        self.world = World(self.window.surface,self.camera,50)
+        self.world = World(self.window.surface,self.camera,8)
         self.player = Player(self.world.rects[0].x+8*16,self.world.rects[0].y+16, 16, 16,self.window.surface,self.camera,[0,0])
         self.enemy = Enemy(self.world.rects[0].x+8*16,self.world.rects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0])
         self.player.setRectsToCollideWith(self.world.rects)

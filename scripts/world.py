@@ -15,7 +15,7 @@ class World:
         self.rects = []
         self.currentPosition = [0,0]
         self.seed = []
-        self.brokenSeed = [3, 2, 1, 2, 2, 5, 1, 2, 1, 5, 5, 1, 3, 4, 2, 5, 5, 4, 2, 1, 3, 4, 2, 1, 5, 2, 3, 3, 5, 3, 3, 5, 3, 5, 1, 2, 3, 4, 4, 2, 2, 3, 3, 3, 3, 1, 5, 1, 1, 3]
+        self.brokenSeed = [3,3,5,5,3,3,5,3]
         self.genWorld()
         self.getRects()
         self.graph = Graph(self.WorldIn01)
@@ -91,7 +91,6 @@ class World:
             #generate a random number to move down or sideways by
             rndNum = random.randint(1,5)
             self.seed.append(rndNum)
-            #rndNum = self.brokenSeed[i]
 
 
             #--------------------------------------------->
@@ -117,15 +116,10 @@ class World:
                         self.rooms.append(newRoom)
                         deltaY = 0
                         indexCounter = 0
-                        for room in self.rooms:
-                            if room.y != deltaY:
-                                deltaY = room.y
-                                if self.rooms[indexCounter-1].roomType == '1':
-                                    print("error")
-                            indexCounter+=1
+        
                     else:
                         self.right(xMultiplier,yMultiplier)
-        print(self.rooms)
+        
         
         
 
