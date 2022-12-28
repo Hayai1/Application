@@ -21,7 +21,7 @@ class Game:
     def update(self):
         self.camera.update()
         self.world.update()
-        self.enemy.update(self.player,self.window.surface,self.camera.scroll,self.world.rects)
+        #self.enemy.update(self.player,self.window.surface,self.camera.scroll,self.world.rects)
         self.player.update()
         self.window.update()
         
