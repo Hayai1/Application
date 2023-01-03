@@ -11,6 +11,7 @@ class Character:
         self.rect = pygame.Rect(x,y,width,height)
         self.rectsToCollideWith = []
         self.animations = self.getAnimations()
+        self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
     def setRectsToCollideWith(self,rects):
         self.rectsToCollideWith = rects
     @property
@@ -53,40 +54,39 @@ class Character:
             
     def playerJump(self):
         if self.airTimer < 6:
-            self.acceleration[1] = -5
+            self.acceleration[1] = -6
 
     def move(self,rectsToCollide):
-        collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
+        self.velocity = [0,0]
+        self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
         if self.acceleration[1] < 3:
             self.acceleration[1] += 0.2
         self.updateVelocity()
-        if self.triggerJump:
-            self.playerJump()
         self.rect.x += self.velocity[0]
         collisions = self.getCollisions(rectsToCollide)
         for tile in collisions:
             if self.velocity[0] > 0:
                 self.rect.right = tile.left
-                collisionTypes['right'] = True
+                self.collisionTypes['right'] = True
             elif self.velocity[0] < 0:
                 self.rect.left = tile.right
-                collisionTypes['left'] = True
+                self.collisionTypes['left'] = True
         self.rect.y += self.velocity[1]
         collisions = self.getCollisions(rectsToCollide)
         for tile in collisions:
             if self.velocity[1] > 0:
                 self.rect.bottom = tile.top
-                collisionTypes['bottom'] = True
+                self.collisionTypes['bottom'] = True
             elif self.velocity[1] < 0:
                 self.rect.top = tile.bottom
-                collisionTypes['top'] = True  
-        if collisionTypes['bottom']:
+                self.collisionTypes['top'] = True  
+        if self.collisionTypes['bottom']:
             self.airTimer = 0
             self.acceleration = [0,0]
-        elif collisionTypes['top']:
+        elif self.collisionTypes['top']:
             self.acceleration = [0,0]
         else:
             self.airTimer += 1
         movement = self.velocity
-        self.velocity = [0,0]
+        
         return movement

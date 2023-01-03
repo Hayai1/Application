@@ -8,83 +8,99 @@ class Enemy(Character):
         self.img = pygame.image.load(imgPath)
         self.img.set_colorkey((0,0,0))
         self.ai = Ai(graph)
-        self.timeSinceLastSolve = 100
         self.nodePointer = 0
         self.frame = 0
-        self.frameToGetNextNode = 16
         self.path = None
-        self.solve = False
         self.nextNode = None
         self.name ="enemy"
-        self.skipNode = False
+        self.sPressed = False
+        self.moving = False
+        self.movingFrames = 0
+        self.jumping = False
+        self.newPathTimer = 0
         super().__init__(x, y, width, height,velocity,acceleration)
         self.currentNode = self.graph.getNodeCloseTo(self)
     def getAnimations(self):
         pass
 
-    def draw(self, screen,scroll,tiles):
-        #move based on the path
-        cancelCurrentPath = False
-        self.left = False
-        self.right = False
-        if self.path is not None:#if a path exists then move based on the path
-            if self.currentNode is not None:
-                g = self.currentNode.getG(self.nextNode)
-                if g is not None:     
-                    gx = g[0]
-                    gy = g[1]
-                    if gy != 0 and self.currentNode.y > self.nextNode.y :
-                        self.jump()
-                    if self.nextNode.x > self.currentNode.x:
-                        self.left = False
-                        self.right = True
-                    elif self.nextNode.x < self.currentNode.x:
-                        self.right = False
-                        self.left = True
-                    self.frame += 1
-                    self.frameToGetNextNode = 16*abs(gx)
-                else:
-                    self.skipNode = True
-                
-            if self.frame >= self.frameToGetNextNode or self.skipNode:#if frame is equal to the frame to get to the next node then:
-                #reset the frame and get the next node to visit
-                self.skipNode = False
-                self.frame = 0
-                if self.nodePointer < len(self.path) - 1:#if the ai hasn't reached the last node in the path then get the next node to move too
-                    self.nodePointer += 1
-                    self.currentNode = self.nextNode
-                    self.nextNode = self.path[self.nodePointer]
-                else:#else reset the path, the node pointer and the current node
-                    self.path = None
-                    self.nodePointer = 0
-                    self.nextNode = None
-        
-        else:
-            self.timeSinceLastSolve += 1
-            
-            #get to the closest node to make sure the ai doesnt get stuck 
-        self.move(tiles)
-        screen.blit(self.img, (self.rect.x - scroll[0],self.rect.y - scroll[1]))
     def getAggro(self,player):
         if self.x - player.x < 300 and self.x - player.x > -300 and self.y - player.y < 300 and self.y - player.y > -300:
             return True
         return False
         
+    def draw(self,screen,scroll):
+        screen.blit(self.img, (self.rect.x - scroll[0],self.rect.y - scroll[1]))
     def update(self,player,screen,scroll,tiles):
-        closestNode = self.graph.getNodeCloseTo(self)
-        closestNodeToPlayer = self.graph.getNodeCloseTo(player)
+        self.newPathTimer +=1
 
-        self.currentNode = closestNode
-        if self.timeSinceLastSolve > 2 and closestNode is not closestNodeToPlayer:
-            self.solve = False
-            self.path = self.ai.DrawPath(closestNode,player)
-            if self.path is not None:
-                self.path.append(closestNodeToPlayer)
-                self.timeSinceLastSolve = 0
-                self.nodePointer = 1
-                self.nextNode = self.path[self.nodePointer]
+        #check if a current path exists
+        if self.movingFrames == self.frame:
+            self.moving = False
+        if self.jumping:
+            if self.nextNode is not None and self.nextNode.y > self.y:
+                self.jumping = False
+                if self.nextNode.x > self.currentNode.x:
+                    self.left = False
+                    self.right = True
+                elif self.nextNode.x < self.currentNode.x:
+                    self.right = False
+                    self.left = True
+                self.movingFrames = abs(self.currentNode.getG(self.nextNode)[0]*8)
+                self.frame = 0
+        if self.path is None:
+            #check if player is in aggro range
+            if self.getAggro(player) and self.newPathTimer > 60:
+                #if player is in aggro range then get a path to the player
+                self.newPathTimer = 0
+                self.path = self.ai.DrawPath(self.graph.getNodeCloseTo(self),player)   
+                self.sPressed = False
+            #check if currently in the process from moving to the next node
+        else:
+            if not self.moving:
+                #get the actual node in terms of postion in the graph
+                closestNode = self.graph.getNodeCloseTo(self)
+                #if the actual node is not the same as the current node then set the path to none and move on
+                if self.nodePointer != 0 and closestNode != self.nextNode and self.airTimer < 4:
+                    self.path = None
+                else:#if the actual node is the same as the current node then get the next node to move to
+                    if self.nextNode is None:
+                        self.currentNode = self.path[0]
+                    else:
+                        self.currentNode = self.nextNode
+                    self.left = False
+                    self.right = False
+                    if self.nodePointer < len(self.path) - 1 and not self.nextNode == self.currentNode:
+                        self.nodePointer += 1
+                        self.nextNode = self.path[self.nodePointer]
+                        #using the current node connection to the next node g score to get the next node
+                        gScore = self.currentNode.getG(self.nextNode)
+                        gScoreX = gScore[0]
+                        gScoreY = gScore[1]
+                        #state which directions to move in and if jumping is needed
+                        if gScoreY != 0 and self.currentNode.y > self.nextNode.y:
+                            self.playerJump()
+                            self.jumping = True
+                            self.movingFrames = 0
+                        elif self.nextNode.x > self.currentNode.x:
+                            self.left = False
+                            self.right = True
+                            self.movingFrames = abs(gScoreX*8)
+                        elif self.nextNode.x < self.currentNode.x:
+                            self.right = False
+                            self.left = True
+                            self.movingFrames = abs(gScoreX*8)
+                        #reset the frame
+                        self.frame = 1
+                        self.moving = True#state that the enemy is moving
+                    else:
+                        self.path = None
+                        self.nodePointer = 0
+            else:#if the enemy is moving then move
+                self.frame += 1
         
-        self.draw(screen,scroll,tiles)
+        self.move(tiles)#call the move function
+        self.draw(screen,scroll)#draw the enemy
+        
         
            
     def jump(self):

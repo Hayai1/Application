@@ -8,7 +8,8 @@ class Room:
         self.x = loc[0]
         self.y = loc[1]
         self.roomImg = []
-        self.rects = []
+        self.collisionRects = []
+        self.graphRects = []
         self.parent = None
         self.GenerateRoom(RoomFile)
      
@@ -36,17 +37,17 @@ class Room:
         room = []
         data = self.getRoomData(roomFile)
         if self.roomType == '1':
-            self.rects = [pygame.Rect((self.x,self.y,320,16)),pygame.Rect(self.x,112+self.y,320,16)]
+            self.collisionRects = [pygame.Rect((self.x,self.y,320,16)),pygame.Rect(self.x,112+self.y,320,16)]
         elif self.roomType == '2NoTop':
-            self.rects = [pygame.Rect((self.x,self.y,320,16)),pygame.Rect(self.x,112+self.y,112,16),pygame.Rect(208+self.x,112+self.y,112,16)]
+            self.collisionRects = [pygame.Rect((self.x,self.y,320,16)),pygame.Rect(self.x,112+self.y,112,16),
+                                   pygame.Rect(208+self.x,112+self.y,112,16)]
         elif self.roomType == '2Top':
-            self.rects = [pygame.Rect(self.x,self.y,112,16),pygame.Rect(208+self.x,self.y,112,16),
-                          pygame.Rect(self.x,112+self.y,112,16),pygame.Rect(208+self.x,112+self.y,112,16),
-                          pygame.Rect(112+self.x,64+self.y,96,16)]
+            self.collisionRects = [pygame.Rect(self.x,self.y,112,16),pygame.Rect(208+self.x,self.y,112,16),
+                                   pygame.Rect(self.x,112+self.y,112,16),pygame.Rect(208+self.x,112+self.y,112,16),
+                                   pygame.Rect(112+self.x,64+self.y,96,16)]
         elif self.roomType == '3':
-            self.rects = [pygame.Rect(self.x,self.y,112,16),pygame.Rect(208+self.x,self.y,112,16),
-                          pygame.Rect(self.x,112+self.y,320,16),
-                          pygame.Rect(112+self.x,64+self.y,96,16)]
+            self.collisionRects = [pygame.Rect(self.x,self.y,112,16),pygame.Rect(208+self.x,self.y,112,16),
+                                   pygame.Rect(self.x,112+self.y,320,16),pygame.Rect(112+self.x,64+self.y,96,16)]
             
             
         
@@ -63,7 +64,8 @@ class Room:
             else:
                 loc = self.GetCoordinatesInSpriteSheet(Tile=tile,location=[0,0,16,16])
                 self.addImageToArray(room,loc,(xCounter*16,yCounter*16))
-        
+                if tile != '4':
+                    self.graphRects.append(pygame.Rect((xCounter*16)+self.x,(yCounter*16)+self.y,16,16))
         surface = pygame.Surface((surfaceX*16,yCounter*16+16))
         self.roomImg = self.drawRoomOnSurface(surface,room)
         

@@ -14,16 +14,17 @@ class Graph:
                 pygame.draw.lines(screen,(255,0,0),False,coords,1)
                 coords = [[node.x-scroll[0],node.y-scroll[1]]]
     #returns the node closest to the player
-    def getNodeCloseTo(self,player):
+    def getNodeCloseTo(self,entity):
         closestNode = None
         for node in self.nodes:
             if closestNode == None:
                 closestNode = node
+                distFromCurrentClosestNodeToPlayer = math.sqrt((node.x - (entity.x + entity.width/2))**2 + (node.y - (entity.y+entity.height))**2)
             else:
-                distFromCurrentClosestNodeToPlayer = math.sqrt((closestNode.x - player.x)**2 + (closestNode.y - player.y)**2)
-                distFromNewNodeToPlayer = math.sqrt((node.x - player.x)**2 + (node.y - player.y)**2)
+                distFromNewNodeToPlayer = math.sqrt((node.x - (entity.x + entity.width/2))**2 + (node.y - (entity.y+entity.height))**2)
                 if distFromNewNodeToPlayer < distFromCurrentClosestNodeToPlayer:
                     closestNode = node
+                    distFromCurrentClosestNodeToPlayer = distFromNewNodeToPlayer
         closestNode.color = (0,255,0)
         return closestNode
 
@@ -70,13 +71,13 @@ class Graph:
                         #if so look for possible connections to make
                         ConnectionYRange = 7#the range of y values to check for nodes
                         ConnectionXRange = 2#the range of x values to check for nodes
-                        for y in range(1,ConnectionYRange):#loop through the y range
+                        for y in range(0,ConnectionYRange):#loop through the y range
                             for x in range(-ConnectionXRange,ConnectionXRange+1):#loop through the x range
                                 if abs(x) ==0 or abs(x) == 1:continue
                                 possibleConnection = self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y,nodes)#get the node at the current x and y
                                 if possibleConnection is not None:#if there is a possible connection
                                     #check for nodes that could obstuct the connection:
-                                    if (x > 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is None or x < 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is None):
+                                    if (self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None and x > 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is None or x < 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is None and self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None):
                                         #make a connection
                                         node.add_connection(possibleConnection,[x,y])
         

@@ -12,24 +12,25 @@ class World:
         self.screen = screen
         self.roomLocations = []
         self.rooms = []
-        self.rects = []
+        self.collisionRects = []
+        self.graphRects = []
         self.currentPosition = [0,0]
         self.seed = []
-        self.brokenSeed = [3,3,5,5,3,3,5,3]
+        self.brokenSeed = [5,5,3,3,5,3,3,3]
         self.genWorld()
         self.getRects()
         self.graph = Graph(self.WorldIn01)
-        
-
     def getRects(self):
         for room in self.rooms:
-            for rect in room.rects:
-                self.rects.append(rect)
+            for rect in room.collisionRects:
+                self.collisionRects.append(rect)
+            for rect in room.graphRects:
+                self.graphRects.append(rect)
     @property
     def WorldIn01(self):
         rects = []
         for room in self.rooms:
-            for rect in room.rects:
+            for rect in room.graphRects:
                 rects.append([int(rect.x/16),int(rect.y/16)])
         x = [i[0] for i in rects]
         y = [i[1] for i in rects]
@@ -42,9 +43,8 @@ class World:
     def update(self):
         for room in self.rooms:
             self.screen.blit(room.roomImg,(room.x-self.camera.scroll[0],room.y-self.camera.scroll[1]))
-        self.particleMangager.update(self.camera.scroll)
-        #self.graph.draw(self.screen,self.camera.scroll)
-
+        #self.particleMangager.update(self.camera.scroll)
+        self.graph.draw(self.screen,self.camera.scroll)
     def travel(self,pos,xDirection,yDirection,xMultiplier,yMultiplier,):
         pos = [pos[0]+xDirection,pos[1]+yDirection]#move current postion to the left
         if not self.roomLocations == []:
@@ -91,13 +91,11 @@ class World:
             #generate a random number to move down or sideways by
             rndNum = random.randint(1,5)
             self.seed.append(rndNum)
-
-
+            rndNum = self.brokenSeed[i]
             #--------------------------------------------->
-            
-            if rndNum is 1 or rndNum is 2:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
+            if rndNum == 1 or rndNum == 2:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
                 self.left(xMultiplier,yMultiplier)
-            elif rndNum is 3 or rndNum  is 4 :#else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
+            elif rndNum == 3 or rndNum  == 4 :#else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
                 self.right(xMultiplier,yMultiplier)
             elif rndNum == 5:#else if random number is 5 then place a room directly down
                 newPos = self.travel(self.currentPosition,0,1,xMultiplier,yMultiplier)    
