@@ -35,10 +35,10 @@ class World:
         x = [i[0] for i in rects]
         y = [i[1] for i in rects]
 
-        world = [[4 for i in range(max(x)+1)] for j in range(max(y)+1)]
+        world = [[0 for i in range(max(x)+1)] for j in range(max(y)+1)]
 
         for rect in rects:
-            world[rect[1]][rect[0]] = 3
+            world[rect[1]][rect[0]] = 1
         return world
     def update(self):
         for room in self.rooms:

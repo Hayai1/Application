@@ -32,10 +32,14 @@ class Enemy(Character):
         screen.blit(self.img, (self.rect.x - scroll[0],self.rect.y - scroll[1]))
     def update(self,player,screen,scroll,tiles):
         self.newPathTimer +=1
-
         #check if a current path exists
         if self.movingFrames == self.frame:
             self.moving = False
+        if self.movingFrames < self.frame:#error can occur here
+            self.path = None
+            self.nodePointer = 0
+            self.nextNode = None
+            self.frame = 0
         if self.jumping:
             if self.nextNode is not None and self.nextNode.y > self.y:
                 self.jumping = False

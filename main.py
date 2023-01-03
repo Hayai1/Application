@@ -6,6 +6,5 @@ if __name__ == "__main__":
 
 '''
 TODO:
-    - fix the getnodecloseto function so that it works for the feet of the 
-      entity not the corner of the rect of the entity
+   
 '''

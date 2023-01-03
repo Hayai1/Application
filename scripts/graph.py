@@ -42,15 +42,22 @@ class Graph:
         for row in mapdata:
             nodeRow = []
             for tile in row:
-                if tile !=3:
+                if tile !=1:
                     nodeRow.append(None)
-                if tile == 3:
+                if tile == 1:
                     nodeRow.append(Node(id,x*16+8,y*16))
                     id +=1
                 x += 1
             x = 0
             y +=1
             nodes.append(nodeRow)
+        #get rid of any nodes we don't need such as nodes that have nodes above them
+
+        for row in nodes:
+            for node in row:
+                if node is not None:
+                    if self.getRelativeStateOfNode(row.index(node),nodes.index(row),0,-1,nodes) is not None:
+                        row[row.index(node)] = None
         #connections
         amountOfRowsOfNodes = len(nodes)#get the amount of rows in nodes
         for rowIndex in range(0, amountOfRowsOfNodes):#loop through each row in nodes
@@ -60,9 +67,9 @@ class Graph:
                 node = row[nodeIndex]#get the node
                 if node is not None:
                     '''<---make connections on the same y levels:--->'''
-                    if (nodeIndex is not amountOfNodesInRow-1 and self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is not None):
+                    if (nodeIndex is not amountOfNodesInRow-1 and self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is not None and self.getRelativeStateOfNode(nodeIndex,rowIndex,0,-1,nodes) is None):
                         node.add_connection(row[nodeIndex+1],[1,0])
-                    if nodeIndex is not 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is not None:
+                    if nodeIndex is not 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is not None and self.getRelativeStateOfNode(nodeIndex,rowIndex,0,-1,nodes) is None:
                         node.add_connection(row[nodeIndex-1],[1,0])
                     '''<---make connections on different y levels:--->'''
                     #check if there is a node above the current node by 1 and 2
@@ -77,9 +84,12 @@ class Graph:
                                 possibleConnection = self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y,nodes)#get the node at the current x and y
                                 if possibleConnection is not None:#if there is a possible connection
                                     #check for nodes that could obstuct the connection:
-                                    if (self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None and x > 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is None or x < 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is None and self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None):
-                                        #make a connection
-                                        node.add_connection(possibleConnection,[x,y])
+                                    if ((x > 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None and 
+                                        self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is None) or 
+                                        (x < 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is None and 
+                                        self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None)):
+                                            #make a connection
+                                            node.add_connection(possibleConnection,[x,y])
         
         nodelist = []
         for row in nodes:
