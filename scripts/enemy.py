@@ -47,13 +47,14 @@ class Enemy(Character):
                     self.left = True
                 self.movingFrames = abs(self.currentNode.getG(self.nextNode)[0]*8)
                 self.frame = 0
-        if self.path is None:
+        condition = self.path == None
+        if condition:
             #check if player is in aggro range
-            if self.getAggro(player) and self.newPathTimer > 60:
+            if self.getAggro(player):
                 #if player is in aggro range then get a path to the player
                 self.newPathTimer = 0
-                self.path = self.ai.DrawPath(self.graph.getNodeCloseTo(self),player)   
                 self.sPressed = False
+                self.path = self.ai.DrawPath(self.graph.getNodeCloseTo(self),player)   
             #check if currently in the process from moving to the next node
         else:
             if not self.moving:
@@ -62,6 +63,8 @@ class Enemy(Character):
                 #if the actual node is not the same as the current node then set the path to none and move on
                 if self.nodePointer != 0 and closestNode != self.nextNode and self.airTimer < 4:
                     self.path = None
+                    self.nodePointer = 0
+                    self.nextNode = None
                 else:#if the actual node is the same as the current node then get the next node to move to
                     if self.nextNode is None:
                         self.currentNode = self.path[0]
@@ -69,8 +72,8 @@ class Enemy(Character):
                         self.currentNode = self.nextNode
                     self.left = False
                     self.right = False
-                    if self.nodePointer < len(self.path) - 1 and not self.nextNode == self.currentNode:
-                        self.nodePointer += 1
+                    self.nodePointer += 1
+                    if self.nodePointer <= len(self.path) - 1:
                         self.nextNode = self.path[self.nodePointer]
                         #using the current node connection to the next node g score to get the next node
                         gScore = self.currentNode.getG(self.nextNode)
@@ -95,6 +98,7 @@ class Enemy(Character):
                     else:
                         self.path = None
                         self.nodePointer = 0
+                        self.nextNode = None
             else:#if the enemy is moving then move
                 self.frame += 1
         
