@@ -7,7 +7,6 @@ class Input:
     def __init__(self,player):
         self.player = player
         self.slowDown = False
-        self.enemy = None
     def update(self):
         if self.slowDown:
             time.sleep(0.1)
@@ -23,8 +22,6 @@ class Input:
                         self.player.right = True
                     if event.key == pygame.K_UP:
                         self.player.playerJump()
-                    if event.key == pygame.K_s:
-                        self.enemy.sPressed = True
                     if event.key == pygame.K_1:
                         print("slowed")
                         self.slowDown = True

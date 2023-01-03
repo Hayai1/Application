@@ -15,21 +15,18 @@ class Game:
         self.camera = Camera()
         self.world = World(self.window.surface,self.camera,8)
         self.player = Player(self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16, 16, 16,self.window.surface,self.camera,[0,0])
-
-        enemyX = self.world.graphRects[0].x+8*16
-        enemyY = self.world.graphRects[0].y+16
-        self.enemy1 = Enemy(enemyX,enemyY, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0])
-        self.enemy2 = Enemy(enemyX-32,enemyY, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0])
+        self.enemies = []
+        self.enemy1 = Enemy(self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0],target=self.player,surf=self.window.surface,camera=self.camera,collisionRects=self.world.collisionRects)
+        self.enemies.append(self.enemy1)
         self.player.setRectsToCollideWith(self.world.collisionRects)
         self.camera.set_target(self.player)
-        self.player.input.enemy = self.enemy1
+    
     def update(self):
         self.camera.update()
         self.world.update()
-        self.enemy1.update(self.player,self.window.surface,self.camera.scroll,self.world.collisionRects)
-        #self.enemy2.update(self.player,self.window.surface,self.camera.scroll,self.world.collisionRects)
+        for enemy in self.enemies:
+            enemy.update()
         self.player.update()
-        pygame.draw.rect(self.window.surface,(255,255,255),((self.enemy1.x + self.enemy1.width/2)-self.camera.scroll[0],(self.enemy1.y + self.enemy1.height)-self.camera.scroll[1],1,1))
         self.window.update()
         
     def runGame(self):

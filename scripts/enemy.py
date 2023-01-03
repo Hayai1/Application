@@ -3,25 +3,28 @@ import pygame, time
 from scripts.ai import Ai
 from scripts.character import Character
 class Enemy(Character):
-    def __init__(self,x, y, width, height,graph,imgPath,velocity=[],acceleration=[0,0]):
+    def __init__(self,x, y, width, height,graph,imgPath,velocity=[],acceleration=[0,0],target=None,surf=None,camera=None,collisionRects=None):
+        self.target=target
+        self.surf=surf
+        self.camera=camera
+        self.collisionRects=collisionRects
+        self.name ="enemy"
         self.graph = graph
         self.img = pygame.image.load(imgPath)
         self.img.set_colorkey((0,0,0))
         self.ai = Ai(graph)
+        self.path = None
+        self.nextNode = None   
+        self.moving = False
+        self.jumping = False
         self.nodePointer = 0
         self.frame = 0
-        self.path = None
-        self.nextNode = None
-        self.name ="enemy"
-        self.sPressed = False
-        self.moving = False
         self.movingFrames = 0
-        self.jumping = False
         self.newPathTimer = 0
         super().__init__(x, y, width, height,velocity,acceleration)
         self.currentNode = self.graph.getNodeCloseTo(self)
     def getAnimations(self):
-        pass
+        return NotImplementedError
 
     def getAggro(self,player):
         if self.x - player.x < 300 and self.x - player.x > -300 and self.y - player.y < 300 and self.y - player.y > -300:
@@ -30,7 +33,7 @@ class Enemy(Character):
         
     def draw(self,screen,scroll):
         screen.blit(self.img, (self.rect.x - scroll[0],self.rect.y - scroll[1]))
-    def update(self,player,screen,scroll,tiles):
+    def update(self):
         self.newPathTimer +=1
         #check if a current path exists
         if self.movingFrames == self.frame:
@@ -54,11 +57,10 @@ class Enemy(Character):
         condition = self.path == None
         if condition:
             #check if player is in aggro range
-            if self.getAggro(player):
+            if self.getAggro(self.target):
                 #if player is in aggro range then get a path to the player
                 self.newPathTimer = 0
-                self.sPressed = False
-                self.path = self.ai.DrawPath(self.graph.getNodeCloseTo(self),player)   
+                self.path = self.ai.DrawPath(self.graph.getNodeCloseTo(self),self.target)   
             #check if currently in the process from moving to the next node
         else:
             if not self.moving:
@@ -106,8 +108,8 @@ class Enemy(Character):
             else:#if the enemy is moving then move
                 self.frame += 1
         
-        self.move(tiles)#call the move function
-        self.draw(screen,scroll)#draw the enemy
+        self.move(self.collisionRects)#call the move function
+        self.draw(self.surf,self.camera.scroll)#draw the enemy
         
         
            
