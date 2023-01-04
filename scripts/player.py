@@ -2,7 +2,7 @@ import pygame
 from scripts.character import Character
 from scripts.animations import Animations
 from scripts.sword import Sword
-from scripts.input import Input
+from scripts.playerInput import PlayerInput
 class Player(Character):
     def __init__(self,x, y, width, height,surface,camera,velocity,acceleration=[0,0],swordThumbnailPath=None, swordUseImgPath=None):
         self.surface = surface
@@ -10,7 +10,7 @@ class Player(Character):
         self.weapons = {'sword' : Sword(swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
         self.attack = False
-        self.input = Input(self)
+        self.input = PlayerInput(self)
         super().__init__(x, y, width, height,velocity,acceleration)
         
     def getAnimations(self):

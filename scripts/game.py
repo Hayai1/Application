@@ -7,11 +7,13 @@ from scripts.player import Player
 from scripts.window import Window
 from scripts.camera import Camera
 from scripts.enemy import Enemy
-
+from scripts.menuManager import MenuManager
 class Game:
     def __init__(self):
         pygame.init()
         self.window = Window((700,500),"Nea Project",60)
+        self.menu = MenuManager(self.window)
+        self.runMenu()
         self.camera = Camera()
         self.world = World(self.window.surface,self.camera,8)
         self.player = Player(self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16, 16, 16,self.window.surface,self.camera,[0,0])
@@ -32,5 +34,14 @@ class Game:
     def runGame(self):
         while True:
             self.update()
+    def runMenu(self):
+        while True:
+            startGame = self.menu.update()
+            self.window.update()
+            if startGame:
+                break
+        
+    
+
     
 
