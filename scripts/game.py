@@ -15,7 +15,7 @@ class Game:
         self.menu = MenuManager(self.window)
         self.runMenu()
         self.camera = Camera()
-        self.world = World(self.window.surface,self.camera,8)
+        self.world = World(self.window.surface,self.camera,50)
         self.player = Player(self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16, 16, 16,self.window.surface,self.camera,[0,0])
         self.enemies = []
         self.enemy1 = Enemy(self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0],target=self.player,surf=self.window.surface,camera=self.camera,collisionRects=self.world.collisionRects)

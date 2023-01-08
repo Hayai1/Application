@@ -43,8 +43,8 @@ class World:
     def update(self):
         for room in self.rooms:
             self.screen.blit(room.roomImg,(room.x-self.camera.scroll[0],room.y-self.camera.scroll[1]))
-        #self.particleMangager.update(self.camera.scroll)
-        self.graph.draw(self.screen,self.camera.scroll)
+        self.particleMangager.update(self.camera.scroll)
+        #self.graph.draw(self.screen,self.camera.scroll)
     def travel(self,pos,xDirection,yDirection,xMultiplier,yMultiplier,):
         pos = [pos[0]+xDirection,pos[1]+yDirection]#move current postion to the left
         if not self.roomLocations == []:
@@ -91,7 +91,6 @@ class World:
             #generate a random number to move down or sideways by
             rndNum = random.randint(1,5)
             self.seed.append(rndNum)
-            rndNum = self.brokenSeed[i]
             #--------------------------------------------->
             if rndNum == 1 or rndNum == 2:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
                 self.left(xMultiplier,yMultiplier)
