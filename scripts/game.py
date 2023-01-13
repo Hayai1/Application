@@ -25,7 +25,7 @@ class Game:
         
         self.world = World(self.window.surface,self.camera,50)
         
-        name,x,y = self.dbHandler.getPlayerData(playerId,worldId,[self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16])
+        name,x,y = self.dbHandler.getPlayerData(playerId,worldId,[self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16])
         self.player = Player(name,x,y, 16, 16,self.window.surface,self.camera,[0,0])
         
         self.enemies = []
