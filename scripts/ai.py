@@ -55,7 +55,7 @@ class Ai:
                 openList.put(successor)
             closedList.append(q)
 
-    def DrawPath(self,currentLocation,player):
+    def FindAndDrawPath(self,currentLocation,player):
         for nodes in self.graph.nodes:
             nodes.color = (255,255,0)
         target = self.graph.getNodeCloseTo(player)

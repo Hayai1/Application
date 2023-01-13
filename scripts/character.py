@@ -11,6 +11,7 @@ class Character:
         self.rect = pygame.Rect(x,y,width,height)
         self.rectsToCollideWith = []
         self.animations = self.getAnimations()
+        self.hp = 100
         self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
     def setRectsToCollideWith(self,rects):
         self.rectsToCollideWith = rects
@@ -33,8 +34,8 @@ class Character:
     def y(self,value):
         self.rect.y = value
     
-    def draw(self,surface,scroll):
-        img = self.animations.getImg()
+    def draw(self,surface,scroll,img):
+        
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))
 
     def getCollisions(self,tiles):
