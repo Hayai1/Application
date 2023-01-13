@@ -1,8 +1,11 @@
 import pygame,math,random
-from scripts.coreFuncs import *
 from pygame.locals import *
 class Vfx:
     class Arc:
+        def advance(self,pos, angle, amt):
+            pos[0] += math.cos(angle) * amt
+            pos[1] += math.sin(angle) * amt
+            return pos
         '''
         pos : where the curve is 
         radius : lenth of the curve from it's center to its edge 
@@ -46,14 +49,14 @@ class Vfx:
             self.alive = True
 
         def getAnglePoint(self, basePoint, t, curveRate):
-            p = advance(basePoint.copy(), self.startAngle + (0.5 - t) * math.pi * 4 * self.angleWidth, self.radius)
-            advance(p, self.startAngle, (0.5 ** 2 - abs(0.5 - t) ** 2) * self.radius * curveRate)
+            p = self.advance(basePoint.copy(), self.startAngle + (0.5 - t) * math.pi * 4 * self.angleWidth, self.radius)
+            self.advance(p, self.startAngle, (0.5 ** 2 - abs(0.5 - t) ** 2) * self.radius * curveRate)
             if self.arcStretch != 0:
-                advance(p, self.startAngle + math.pi / 2, (0.5 - t) * self.arcStretch * self.scale)
+                self.advance(p, self.startAngle + math.pi / 2, (0.5 - t) * self.arcStretch * self.scale)
             return p
 
         def calculatePoints(self, start, end, curveRate):
-            basePoint = advance([0, 0], self.startAngle, self.spacing)
+            basePoint = self.advance([0, 0], self.startAngle, self.spacing)
             pointCount = 20
             arcPoints = [self.getAnglePoint(basePoint, start + (i / pointCount) * (end - start), curveRate) for i in range(pointCount + 1)]
             arcPoints = [[p[0] * self.scale, p[1] * self.scale] for p in arcPoints]

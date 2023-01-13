@@ -29,12 +29,13 @@ class Game:
         self.player = Player(name,x,y, 16, 16,self.window.surface,self.camera,[0,0])
         
         self.enemies = []
-        self.enemy1 = Enemy(self.world.graphRects[0].x+8*16,self.world.graphRects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0],target=self.player,surf=self.window.surface,camera=self.camera,collisionRects=self.world.collisionRects)
+        self.enemy1 = Enemy(self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0],target=self.player,surf=self.window.surface,camera=self.camera,collisionRects=self.world.collisionRects)
         self.enemies.append(self.enemy1)
         
         
         self.player.setRectsToCollideWith(self.world.collisionRects)
         self.camera.set_target(self.player)
+        self.player.input.enemy = self.enemy1
     
     def update(self):
         self.camera.update()

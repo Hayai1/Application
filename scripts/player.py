@@ -13,13 +13,14 @@ class Player(Character):
         self.attack = False
         self.input = PlayerInput(self)
         super().__init__(x, y, width, height,velocity,acceleration)
-        
+
     def getAnimations(self):
         animations = Animations('assets/playerAnimations')
         animations.getAnimation('run',[4,4,4,4,4])
         animations.getAnimation('idle',[1])
         animations.getAnimation('attack',[6,6,6,6,4,4,4])
         return animations
+
 
     def update(self):
         self.input.update()
@@ -48,8 +49,8 @@ class Player(Character):
            self.takeInputs = True
         else:
             self.takeInputs = False
-        
-        self.draw(self.surface,self.camera.scroll)
+        img = self.animations.getImg()
+        self.draw(self.surface,self.camera.scroll,img)
     
 
 
