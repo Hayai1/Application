@@ -1,6 +1,6 @@
 import os,random
 
-from myOrm import Database, Column, Table, PrimaryKey
+from orm import Database, Column, Table, PrimaryKey
 
 DB_PATH = 'data/testScripts/dataBasetesting/createMyOwnOrm/dataBase.db'
 def createTables(db, table):
