@@ -8,7 +8,7 @@ from scripts.window import Window
 from scripts.camera import Camera
 from scripts.enemy import Enemy
 from scripts.menuManager import MenuManager
-from scripts.dataBaseClasses import DBHandler
+from scripts.dbHandler import DBHandler
 class Game:
     def __init__(self):
         pygame.init()
@@ -23,13 +23,13 @@ class Game:
     
         self.camera = Camera()
         
-        self.world = World(self.window.surface,self.camera,50)
+        self.world = World(self.window.GameSurface,self.camera,50)
         
         name,x,y = self.dbHandler.getPlayerData(playerId,worldId,[self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16])
-        self.player = Player(name,x,y, 16, 16,self.window.surface,self.camera,[0,0])
+        self.player = Player(name,x,y, 16, 16,self.window.GameSurface,self.camera,[0,0])
         
         self.enemies = []
-        self.enemy1 = Enemy(self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0],target=self.player,surf=self.window.surface,camera=self.camera,collisionRects=self.world.collisionRects)
+        self.enemy1 = Enemy(self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16, 16, 16,self.world.graph,'assets/playerAnimations/idle/idle0.png',[0,0],target=self.player,surf=self.window.GameSurface,camera=self.camera,collisionRects=self.world.collisionRects)
         self.enemies.append(self.enemy1)
         
         

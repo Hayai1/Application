@@ -53,7 +53,6 @@ class Graph:
             y +=1
             nodes.append(nodeRow)
         #get rid of any nodes we don't need such as nodes that have nodes above them
-
         for row in nodes:
             for node in row:
                 if node is not None:
@@ -81,7 +80,7 @@ class Graph:
                         ConnectionXRange = 2#the range of x values to check for nodes
                         for y in range(0,ConnectionYRange):#loop through the y range
                             for x in range(-ConnectionXRange,ConnectionXRange+1):#loop through the x range
-                                if abs(x) ==0 or abs(x) == 1:continue
+                                if abs(x) == 0 or abs(x) == 1:continue
                                 possibleConnection = self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y,nodes)#get the node at the current x and y
                                 if possibleConnection is not None:#if there is a possible connection
                                     #check for nodes that could obstuct the connection:

@@ -1,6 +1,6 @@
 import pygame, string,sys, os
 from scripts.menuInput import MenuInput
-from scripts.dataBaseClasses import *
+from scripts.dbHandler import *
 
 class MenuManager:
     def __init__(self,window,dbHandler):
@@ -121,7 +121,7 @@ class TypeBar:
         self.setData(self.text)
         self.draw()
     def draw(self):
-        pygame.draw.rect(self.window.surface,(255,255,255),self.rect,1)
+        pygame.draw.rect(self.window.GameSurface,(255,255,255),self.rect,1)
 
 
 class Cursor():
@@ -169,7 +169,7 @@ class Text:
                     return self.menuAddress
         self.draw()
     def draw(self):
-        self.window.surface.blit(self.textSurface,self.pos)
+        self.window.GameSurface.blit(self.textSurface,self.pos)
 
     def getLetters(self,path):
         letters = {}
