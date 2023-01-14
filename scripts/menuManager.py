@@ -157,10 +157,12 @@ class Text:
             
     def stringToSurface(self,text):
         surf = pygame.Surface((len(text)*16,16))
+        space = 0
         for i in range(len(text)):
             if text[i] == ' ':
+                space -= 5
                 continue
-            surf.blit(self.letters[text[i].upper()],(i*16,0))
+            surf.blit(self.letters[text[i].upper()],(i*9+space,0))
         return surf
     def update(self,cursorRect=None, inputs=False):
         if inputs:
