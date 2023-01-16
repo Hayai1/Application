@@ -15,7 +15,7 @@ class Window:
     def update(self):
         self.screen.fill((0, 0, 0))
         self.screen.blit(pygame.transform.scale(self.GameSurface,self.windowSize),(0,0))
-        self.screen.blit(self.font.render("FPS: {:6.3}{}PLAYTIME: {:6.3} SECONDS".format(self.clock.get_fps(), " "*5, self.playtime), True, (255, 255, 255)), (5, 5))
+        #self.screen.blit(self.font.render("FPS: {:6.3}{}PLAYTIME: {:6.3} SECONDS".format(self.clock.get_fps(), " "*5, self.playtime), True, (255, 255, 255)), (5, 5))
         pygame.display.flip()
         self.GameSurface.fill((0, 0, 0))
         self.playtime += self.clock.tick(self.fps) / 1000.0

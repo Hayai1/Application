@@ -3,7 +3,6 @@ import pygame
 class PlayerInput(Input):
     def __init__(self,player):
         self.player = player
-        self.enemy = None
         super().__init__()
     def specificUpdate(self,event):
         if self.player.takeInputs:
