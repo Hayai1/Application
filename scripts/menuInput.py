@@ -7,10 +7,9 @@ class MenuInput(Input):
     def specificUpdate(self,event):
         
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                key = self.key
-                key[1] = True
-                self.key = key
+            key = self.key
+            key[1] = event.button
+            self.key = key
                 
         elif event.type == pygame.KEYDOWN:
             key = self.key
@@ -23,7 +22,7 @@ class MenuInput(Input):
     @property
     def key(self):
         key = self._key
-        self._key = [None,False]
+        self._key = [None,None]
         return key
     @key.setter
     def key(self,value):

@@ -55,9 +55,13 @@ class MenuManager:
     def characterMenu(self):
         text1 = Text(self.window,'CHARACTERS',(0,0),isButton=False)
         text2 = Text(self.window,'CREATE NEW CHARACTER',(0,50),isButton=True,menuAddress=self.characterCreationMenuEnterName)
-        text3 = Text(self.window,'CHARACTER LIST',(0,100),isButton=True,menuAddress=self.worldMenu)
+        text3 = Text(self.window,'CHARACTER LIST',(0,100),isButton=True,menuAddress=self.characterLoadMenu)
         text4 = Text(self.window,'BACK',(0,150),isButton=True,menuAddress=self.startMenu)
         return Menu(self.window,self.cursor,text1,text2,text3,text4)
+    def characterLoadMenu(self):
+        text1 = Text(self.window,'LOAD CHARACTER',(0,0),isButton=False)
+        list1 = ListBox(self.window,(25,25),150,150)
+        return Menu(self.window,self.cursor,text1,list1)
     def characterCreationMenuEnterName(self):
         text1 = Text(self.window,'CREATE NEW CHARACTER',(0,0),isButton=False)
         text2 = Text(self.window,'ENTER CHARACTER NAME',(0,50),isButton=False)
@@ -100,6 +104,38 @@ class MenuManager:
         self.cursor.update()
         #pygame.draw.rect(self.window.surface,(255,255,255),self.cursor.rect)
         return runGame
+class ListBox():
+    def __init__(self,window, pos,width,height):
+        self.window = window 
+        self.pos = pos
+        self.counter = 0
+        self.rect = pygame.Rect(pos[0],pos[1],width,height)
+        self.contentsSurf = pygame.Surface((width,height))
+        self.elements = [pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32),
+                        pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32)]
+
+
+    def update(self,input):
+        if input == 4 and not self.elements[-1].y < self.rect.height-32:
+            self.counter -= 5
+        elif input == 5 and not self.elements[0].y == 0:
+            self.counter += 5
+        self.contentsSurf.fill((0,0,0))
+        y = 0
+        for element in self.elements:
+            element.y = 0
+            
+            element.y = element.y+(38*y)+ self.counter
+            
+
+            pygame.draw.rect(self.contentsSurf, (255,255,255), element,1)
+            
+            y+=1
+        self.window.GameSurface.blit(self.contentsSurf, (self.pos))
+        pygame.draw.rect(self.window.GameSurface, (255,255,255), self.rect,1)
+
+        
+
 
 
 class TypeBar:
@@ -184,11 +220,17 @@ class Menu:
     def __init__(self,window,cursor,*argv):
         self.window = window
         self.text = []
+        self.typeBars = []
+        self.listBoxes = []
         self.otherScreenObjects = []
         self.cursor = cursor
         for arg in argv:
             if isinstance(arg,Text):
                 self.text.append(arg)
+            elif isinstance(arg,TypeBar):
+                self.typeBars.append(arg)
+            elif isinstance(arg,ListBox):
+                self.listBoxes.append(arg)
             else:
                 self.otherScreenObjects.append(arg)
         
@@ -196,8 +238,10 @@ class Menu:
         mouseInputs = inputs[1]
         keyboardInputs = inputs[0]
         for text in self.text:
-            menuAddress = text.update(self.cursor.rect, mouseInputs)
+            menuAddress = text.update(self.cursor.rect, mouseInputs==1)
             if menuAddress != None:
                 return menuAddress
-        for obj in self.otherScreenObjects:
-            obj.update(keyboardInputs)
+        for typeBar in self.typeBars:
+            typeBar.update(keyboardInputs)
+        for listBox in self.listBoxes:
+            listBox.update(mouseInputs)
