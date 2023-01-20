@@ -3,11 +3,14 @@ import os,random
 from myOrm import Database, Column, Table, PrimaryKey
 
 DB_PATH = 'data/testScripts/dataBasetesting/createMyOwnOrm/dataBase.db'
-
-if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
+def createTables(db, table):
+    db.create(table)
+createTheTables = False
+if not os.path.exists(DB_PATH):
+    createTheTables = True
 
 db = Database(DB_PATH)
+
 
 class CHARACTER(Table):
     characterid = PrimaryKey(True)
@@ -35,50 +38,10 @@ class APPLICATIONSETTINGS(Table):
     resolution = Column(str)
     Volume = Column(float)
 
-db.create(CHARACTER)
-db.create(CHARACTERPOSITIONS)
-db.create(WORLD)
-db.create(DIFFICULTY)
-db.create(APPLICATIONSETTINGS)
+if createTheTables:
+    for i in [CHARACTER,CHARACTERPOSITIONS,WORLD,DIFFICULTY,APPLICATIONSETTINGS]:
+        createTables(db, i)
 
-player1 = CHARACTER(name = "kenshi", HP = 100)
-player2 = CHARACTER(name = "zeldora", HP = 100)
-player3 = CHARACTER(name = "strings", HP = 100)
-
-world1 = WORLD(worldName="world1", seed = 38529523087, difficultyLevel = 1)
-world2 = WORLD(worldName="world2", seed = 38529523087, difficultyLevel = 2)
-world3 = WORLD(worldName="world3", seed = 38529523087, difficultyLevel = 3)
-
-characterSaveData1 = CHARACTERPOSITIONS(characterid = 1,
-                                        worldid = 1,
-                                        xPos = 45.5,
-                                        yPos=32.1)
-characterSaveData2 = CHARACTERPOSITIONS(characterid = 2,
-                                        worldid = 2,
-                                        xPos = 45.5,
-                                        yPos=32.1)
-characterSaveData3 = CHARACTERPOSITIONS(characterid = 3,
-                                        worldid = 3,
-                                        xPos = 45.5,
-                                        yPos=32.1)
-characterSaveData4 = CHARACTERPOSITIONS(characterid = 1,
-                                        worldid = 3,
-                                        xPos = 45.5,
-                                        yPos=32.1)
-
-
-
-
-db.saveRecord(player1)
-db.saveRecord(player2)
-db.saveRecord(player3)
-db.saveRecord(world1)
-db.saveRecord(world2)
-db.saveRecord(world3)
-db.saveRecord(characterSaveData1)
-db.saveRecord(characterSaveData2)
-db.saveRecord(characterSaveData3)
-db.saveRecord(characterSaveData4)
 
 
 

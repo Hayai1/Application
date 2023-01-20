@@ -4,7 +4,8 @@ from scripts.animations import Animations
 from scripts.sword import Sword
 from scripts.playerInput import PlayerInput
 class Player(Character):
-    def __init__(self,x, y, width, height,surface,camera,velocity,acceleration=[0,0],swordThumbnailPath=None, swordUseImgPath=None):
+    def __init__(self,name,x, y, width, height,surface,camera,velocity,acceleration=[0,0],swordThumbnailPath=None, swordUseImgPath=None):
+        self.name = name
         self.surface = surface
         self.camera = camera
         self.weapons = {'sword' : Sword(swordThumbnailPath,swordUseImgPath)}
