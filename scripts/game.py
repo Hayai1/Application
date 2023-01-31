@@ -28,7 +28,7 @@ class Game:
         self.world = World(self.window.GameSurface,self.camera,30)
         
         name,x,y = self.dbHandler.getPlayerData(playerId,worldId,[self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16])
-        self.player = Player(name,x,y, 16, 16,self.window.GameSurface,self.camera,[0,0])
+        self.player = Player(name,x,y, 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar2.png')
         self.enemyManger = EnemyManager(10,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
 
         

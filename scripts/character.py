@@ -1,6 +1,7 @@
 import pygame
 class Character:
     def __init__(self,x,y,width,height,velocity,acceleration=[0,0]):
+        self.hp = 100
         self.left = False
         self.right = False
         self.triggerJump = False
@@ -35,7 +36,6 @@ class Character:
         self.rect.y = value
     
     def draw(self,surface,scroll,img):
-        
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))
 
     def getCollisions(self,tiles):

@@ -44,13 +44,14 @@ class Enemy(Character):
         screen.blit(pygame.transform.flip(self.img,self.flip,False), (self.rect.x - scroll[0],self.rect.y - scroll[1]))
     def attack(self):
         if self.getAttackRange(self.target):
-            self.weapons['sword'].swing()
+            self.weapons["sword"].arc = self.weapons["sword"].newBezeirArc(self.x,self.y,self.flip)
     def update(self):
         self.attackTimer +=1
         if self.attackTimer >= 50:
             self.attack()
             self.attackTimer = 0 
-        self.weapons['sword'].update(self.surf,self.camera.scroll,self.x,self.y,self.flip)
+        self.weapons['sword'].update(self.surf,self.camera.scroll)
+        
         self.newPathTimer +=1
         #-------------------------------------------------------------#
         #check if a current path exists
@@ -125,6 +126,9 @@ class Enemy(Character):
             else:#if the enemy is moving then move
                 self.frame += 1
         #-------------------------------------------------------------#
+        if self.weapons['sword'].arc is not None:
+            self.left = False
+            self.right = False
         movement = self.move(self.collisionRects)#call the move function
         self.draw(self.surf,self.camera.scroll)#draw the enemy
         if movement[0] > 0:
