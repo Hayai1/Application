@@ -5,15 +5,17 @@ class DBHandler:
     def __init__(self):
         #check if the database hasnt existed yet and tables need to be created
         
-        if os.path.exists(DB_PATH):
-            os.remove(DB_PATH)
+        #if os.path.exists(DB_PATH):
+        #    os.remove(DB_PATH)
         #create the database
         self.db = Database(DB_PATH)
         #create the tables
         
-        for i in [self.CHARACTER,self.CHARACTERPOSITIONS,self.WORLD,self.DIFFICULTY,self.APPLICATIONSETTINGS]:
-            self.db.create(i)
-
+       # for i in [self.CHARACTER,self.CHARACTERPOSITIONS,self.WORLD,self.DIFFICULTY,self.APPLICATIONSETTINGS]:
+        #    self.db.create(i)
+    def getCharacterData(self):
+        data=self.db.manualSQLCommand('SELECT characterid,name FROM CHARACTER')
+        return data
     def createCharacterRecord(self, name):
         newCharacter = self.CHARACTER(name = name,HP = 100)
         self.db.saveRecord(newCharacter)

@@ -1,4 +1,4 @@
-import pygame, string,sys, os
+import pygame, string,sys, os, random
 from scripts.menuInput import MenuInput
 from scripts.dbHandler import *
 
@@ -10,14 +10,15 @@ class MenuManager:
         self.input = MenuInput()
         self.currentMenu = self.startMenu()
         self.click = False
-
+        self.playerId = None
         self.playerName = None
         self.worldName = None
         self.worldDifficulty = None
         
         self.playerId = None
         self.worldId = None
-
+    def setPlayerId(self,value):
+        self.playerId = value
     def setPlayerName(self,value):
         self.playerName = value
     def setWorldName(self,value):
@@ -42,53 +43,58 @@ class MenuManager:
         self.playerId = self.dbHandler.createCharacterRecord(self.playerName)
         return self.worldMenu()
     
+    def getCharacterData(self):
+        players = self.dbHandler.getCharacterData()
+        return players
     
 
         
 
     def startMenu(self):
-        text1 = Text(self.window,'GAME NAME',(0,0),isButton=False)
-        text2 = Text(self.window,'START',(0,50),isButton=True,menuAddress=self.characterMenu)
-        text3 = Text(self.window,'EXIT',(0,100),isButton=True,menuAddress=sys.exit)
+        text1 = Text(self.window.GameSurface,'GAME NAME',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'START',(0,50),isButton=True,menuAddress=self.characterMenu)
+        text3 = Text(self.window.GameSurface,'EXIT',(0,100),isButton=True,menuAddress=sys.exit)
         return Menu(self.window,self.cursor,text1,text2,text3)
         
     def characterMenu(self):
-        text1 = Text(self.window,'CHARACTERS',(0,0),isButton=False)
-        text2 = Text(self.window,'CREATE NEW CHARACTER',(0,50),isButton=True,menuAddress=self.characterCreationMenuEnterName)
-        text3 = Text(self.window,'CHARACTER LIST',(0,100),isButton=True,menuAddress=self.characterLoadMenu)
-        text4 = Text(self.window,'BACK',(0,150),isButton=True,menuAddress=self.startMenu)
+        text1 = Text(self.window.GameSurface,'CHARACTERS',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'CREATE NEW CHARACTER',(0,50),isButton=True,menuAddress=self.characterCreationMenuEnterName)
+        text3 = Text(self.window.GameSurface,'CHARACTER LIST',(0,100),isButton=True,menuAddress=self.characterLoadMenu)
+        text4 = Text(self.window.GameSurface,'BACK',(0,150),isButton=True,menuAddress=self.startMenu)
         return Menu(self.window,self.cursor,text1,text2,text3,text4)
     def characterLoadMenu(self):
-        text1 = Text(self.window,'LOAD CHARACTER',(0,0),isButton=False)
-        list1 = ListBox(self.window,(25,25),150,150)
-        return Menu(self.window,self.cursor,text1,list1)
+        text1 = Text(self.window.GameSurface,'LOAD CHARACTER',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'SUBMIT',(200,50),isButton=True,menuAddress=self.worldMenu)
+        text3 = Text(self.window.GameSurface,'BACK',(200,150),isButton=True,menuAddress=self.characterMenu)
+        list1 = ListBox(self.window,(25,25),150,150,self.getCharacterData(),self.cursor,self.setPlayerId)
+        return Menu(self.window,self.cursor,text2,text3,text1,list1)
     def characterCreationMenuEnterName(self):
-        text1 = Text(self.window,'CREATE NEW CHARACTER',(0,0),isButton=False)
-        text2 = Text(self.window,'ENTER CHARACTER NAME',(0,50),isButton=False)
-        typeBar = TypeBar(self.window,(0,100),self.setPlayerName)
-        text3 = Text(self.window,'SUBMIT',(0,150),isButton=True,menuAddress=self.createCharacter)
-        text4 = Text(self.window,'BACK',(150,150),isButton=True,menuAddress=self.characterMenu)
-        return Menu(self.window,self.cursor,text1,text2,text3,text4,typeBar)
+        text1 = Text(self.window.GameSurface,'CREATE NEW CHARACTER',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'ENTER CHARACTER NAME',(0,50),isButton=False)
+        typeBar = TypeBar(self.window.GameSurface,(0,100),self.setPlayerName)
+        text3 = Text(self.window.GameSurface,'SUBMIT',(0,150),isButton=True,menuAddress=self.createCharacter)
+        text4 = Text(self.window.GameSurface,'BACK',(150,150),isButton=True,menuAddress=self.characterMenu)
+        return Menu(self.window.GameSurface,self.cursor,text1,text2,text3,text4,typeBar)
     def worldMenu(self):
-        text1 = Text(self.window,'WORLDS',(0,0),isButton=False)
-        text2 = Text(self.window,'CREATE NEW WORLD',(0,50),isButton=True,menuAddress=self.worldCreationNameMenu)
-        text3 = Text(self.window,'WORLD LIST',(0,100),isButton=True, menuAddress=True)
-        text4 = Text(self.window,'BACK',(0,150),isButton=True,menuAddress=self.characterMenu)
-        return Menu(self.window,self.cursor,text1,text2,text3,text4)
+        text1 = Text(self.window.GameSurface,'WORLDS',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'CREATE NEW WORLD',(0,50),isButton=True,menuAddress=self.worldCreationNameMenu)
+        text3 = Text(self.window.GameSurface,'WORLD LIST',(0,100),isButton=True, menuAddress=True)
+        text4 = Text(self.window.GameSurface,'BACK',(0,150),isButton=True,menuAddress=self.characterMenu)
+        return Menu(self.window.GameSurface,self.cursor,text1,text2,text3,text4)
     def worldCreationNameMenu(self):
-        text1 = Text(self.window,'CREATE NEW WORLD',(0,0),isButton=False)
-        text2 = Text(self.window,'ENTER WORLD NAME',(0,50),isButton=False)
-        typeBar = TypeBar(self.window,(0,100),self.setWorldName)
-        text3 = Text(self.window,'SUBMIT',(0,150),isButton=True,menuAddress=self.worldCreationDifficultyMenu)
-        text4 = Text(self.window,'BACK',(150,150),isButton=True,menuAddress=self.worldMenu)
-        return Menu(self.window,self.cursor,text1,text2,text3,text4,typeBar)
+        text1 = Text(self.window.GameSurface,'CREATE NEW WORLD',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'ENTER WORLD NAME',(0,50),isButton=False)
+        typeBar = TypeBar(self.window.GameSurface,(0,100),self.setWorldName)
+        text3 = Text(self.window.GameSurface,'SUBMIT',(0,150),isButton=True,menuAddress=self.worldCreationDifficultyMenu)
+        text4 = Text(self.window.GameSurface,'BACK',(150,150),isButton=True,menuAddress=self.worldMenu)
+        return Menu(self.window.GameSurface,self.cursor,text1,text2,text3,text4,typeBar)
     def worldCreationDifficultyMenu(self):
-        text1 = Text(self.window,'CREATE NEW WORLD',(0,0),isButton=False)
-        text2 = Text(self.window,'SELECT DIFFICULTY',(0,50),isButton=False)
-        text3 = Text(self.window,'EASY',(0,100),isButton=True,menuAddress=self.easy)
-        text4 = Text(self.window,'NORMAL',(100,100),isButton=True,menuAddress=self.normal)
-        text5 = Text(self.window,'HARD',(200,100),isButton=True,menuAddress=self.hard)
-        text6 = Text(self.window,'BACK',(150,150),isButton=True,menuAddress=self.worldMenu)
+        text1 = Text(self.window.GameSurface,'CREATE NEW WORLD',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'SELECT DIFFICULTY',(0,50),isButton=False)
+        text3 = Text(self.window.GameSurface,'EASY',(0,100),isButton=True,menuAddress=self.easy)
+        text4 = Text(self.window.GameSurface,'NORMAL',(100,100),isButton=True,menuAddress=self.normal)
+        text5 = Text(self.window.GameSurface,'HARD',(200,100),isButton=True,menuAddress=self.hard)
+        text6 = Text(self.window.GameSurface,'BACK',(150,150),isButton=True,menuAddress=self.worldMenu)
         return Menu(self.window,self.cursor,text1,text2,text3,text4,text5,text6)
         
     def update(self):
@@ -102,38 +108,70 @@ class MenuManager:
         if self.currentMenu == 'exit':
             runGame = True
         self.cursor.update()
-        #pygame.draw.rect(self.window.surface,(255,255,255),self.cursor.rect)
+        pygame.draw.rect(self.window.GameSurface,(255,255,255),self.cursor.rect)
         return runGame
 class ListBox():
-    def __init__(self,window, pos,width,height):
+    def __init__(self,window, pos,width,height,players,cursor,setIdFuntion):
         self.window = window 
         self.pos = pos
+        self.cursorRect = cursor.rect
+        self.setIdFuntion=setIdFuntion
         self.counter = 0
         self.rect = pygame.Rect(pos[0],pos[1],width,height)
         self.contentsSurf = pygame.Surface((width,height))
-        self.elements = [pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32),
-                        pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32),pygame.Rect(0,0,width,32)]
-
+        self.elements = self.getElements(players,width)
+    def getElements(self,players,width):
+        elements = []
+        for player in players:
+            surf = pygame.Surface((width,32))
+            rect = pygame.Rect(0,0,width,32)
+            text = Text(surf,player[1].upper(),[5,5],letterImgsPath='assets/letters')
+            box = {
+                "id" : player[0],
+                "name" : player[1],
+                "nameRender" : text,
+                "surf" : surf,
+                "rect" : rect,
+                "color" : (0,0,0)
+            }
+            elements.append(box)
+        return elements
 
     def update(self,input):
-        if input == 4 and not self.elements[-1].y < self.rect.height-32:
+        self.cursorRect.x = self.cursorRect.x - self.pos[0]#centre cursor rect onto the mouse
+        self.cursorRect.y = self.cursorRect.y - self.pos[1]
+        if input == 1:
+            for box in self.elements:
+                box["color"] = (0,0,0)                
+                if self.cursorRect.colliderect(box["rect"]):
+                    box["color"] = (255,0,0)
+        elif input == 5 and not self.elements[-1]["rect"].y < self.rect.height-32:
             self.counter -= 5
-        elif input == 5 and not self.elements[0].y == 0:
+        elif input == 4 and not self.elements[0]["rect"].y == 0:
             self.counter += 5
         self.contentsSurf.fill((0,0,0))
         y = 0
         for element in self.elements:
-            element.y = 0
+            surf = element["surf"]
+            rect = element["rect"]
+            text = element["nameRender"]
             
-            element.y = element.y+(38*y)+ self.counter
+            rect.y = 0
             
-
-            pygame.draw.rect(self.contentsSurf, (255,255,255), element,1)
+            rect.y = rect.y+(38*y)+ self.counter
             
+            
+            
+            surf.fill(element["color"])
+            text.update()
+            self.contentsSurf.blit(surf, (rect.x,rect.y))
+            pygame.draw.rect(self.contentsSurf, (0,0,0), rect,1)
             y+=1
+        
+        pygame.draw.rect(self.contentsSurf, (255,0,0), self.cursorRect)
         self.window.GameSurface.blit(self.contentsSurf, (self.pos))
         pygame.draw.rect(self.window.GameSurface, (255,255,255), self.rect,1)
-
+        
         
 
 
@@ -157,7 +195,7 @@ class TypeBar:
         self.setData(self.text)
         self.draw()
     def draw(self):
-        pygame.draw.rect(self.window.GameSurface,(255,255,255),self.rect,1)
+        pygame.draw.rect(self.window,(255,255,255),self.rect,1)
 
 
 class Cursor():
@@ -207,7 +245,7 @@ class Text:
                     return self.menuAddress
         self.draw()
     def draw(self):
-        self.window.GameSurface.blit(self.textSurface,self.pos)
+        self.window.blit(self.textSurface,self.pos)
 
     def getLetters(self,path):
         letters = {}
