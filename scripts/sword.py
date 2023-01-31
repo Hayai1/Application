@@ -8,32 +8,14 @@ class Sword(Item):
         self.attackSpeed = attackSpeed
         self.arc = None
         self.arcDone = True
-        self.slashSurface = pygame.Surface((100,100))
-        self.slashSurface.set_colorkey((0,0,0))
-    def newArc(self):
-        rad = random.uniform(1, 1.5)
-        curveRate = random.uniform(75, 200)
-        arcStretch = random.uniform(100, 200)
-        return Vfx.Arc(pos=[50,50], radius=rad, spacing=1.13, startAngle=-0.19, 
-                       speed=1, curveRate=curveRate, scale=0.5, start=1, end=1, 
-                       duration=0.2, color=(21, 244, 238), fade=0.7, arcStretch=arcStretch, 
-                       widthDecay=2, motion=100, decay=['up', 300], angleWidth=0.5
-                       )
-    def swing(self):
-        if self.arcDone:
-            self.arc = self.newArc()
-            self.arcDone = False
-    
-    def draw(self,surface,scroll,x,y,flip):
-        surface.blit(pygame.transform.flip(self.slashSurface,flip,False),(x-50+8-scroll[0], y-50+8-scroll[1]))
-        
-    def update(self,surface,scroll,x,y,flip):
-        self.slashSurface.fill((0,0,0))
+
+    def update(self,surface,scroll):
         if self.arc is not None:
-            self.ArcDone = self.arc.update()
-            self.arc.render(self.slashSurface)
-            if self.ArcDone:
+            self.arcDone = self.arc.update(surface,scroll)
+            if self.arcDone:
                 self.arc = None
-        else:
-            self.arcDone = True
-        self.draw(surface,scroll,x,y,flip)
+                
+                
+      
+    def newBezeirArc(self,x,y,flip):
+        return Vfx.BezierArc((0, 0), (0, 200), (200, 100), (21, 244, 238), 5,x,y-16,flip=flip)

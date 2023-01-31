@@ -9,6 +9,9 @@ class Input:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F1:
+                    self.slowDown = not self.slowDown
             self.specificUpdate(event)
     def slowDownUpdate(self):
         if self.slowDown:

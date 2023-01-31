@@ -1,95 +1,71 @@
 import pygame,math,random
 from pygame.locals import *
-class Vfx:
-    class Arc:
-        def advance(self,pos, angle, amt):
-            pos[0] += math.cos(angle) * amt
-            pos[1] += math.sin(angle) * amt
-            return pos
-        '''
-        pos : where the curve is 
-        radius : lenth of the curve from it's center to its edge 
-        spacing : 
-        startAngle : the direction the curve will be facing
-        speed : 
-        curveRate : the rate of curviture 
-        scale : size of the curve
-        start : where the curve starts from when it's created
-        end : where the curve ends at the end of its life
-        duration :
-        color : colour of the curve
-        fade : how fast the curve fades
-        arcStretch :how much the curve is stretched out
-        widthDecay : how fast the curves width disapears
-        motion : how fast the curve moves through the air
-        decay :
-        angleWidth :
-        '''
-        def __init__(self, pos, radius, spacing, startAngle, speed, curveRate, scale, start=0, end=1, duration=30, color=(255, 255, 255), fade=0.3, arcStretch=0, widthDecay=50, motion=0, decay=['up', 60], angleWidth=0.2):
-            self.startAngle = startAngle
-            self.speed = speed
-            self.curveRate = curveRate
-            self.scale = scale
-            self.time = 0
-            self.spacing = spacing
-            self.radius = radius
-            self.angleWidth = angleWidth
-            self.shrink = 0
-            self.width = 0.05
-            self.end = end
+class Vfx:  
+    class BezierArc:
+        def __init__(self, start, end, control, color, width,x=0,y=0,flip=False,vel=0.7,acl=0.01,revealSpeed=80):
             self.start = start
-            self.duration = duration
+            self.end = end
+            self.control = control
             self.color = color
-            self.fade = fade
-            self.pos = list(pos)
-            self.arcStretch = arcStretch
-            self.widthDecay = widthDecay
-            self.motion = motion
-            self.decay = decay
-            self.alive = True
+            self.width = width
+            self.x = x
+            self.y = y
+            self.vel = vel
+            self.acl = acl
+            self.flip = flip
+            if self.flip:
+                self.x = self.x - 32
+                self.vel = -self.vel
+                self.acl = -self.acl
+            self.revealSpeed = revealSpeed
+            self.revealAmount=3
+            self.time = 0
+            self.surf = pygame.Surface((200, 200))
+            self.surf.set_colorkey((0, 0, 0))
+            self.firstPoints = self.bezeirCurveEquation(self.control)
+            self.secondaryPoints = self.bezeirCurveEquation((self.control[0]-100,self.control[1]))
 
-        def getAnglePoint(self, basePoint, t, curveRate):
-            p = self.advance(basePoint.copy(), self.startAngle + (0.5 - t) * math.pi * 4 * self.angleWidth, self.radius)
-            self.advance(p, self.startAngle, (0.5 ** 2 - abs(0.5 - t) ** 2) * self.radius * curveRate)
-            if self.arcStretch != 0:
-                self.advance(p, self.startAngle + math.pi / 2, (0.5 - t) * self.arcStretch * self.scale)
-            return p
 
-        def calculatePoints(self, start, end, curveRate):
-            basePoint = self.advance([0, 0], self.startAngle, self.spacing)
-            pointCount = 20
-            arcPoints = [self.getAnglePoint(basePoint, start + (i / pointCount) * (end - start), curveRate) for i in range(pointCount + 1)]
-            arcPoints = [[p[0] * self.scale, p[1] * self.scale] for p in arcPoints]
-            return arcPoints
+        def draw(self,screen,scroll):
+            self.surf.fill((0,0,0))
+            
+            points = self.getPoints()
 
-        def update(self):
-            self.time += self.speed * 0.01
-            if self.decay[0] == 'up':
-                self.start -= self.start / 20 * 0.01 * self.decay[1]
-            elif self.decay[0] == 'down':
-                self.end += (1 - self.end) / 20 * 0.01 * self.decay[1]
-            self.width += (1 - self.width) / 4 * 0.01 * self.widthDecay
-            self.spacing += self.motion * 0.01
-            if self.time > self.duration:
-                self.alive = False
-                return True
-            return False
+            
+            pygame.draw.polygon(self.surf, self.color,points)
+            
+            screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(self.x-scroll[0],self.y-scroll[1]))
+            
+        def update(self,screen,scroll):
+            self.draw(screen,scroll)
+            self.surf.set_alpha(255*abs(self.vel*2))
+            self.time+=1
+            self.revealAmount=self.revealAmount+1+self.revealSpeed 
+            if self.revealAmount > len(self.firstPoints):
+                self.revealAmount=len(self.firstPoints)-1
+            self.vel = self.vel - self.acl
+            self.x +=self.vel
+            return self.surf.get_alpha() == 0
+            
+        def getPoints(self):
+            neededFirstPoints = self.firstPoints[:self.revealAmount]
+            neededFirstPoints.reverse()
+            TempSecondaryPointsCopy = self.secondaryPoints.copy()
+            lastPoint = self.firstPoints[self.revealAmount-1]
+            TempSecondaryPointsCopy[self.revealAmount-1] = lastPoint
+            points = TempSecondaryPointsCopy[:self.revealAmount]+ neededFirstPoints
+            return points
+        def bezeirCurveEquation(self,control):
+            points = []
+            for i in range(0, 1000):
+                t = i/1000
+                x = (1-t)**2*self.start[0] + 2*(1-t)*t*control[0] + t**2*self.end[0]
+                y = (1-t)**2*self.start[1] + 2*(1-t)*t*control[1] + t**2*self.end[1]
+                points.append((x, y))
+            
+            return points
 
-        def render(self, surf, offset=(0, 0)):
-            if self.time > 0:
-                start = self.start
-                end = self.end
-                points = self.calculatePoints(start, end, self.curveRate + self.time / 12) + self.calculatePoints(start, end, (self.curveRate + self.time / 12) * self.width)[::-1]
-                points = [[p[0] - offset[0] + self.pos[0], p[1] - offset[1] + self.pos[1]] for p in points]
-                self.shrink += 10
-                for i in range(1,self.shrink):
-                    if len(points)-1 > i: 
-                        points.pop(i)
-                color = [int(self.color[i] - self.color[i] * self.fade * self.time / self.duration) for i in range(3)]
-                if color[0] > 255 or color[1] > 255 or color[2] > 255 or color[0] < 0 or color[1] < 0 or color[2] < 0:
-                    return False
-                pygame.draw.polygon(surf, color, points)
-
+        
 
         
     class particleManager:
