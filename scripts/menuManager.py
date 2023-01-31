@@ -6,7 +6,7 @@ class MenuManager:
     def __init__(self,window,dbHandler):
         self.window = window
         self.dbHandler = dbHandler
-        self.cursor = Cursor()
+        self.cursor = Cursor(window)
         self.input = MenuInput()
         self.currentMenu = self.startMenu()
         self.click = False
@@ -161,9 +161,9 @@ class TypeBar:
 
 
 class Cursor():
-    def __init__(self):
+    def __init__(self,window):
         self.rect = pygame.Rect(0,0,3,3)
-        
+        self.window = window
         self.click = False
 
     @property
@@ -175,8 +175,8 @@ class Cursor():
 
     def update(self):
         mx,my = pygame.mouse.get_pos()
-        self.rect.x = mx/(700/300)
-        self.rect.y = my/(500/200)
+        self.rect.x = mx/(self.window.screen.get_width()/300)
+        self.rect.y = my/(self.window.screen.get_height()/200)
         self.click = False
     
 class Text:

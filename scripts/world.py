@@ -49,7 +49,7 @@ class World:
     def update(self):
         for room in self.rooms:
             self.screen.blit(room.roomImg,(room.x-self.camera.scroll[0],room.y-self.camera.scroll[1]))
-        #self.particleMangager.update(self.camera.scroll)
+        self.particleMangager.update(self.camera.scroll)
         #self.graph.draw(self.screen,self.camera.scroll)
     #-------------------------------------------------------world generation---------------------------------------------------------------------------->
     def travel(self,pos,xDirection,yDirection,):

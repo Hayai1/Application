@@ -14,7 +14,7 @@ from scripts.dbHandler import DBHandler
 class Game:
     def __init__(self):
         pygame.init()
-        self.window = Window((700,500),"Nea Project",60)
+        self.window = Window((640,360),"Nea Project",60)
         
         
         self.dbHandler = DBHandler()
