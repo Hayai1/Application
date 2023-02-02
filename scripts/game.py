@@ -9,7 +9,7 @@ from scripts.camera import Camera
 from scripts.enemyManager import EnemyManager
 from scripts.menuManager import MenuManager
 from scripts.dbHandler import DBHandler
-
+from scripts.background import BackGround
 
 class Game:
     def __init__(self):
@@ -24,9 +24,10 @@ class Game:
         self.camera = Camera()
         worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
         self.world = World(self.window.GameSurface,self.camera,worldName,WorldSeed)
+        self.background = BackGround('assets/bg/bg.png')
         self.player = self.getPlayer(playerId,worldId)
         self.camera.set_target(self.player)
-        self.enemyManger = EnemyManager(10,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
+        self.enemyManger = EnemyManager(0,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
 
         
         
@@ -47,6 +48,7 @@ class Game:
             print(self.dbHandler.db.manualSQLCommand(sqlc))
     
     def update(self):
+        self.background.update(self.window.GameSurface,self.camera.scroll)
         self.camera.update()
         self.world.update()
         self.enemyManger.update()
