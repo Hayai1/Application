@@ -28,12 +28,8 @@ class Vfx:
 
         def draw(self,screen,scroll):
             self.surf.fill((0,0,0))
-            
             points = self.getPoints()
-
-            
             pygame.draw.polygon(self.surf, self.color,points)
-            
             screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(self.x-scroll[0],self.y-scroll[1]))
             
         def update(self,screen,scroll):

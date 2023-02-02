@@ -21,11 +21,11 @@ class Game:
         
         self.menu = MenuManager(self.window,self.dbHandler)
         playerId,worldId = self.runMenu()
-
-    
-        self.camera = Camera()
+        #self.runSqlCommands()
         
-        self.world = World(self.window.GameSurface,self.camera,30)
+        self.camera = Camera()
+        worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
+        self.world = World(self.window.GameSurface,self.camera,worldName,WorldSeed)
         
         name,x,y = self.dbHandler.getPlayerData(playerId,worldId,[self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16])
         self.player = Player(name,x,y, 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar2.png')
@@ -34,7 +34,13 @@ class Game:
         
         self.player.setRectsToCollideWith(self.world.collisionRects)
         self.camera.set_target(self.player)
-        
+    
+    def runSqlCommands(self):
+        while True:
+            sqlc = input("sql command:")
+            if sqlc == "exit":
+                SystemExit
+            print(self.dbHandler.db.manualSQLCommand(sqlc))
     
     def update(self):
         self.camera.update()

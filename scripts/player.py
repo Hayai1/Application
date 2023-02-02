@@ -38,7 +38,6 @@ class Player(Character):
             if movement[0] < 0:
                 self.flip = True
                 self.animations.changeState('run')
-
         if self.attack:
             self.animations.changeState('attack')
             currentImg = self.animations.getCurrentImg()
@@ -46,12 +45,7 @@ class Player(Character):
                 self.weapons["sword"].arc = self.weapons["sword"].newBezeirArc(self.x,self.y,self.flip)
             elif currentImg == 'attack6':
                 self.attack = False
-            
-
         self.weapons['sword'].update(self.surface,self.camera.scroll)
-        if not self.weapons['sword'].arcDone:
-            self.left = False
-            self.right = False
         img = self.animations.getImg()
         self.draw(self.surface,self.camera.scroll,img)
         self.drawPlayerHpBar()

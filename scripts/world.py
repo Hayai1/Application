@@ -9,13 +9,13 @@ ROOMSIZE = (20*16,8*16)
 
 
 class World:
-    def __init__(self,screen,camera,roomAmount):
+    def __init__(self,screen,camera,name,seed):
         self.particleMangager = Vfx.particleManager(screen)
-        self.roomAmount = roomAmount
         self.camera = camera
         self.screen = screen
+        self.seed = seed
+        self.name = name
         self.rooms = []
-        self.seed = []
         self.currentPosition = [0,0]
         self.genWorld()
         self.collisionRects = self.getRectsToCollideWith()
@@ -86,15 +86,14 @@ class World:
         left = (1,2)
         right = (3,4)
         down = (5,)
-        rndNum = 5
-        for i in range(0,self.roomAmount):#generate "roomAmount" of rooms
+        for direction in self.seed:#generate "roomAmount" of rooms
             #generate a random number to move down or sideways
             #--------------------------------------------->
-            if rndNum in left:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
+            if direction in left:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
                 self.moveSideWays('left')
-            elif rndNum in right:#else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
+            elif direction in right:#else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
                 self.moveSideWays('right')
-            elif rndNum in down:#else if random number is 5 then place a room directly down
+            elif direction in down:#else if random number is 5 then place a room directly down
                 newPos = self.travel(self.currentPosition,0,1)    
                 aboveRoom = self.rooms[-1]
                 if aboveRoom.roomType == '1':
@@ -105,8 +104,7 @@ class World:
                 self.rooms.append(Room('3','data/worldData/rooms/3.txt',loc=[aboveRoom.x,aboveRoom.y+ROOMSIZE[1]]))
             else:
                 self.moveSideWays('right')
-            self.seed.append(rndNum)
-            rndNum = random.randint(1,5)
+         
             
         
         

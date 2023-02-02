@@ -4,6 +4,9 @@ DB_PATH = 'data/database/dataBase.db'
 class DBHandler:
     def __init__(self):
         #check if the database hasnt existed yet and tables need to be created
+        #if os.path.exists(DB_PATH):
+        #    os.remove(DB_PATH)
+
         createTables = False
         if not os.path.exists(DB_PATH):
             createTables = True
@@ -14,9 +17,10 @@ class DBHandler:
         #create the database
         
         #create the tables
-        
-       
-    def getCharacterData(self):
+    def getAllWorldData(self):
+        data=self.db.manualSQLCommand('SELECT worldid,worldName,seed FROM WORLD')
+        return data
+    def getAllCharacterData(self):
         data=self.db.manualSQLCommand('SELECT characterid,name FROM CHARACTER')
         return data
     def createCharacterRecord(self, name):
@@ -25,8 +29,8 @@ class DBHandler:
         self.db.saveRecord(newCharacter)
         return str(self.db.manualSQLCommand('SELECT MAX(characterid) FROM CHARACTER')[0][0])
 
-    def createWorldRecord(self, worldName, difficultyLevel):
-        newWorld = self.WORLD(worldName = worldName,seed = 2210491,difficultyLevel = difficultyLevel)
+    def createWorldRecord(self, worldName, difficultyLevel, seed):
+        newWorld = self.WORLD(worldName = worldName,seed = seed,difficultyLevel = difficultyLevel)
         self.db.saveRecord(newWorld)
         return str(self.db.manualSQLCommand('SELECT MAX(worldid) FROM WORLD')[0][0])
 
@@ -36,6 +40,10 @@ class DBHandler:
         if playerPositionData == []:
             playerPositionData = defaultPosition
         return playerName, playerPositionData[0], playerPositionData[1]
+    def getWorldData(self, worldID):
+        worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
+        seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')
+        return worldName, seed
     
     class CHARACTER(Table):
         characterid = PrimaryKey(True)
@@ -51,7 +59,7 @@ class DBHandler:
     class WORLD(Table):
         worldid = PrimaryKey(int)
         worldName = Column(str)
-        seed = Column(int)
+        seed = Column(str)
         difficultyLevel = Column(int)
     class DIFFICULTY(Table):
         difficultyLevel = Column(int)

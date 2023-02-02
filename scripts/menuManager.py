@@ -19,6 +19,8 @@ class MenuManager:
         self.worldId = None
     def setPlayerId(self,value):
         self.playerId = value
+    def setWorldId(self,value):
+        self.worldId = value
     def setPlayerName(self,value):
         self.playerName = value
     def setWorldName(self,value):
@@ -34,7 +36,11 @@ class MenuManager:
         self.worldDifficulty = 1
         return self.createWorld()
     def createWorld(self):
-        self.worldId = self.dbHandler.createWorldRecord(self.worldName,self.worldDifficulty)
+        seed="5"
+        roomAmount =10
+        for i in range(0,roomAmount-1):
+            seed += str(random.randint(1,5))
+        self.worldId = self.dbHandler.createWorldRecord(self.worldName,self.worldDifficulty,seed)
         return self.exitMenu()
     def exitMenu(self):
         return 'exit'
@@ -42,10 +48,13 @@ class MenuManager:
         #create the character
         self.playerId = self.dbHandler.createCharacterRecord(self.playerName)
         return self.worldMenu()
-    
+
     def getCharacterData(self):
-        players = self.dbHandler.getCharacterData()
+        players = self.dbHandler.getAllCharacterData()
         return players
+    def getWorldData(self):
+        worlds = self.dbHandler.getAllWorldData()
+        return worlds
     
 
         
@@ -78,10 +87,16 @@ class MenuManager:
     def worldMenu(self):
         text1 = Text(self.window.GameSurface,'WORLDS',(0,0),isButton=False)
         text2 = Text(self.window.GameSurface,'CREATE NEW WORLD',(0,50),isButton=True,menuAddress=self.worldCreationNameMenu)
-        text3 = Text(self.window.GameSurface,'WORLD LIST',(0,100),isButton=True, menuAddress=True)
+        text3 = Text(self.window.GameSurface,'WORLD LIST',(0,100),isButton=True, menuAddress=self.worldLoadMenu)
         text4 = Text(self.window.GameSurface,'BACK',(0,150),isButton=True,menuAddress=self.characterMenu)
         return Menu(self.window.GameSurface,self.cursor,text1,text2,text3,text4)
-    def worldCreationNameMenu(self):
+    def worldLoadMenu(self):
+        text1 = Text(self.window.GameSurface,'LOAD WORLD',(0,0),isButton=False)
+        text2 = Text(self.window.GameSurface,'SUBMIT',(200,50),isButton=True,menuAddress=self.exitMenu)
+        text3 = Text(self.window.GameSurface,'BACK',(200,150),isButton=True,menuAddress=self.worldMenu)
+        list1 = ListBox(self.window,(25,25),150,150,self.getWorldData(),self.cursor,self.setWorldId)
+        return Menu(self.window.GameSurface,self.cursor,text2,text3,text1,list1)
+    def worldCreationNameMenu(self): 
         text1 = Text(self.window.GameSurface,'CREATE NEW WORLD',(0,0),isButton=False)
         text2 = Text(self.window.GameSurface,'ENTER WORLD NAME',(0,50),isButton=False)
         typeBar = TypeBar(self.window.GameSurface,(0,100),self.setWorldName)
@@ -145,6 +160,7 @@ class ListBox():
                 box["color"] = (0,0,0)                
                 if self.cursorRect.colliderect(box["rect"]):
                     box["color"] = (255,0,0)
+                    self.setIdFuntion(box["id"])
         elif input == 5 and not self.elements[-1]["rect"].y < self.rect.height-32:
             self.counter -= 5
         elif input == 4 and not self.elements[0]["rect"].y == 0:
