@@ -34,12 +34,10 @@ class DBHandler:
         self.db.saveRecord(newWorld)
         return str(self.db.manualSQLCommand('SELECT MAX(worldid) FROM WORLD')[0][0])
 
-    def getPlayerData(self, playerID, worldID, defaultPosition):
+    def getPlayerData(self, playerID, worldID):
         playerName = str(self.db.manualSQLCommand(f'SELECT name FROM CHARACTER WHERE characterid = {playerID}')[0][0])
         playerPositionData = self.db.manualSQLCommand(f'SELECT xPos,yPos FROM CHARACTERPOSITIONS WHERE characterid = {playerID} and worldid = {worldID}')
-        if playerPositionData == []:
-            playerPositionData = defaultPosition
-        return playerName, playerPositionData[0], playerPositionData[1]
+        return playerName, playerPositionData
     def getWorldData(self, worldID):
         worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
         seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')

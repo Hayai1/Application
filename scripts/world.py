@@ -21,7 +21,8 @@ class World:
         self.collisionRects = self.getRectsToCollideWith()
         self.graph = Graph(self.NodeLocations)
         
-
+    def getDefaultPos(self):
+        return [self.rooms[0].graphRects[0].x+8*16,self.rooms[0].graphRects[0].y+16]
     def getRectsToCollideWith(self):
         collisionRects = []
         for room in self.rooms:

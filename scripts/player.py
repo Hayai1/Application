@@ -8,7 +8,7 @@ class Player(Character):
         self.name = name
         self.surface = surface
         self.camera = camera
-        self.weapons = {'sword' : Sword(swordThumbnailPath,swordUseImgPath)}
+        self.weapons = {'sword' : Sword(x,y,swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
         self.attack = False
         self.input = PlayerInput(self)
@@ -45,7 +45,7 @@ class Player(Character):
                 self.weapons["sword"].arc = self.weapons["sword"].newBezeirArc(self.x,self.y,self.flip)
             elif currentImg == 'attack6':
                 self.attack = False
-        self.weapons['sword'].update(self.surface,self.camera.scroll)
+        self.weapons['sword'].update(self.x,self.y,self.surface,self.camera.scroll)
         img = self.animations.getImg()
         self.draw(self.surface,self.camera.scroll,img)
         self.drawPlayerHpBar()

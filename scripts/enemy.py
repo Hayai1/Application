@@ -22,7 +22,7 @@ class Enemy(Character):
         self.frame = 0
         self.movingFrames = 0
         self.newPathTimer = 0
-        self.weapons = {'sword' : Sword(None,None)}
+        self.weapons = {'sword' : Sword(x,y,None,None)}
         self.attackTimer = 0
         super().__init__(x, y, width, height,velocity,acceleration)
         
@@ -50,7 +50,7 @@ class Enemy(Character):
         if self.attackTimer >= 50:
             self.attack()
             self.attackTimer = 0 
-        self.weapons['sword'].update(self.surf,self.camera.scroll)
+        self.weapons['sword'].update(self.x,self.y,self.surf,self.camera.scroll)
         
         self.newPathTimer +=1
         #-------------------------------------------------------------#

@@ -15,8 +15,6 @@ class Game:
     def __init__(self):
         pygame.init()
         self.window = Window((640,360),"Nea Project",60)
-        
-        
         self.dbHandler = DBHandler()
         
         self.menu = MenuManager(self.window,self.dbHandler)
@@ -26,15 +24,21 @@ class Game:
         self.camera = Camera()
         worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
         self.world = World(self.window.GameSurface,self.camera,worldName,WorldSeed)
-        
-        name,x,y = self.dbHandler.getPlayerData(playerId,worldId,[self.world.rooms[0].graphRects[0].x+8*16,self.world.rooms[0].graphRects[0].y+16])
-        self.player = Player(name,x,y, 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar2.png')
+        self.player = self.getPlayer(playerId,worldId)
+        self.camera.set_target(self.player)
         self.enemyManger = EnemyManager(10,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
 
         
-        self.player.setRectsToCollideWith(self.world.collisionRects)
-        self.camera.set_target(self.player)
-    
+        
+        
+
+    def getPlayer(self,playerId,worldId):
+        name,pos = self.dbHandler.getPlayerData(playerId,worldId)
+        if pos == []:pos = self.world.getDefaultPos()
+        player = Player(name,pos[0],pos[1], 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar2.png')
+        player.setRectsToCollideWith(self.world.collisionRects)
+        return player
+
     def runSqlCommands(self):
         while True:
             sqlc = input("sql command:")
