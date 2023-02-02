@@ -4,19 +4,23 @@ DB_PATH = 'data/database/dataBase.db'
 class DBHandler:
     def __init__(self):
         #check if the database hasnt existed yet and tables need to be created
-        
-        #if os.path.exists(DB_PATH):
-        #    os.remove(DB_PATH)
-        #create the database
+        createTables = False
+        if not os.path.exists(DB_PATH):
+            createTables = True
         self.db = Database(DB_PATH)
+        if createTables:
+            for i in [self.CHARACTER,self.CHARACTERPOSITIONS,self.WORLD,self.DIFFICULTY,self.APPLICATIONSETTINGS]:
+                self.db.create(i)
+        #create the database
+        
         #create the tables
         
-       # for i in [self.CHARACTER,self.CHARACTERPOSITIONS,self.WORLD,self.DIFFICULTY,self.APPLICATIONSETTINGS]:
-        #    self.db.create(i)
+       
     def getCharacterData(self):
         data=self.db.manualSQLCommand('SELECT characterid,name FROM CHARACTER')
         return data
     def createCharacterRecord(self, name):
+        x = self.db.manualSQLCommand('SELECT * FROM CHARACTER')
         newCharacter = self.CHARACTER(name = name,HP = 100)
         self.db.saveRecord(newCharacter)
         return str(self.db.manualSQLCommand('SELECT MAX(characterid) FROM CHARACTER')[0][0])

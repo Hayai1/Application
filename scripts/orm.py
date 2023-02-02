@@ -131,6 +131,7 @@ class Table:
         cls = self.__class__
         fields = []
         values = []
+        x = cls._get_name()
         for name, field in inspect.getmembers(cls):
             if isinstance(field, Column):
                 fields.append(name)
@@ -144,7 +145,7 @@ class Table:
                 vals = vals + ", " + str(values[i])
             else:
                 vals = vals + ", " + "'"+values[i]+"'"
-        return INSERT_SQL.format(name=cls._get_name(), 
+        return INSERT_SQL.format(name=cls._get_name().upper(), 
                                 fields=", ".join(fields), 
                                 placeholders = vals)
     """
