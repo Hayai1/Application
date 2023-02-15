@@ -1,30 +1,18 @@
-def mergeSort(elements):
-        if len(elements) > 1:
-            mid = len(elements)//2
-            left = elements[:mid]
-            right = elements[mid:]
-            mergeSort(left)
-            mergeSort(right)
-            i = 0
-            j = 0
-            k = 0
-            while i < len(left) and j < len(right):
-                if left[i]['name'] < right[j]['name']:
-                    elements[k] = left[i]
-                    i += 1
-                else:
-                    elements[k] = right[j]
-                    j += 1
-                k += 1
-            while i < len(left):
-                elements[k] = left[i]
-                i += 1
-                k += 1
-            while j < len(right):
-                elements[k] = right[j]
-                j += 1
-                k += 1
-        return elements
+class class1():
+    def __init__(self):
+        self.var = 1
+        self.objOfClass2 = class2(self.setVar)
+    def setVar(self,value):
+        self.var = value
 
-arr = [{"name" : "Dylan"},{"name" : "Lizzy"},{"name" : "Erin"},{"name" : "Maxine"},{"name" : "Stephan"},{"name" : "Andrew"}]
-print(mergeSort(arr))
+class class2:
+    def __init__(self,setVarFunc):
+        self.setVarFunc = setVarFunc
+    def callSetVarFunc(self,value):
+        self.setVarFunc(value)
+    
+
+objOfClass1 = class1()
+print(objOfClass1.var)
+objOfClass1.objOfClass2.callSetVarFunc(2)
+print(objOfClass1.var)

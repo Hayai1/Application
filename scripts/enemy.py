@@ -20,23 +20,19 @@ class Enemy(Character):
 
     def draw(self,screen,scroll):
         screen.blit(pygame.transform.flip(self.img,self.flip,False), (self.rect.x - scroll[0],self.rect.y - scroll[1]))
-      
-    def update(self):  
-        left, right, jump = self.ai.getDirection(self.airTimer)
-        if left is not None:
-            self.left = left
-        if right is not None:
-            self.right = right
-        if jump:
-            self.playerJump()        
+
+    def setDirectionToMove(self):
+        ChangeInleft, ChangeInright, jump = self.ai.getDirection(self.airTimer)
+        if ChangeInleft is not None:self.left = ChangeInleft
+        if ChangeInright is not None:self.right = ChangeInright
+        if jump:self.playerJump()        
     
+    def update(self):  
+        self.setDirectionToMove()
         #-------------------------------------------------------------#
-        movement = self.move(self.collisionRects)#call the move function
+        self.move(self.collisionRects)#call the move function
         self.draw(self.surf,self.camera.scroll)#draw the enemy
-        if movement[0] > 0:
-            self.flip = False
-        if movement[0] < 0:
-            self.flip = True
+        
         
         
            

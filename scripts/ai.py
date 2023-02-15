@@ -1,6 +1,8 @@
 from queue import PriorityQueue
 class Ai:
     def __init__(self,rect,target,graph) -> None:
+        self.left = False
+        self.right = False
         self.graph = graph
         self.distanceBetweenNodes = 0
         self.path = None
@@ -149,11 +151,11 @@ class Ai:
         return left,right,jump
             
     def FindAndDrawPath(self,currentLocation,player):
-        
         target = self.graph.getNodeCloseTo(player)
         path = self.findPath(currentLocation,target)
         #self.drawPath(target,path)
         return path
+
     def drawPath(self,target,path):
 
         for nodes in self.graph.nodes:
@@ -166,4 +168,6 @@ class Ai:
         if self.rect.x - self.target.x < 300 and self.rect.x - self.target.x > -300 and self.rect.y - self.target.y < 300 and self.rect.y - self.target.y > -300:
             return True
         return False
-                
+    def update(self,airTimer):
+        left,right,jump = self.getDirection(airTimer)
+        return left,right,jump

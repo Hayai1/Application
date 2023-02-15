@@ -89,5 +89,9 @@ class Character:
         else:
             self.airTimer += 1
         movement = self.velocity
+        if movement[0] > 0:
+            self.flip = False
+        if movement[0] < 0:
+            self.flip = True
         
         return movement
