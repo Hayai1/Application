@@ -24,7 +24,6 @@ class DBHandler:
         data=self.db.manualSQLCommand('SELECT characterid,name FROM CHARACTER')
         return data
     def createCharacterRecord(self, name):
-        x = self.db.manualSQLCommand('SELECT * FROM CHARACTER')
         newCharacter = self.CHARACTER(name = name,HP = 100)
         self.db.saveRecord(newCharacter)
         return str(self.db.manualSQLCommand('SELECT MAX(characterid) FROM CHARACTER')[0][0])
@@ -41,7 +40,7 @@ class DBHandler:
     def getWorldData(self, worldID):
         worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
         seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')
-        return worldName, seed
+        return worldName, seed[0][0]
     
     class CHARACTER(Table):
         characterid = PrimaryKey(True)

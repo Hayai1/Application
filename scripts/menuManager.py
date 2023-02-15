@@ -123,7 +123,6 @@ class MenuManager:
         if self.currentMenu == 'exit':
             runGame = True
         self.cursor.update()
-        pygame.draw.rect(self.window.GameSurface,(255,255,255),self.cursor.rect)
         return runGame
 class ListBox():
     def __init__(self,window, pos,width,height,players,cursor,setIdFuntion):
@@ -217,7 +216,6 @@ class ListBox():
             pygame.draw.rect(self.contentsSurf, (0,0,0), rect,1)
             y+=1
         
-        pygame.draw.rect(self.contentsSurf, (255,0,0), self.cursorRect)
         self.window.GameSurface.blit(self.contentsSurf, (self.pos))
         pygame.draw.rect(self.window.GameSurface, (255,255,255), self.rect,1)
         

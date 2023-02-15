@@ -84,9 +84,9 @@ class World:
         self.rooms.append(Room('1','data/worldData/rooms/1.txt',loc=[0,0]))
         #length of the room is 20x8 16x16 tiles
         
-        left = (1,2)
-        right = (3,4)
-        down = (5,)
+        left = ('1','2')
+        right = ('3','4')
+        down = ('5')
         for direction in self.seed:#generate "roomAmount" of rooms
             #generate a random number to move down or sideways
             #--------------------------------------------->
