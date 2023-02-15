@@ -20,6 +20,7 @@ class Graph:
         for node in self.nodes:
             if closestNode == None:
                 closestNode = node
+
                 distFromCurrentClosestNodeToPlayer = math.sqrt((node.x - (entity.x + entity.width/2))**2 + (node.y - (entity.y+entity.height))**2)
             else:
                 distFromNewNodeToPlayer = math.sqrt((node.x - (entity.x + entity.width/2))**2 + (node.y - (entity.y+entity.height))**2)

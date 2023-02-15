@@ -13,7 +13,8 @@ class Enemy(Character):
         self.graph = graph
         self.img = pygame.image.load(imgPath)
         self.img.set_colorkey((0,0,0))
-        self.ai = Ai(graph)
+        super().__init__(x, y, width, height,velocity,acceleration)
+        self.ai = Ai(self.rect, target,graph)
         self.path = None
         self.nextNode = None   
         self.moving = False
@@ -24,16 +25,12 @@ class Enemy(Character):
         self.newPathTimer = 0
         self.weapons = {'sword' : Sword(x,y,None,None)}
         self.attackTimer = 0
-        super().__init__(x, y, width, height,velocity,acceleration)
+        
         
         self.currentNode = self.graph.getNodeCloseTo(self)
     def getAnimations(self):
         return NotImplementedError
 
-    def getAggro(self,player):
-        if self.x - player.x < 300 and self.x - player.x > -300 and self.y - player.y < 300 and self.y - player.y > -300:
-            return True
-        return False
     
     def getAttackRange(self,player):
         if self.x - player.x < 50 and self.x - player.x > -50 and self.y - player.y < 50 and self.y - player.y > -50:
@@ -45,6 +42,8 @@ class Enemy(Character):
     def attack(self):
         if self.getAttackRange(self.target):
             self.weapons["sword"].arc = self.weapons["sword"].newBezeirArc(self.x,self.y,self.flip)
+    
+      
     def update(self):
         self.attackTimer +=1
         if self.attackTimer >= 50:
@@ -52,79 +51,16 @@ class Enemy(Character):
             self.attackTimer = 0 
         self.weapons['sword'].update(self.x,self.y,self.surf,self.camera.scroll)
         
-        self.newPathTimer +=1
-        #-------------------------------------------------------------#
-        #check if a current path exists
-        if self.movingFrames == self.frame:
-            self.moving = False
-        if self.movingFrames < self.frame:#error can occur here
-            self.path = None
-            self.nodePointer = 0
-            self.nextNode = None
-            self.frame = 0
-        if self.jumping:
-            if self.nextNode is not None and self.nextNode.y > self.y:
-                self.jumping = False
-                if self.nextNode.x > self.currentNode.x:
-                    self.left = False
-                    self.right = True
-                elif self.nextNode.x < self.currentNode.x:
-                    self.right = False
-                    self.left = True
-                self.movingFrames = abs(self.currentNode.getG(self.nextNode)[0]*8)
-                self.frame = 0
-        if self.path == None:
-            #check if player is in aggro range
-            if self.getAggro(self.target):
-                #if player is in aggro range then get a path to the player
-                self.newPathTimer = 0
-                self.path = self.ai.FindAndDrawPath(self.graph.getNodeCloseTo(self),self.target)   
-            #check if currently in the process from moving to the next node
+        if True:
+            left, right, jump = self.ai.getDirection(self.airTimer)
+            if left is not None:
+                self.left = left
+            if right is not None:
+                self.right = right
+            if jump:
+                self.playerJump()        
         else:
-            if not self.moving:
-                #get the actual node in terms of postion in the graph
-                closestNode = self.graph.getNodeCloseTo(self)
-                #if the actual node is not the same as the current node then set the path to none and move on
-                if self.nodePointer != 0 and closestNode != self.nextNode and self.airTimer < 4:
-                    self.path = None
-                    self.nodePointer = 0
-                    self.nextNode = None
-                else:#if the actual node is the same as the current node then get the next node to move to
-                    if self.nextNode is None:
-                        self.currentNode = self.path[0]
-                    else:
-                        self.currentNode = self.nextNode
-                    self.left = False
-                    self.right = False
-                    self.nodePointer += 1
-                    if self.nodePointer <= len(self.path) - 1:
-                        self.nextNode = self.path[self.nodePointer]
-                        #using the current node connection to the next node g score to get the next node
-                        gScore = self.currentNode.getG(self.nextNode)
-                        gScoreX = gScore[0]
-                        gScoreY = gScore[1]
-                        #state which directions to move in and if jumping is needed
-                        if gScoreY != 0 and self.currentNode.y > self.nextNode.y:
-                            self.playerJump()
-                            self.jumping = True
-                            self.movingFrames = 0
-                        elif self.nextNode.x > self.currentNode.x:
-                            self.left = False
-                            self.right = True
-                            self.movingFrames = abs(gScoreX*8)
-                        elif self.nextNode.x < self.currentNode.x:
-                            self.right = False
-                            self.left = True
-                            self.movingFrames = abs(gScoreX*8)
-                        #reset the frame
-                        self.frame = 1
-                        self.moving = True#state that the enemy is moving
-                    else:
-                        self.path = None
-                        self.nodePointer = 0
-                        self.nextNode = None
-            else:#if the enemy is moving then move
-                self.frame += 1
+            self.moveUpdate()
         #-------------------------------------------------------------#
         if self.weapons['sword'].arc is not None:
             self.left = False
@@ -138,7 +74,3 @@ class Enemy(Character):
         
         
            
-    def jump(self):
-        if self.airTimer < 6:
-            self.acceleration[1] = -5
-    
