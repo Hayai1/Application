@@ -20,11 +20,11 @@ class Sword(Item):
                 self.hitbox.x += 20
 
             #pygame.draw.rect(surface, (255,0,0), self.hitbox)
-            self.arcDone = self.arc.update(surface,scroll)
+            self.arcDone = self.arc.update(x,y,surface,scroll)
             if self.arcDone:
                 self.arc = None
             
                 
       
     def newBezeirArc(self,x,y,flip):
-        return Vfx.BezierArc((0, 0), (0, 200), (200, 100), (21, 244, 238), 5,x,y-16,flip=flip)
+        return Vfx.BezierArc((0, 0), (0, 200), (200, 100), (21, 244, 238), 5,x,y-16,revealSpeed = 160,flip=flip)

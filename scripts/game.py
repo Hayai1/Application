@@ -27,7 +27,7 @@ class Game:
         self.background = BackGround('assets/bg/bg.png')
         self.player = self.getPlayer(playerId,worldId)
         self.camera.set_target(self.player)
-        self.enemyManger = EnemyManager(1,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
+        self.enemyManger = EnemyManager(0,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
 
         
         

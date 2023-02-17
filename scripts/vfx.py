@@ -2,7 +2,7 @@ import pygame,math,random
 from pygame.locals import *
 class Vfx:  
     class BezierArc:
-        def __init__(self, start, end, control, color, width,x=0,y=0,flip=False,vel=0.7,acl=0.01,revealSpeed=80):
+        def __init__(self, start, end, control, color, width,x=0,y=0,flip=False,vel=1,acl=0.01,revealSpeed=1000):
             self.start = start
             self.end = end
             self.control = control
@@ -13,6 +13,8 @@ class Vfx:
             self.vel = vel
             self.acl = acl
             self.flip = flip
+            self.alphaVelocity = 10
+            self.time = 0
             if self.flip:
                 self.x = self.x - 32
                 self.vel = -self.vel
@@ -23,24 +25,29 @@ class Vfx:
             self.surf = pygame.Surface((200, 200))
             self.surf.set_colorkey((0, 0, 0))
             self.firstPoints = self.bezeirCurveEquation(self.control)
-            self.secondaryPoints = self.bezeirCurveEquation((self.control[0]-100,self.control[1]))
+            self.secondaryPoints = self.bezeirCurveEquation((self.control[0]-35,self.control[1]))
 
-
-        def draw(self,screen,scroll):
+        def getXY(self,x,y):
+            if self.flip:
+                x = x - 32
+            return x,y
+        def draw(self,x,y,screen,scroll):
             self.surf.fill((0,0,0))
             points = self.getPoints()
             pygame.draw.polygon(self.surf, self.color,points)
-            screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(self.x-scroll[0],self.y-scroll[1]))
+            screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(x-scroll[0],y-16-scroll[1]))
             
-        def update(self,screen,scroll):
-            self.draw(screen,scroll)
-            self.surf.set_alpha(255*abs(self.vel*2))
+        def update(self,x,y,screen,scroll):
+            x,y =self.getXY(x,y)
+            self.draw(x,y,screen,scroll)
+            
+            alpha = 255*math.cos(abs(math.radians(self.time*self.alphaVelocity)))
+            self.surf.set_alpha(alpha)
             self.time+=1
             self.revealAmount=self.revealAmount+1+self.revealSpeed 
             if self.revealAmount > len(self.firstPoints):
                 self.revealAmount=len(self.firstPoints)-1
-            self.vel = self.vel - self.acl
-            self.x +=self.vel
+            
             return self.surf.get_alpha() == 0
             
         def getPoints(self):

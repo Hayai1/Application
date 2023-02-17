@@ -1,18 +1,60 @@
-class class1():
-    def __init__(self):
-        self.var = 1
-        self.objOfClass2 = class2(self.setVar)
-    def setVar(self,value):
-        self.var = value
-
-class class2:
-    def __init__(self,setVarFunc):
-        self.setVarFunc = setVarFunc
-    def callSetVarFunc(self,value):
-        self.setVarFunc(value)
+import pygame
+ 
+# Define some colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+ 
+pygame.init()
+ 
+# Set the width and height of the screen [width, height]
+size = (700, 500)
+screen = pygame.display.set_mode(size)
+ 
+pygame.display.set_caption("My Game")
+ 
+# Loop until the user clicks the close button.
+done = False
+ 
+# Used to manage how fast the screen updates
+clock = pygame.time.Clock()
+rect = pygame.Rect(25,25,50,50)
+surf = pygame.Surface((100,100))
+# -------- Main Program Loop ----------
+x = 100
+y = 100
+v = 10
+a = 1
+img = pygame.image.load("C:/Users/Dylan/Projects/python/pygame/Nea/app/NeaProject/assets/playerAnimations/idle/idle0.png")
+while not done:
+    # --- Main event loop
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+     
+    # --- Game logic should go here
+ 
+    # --- Screen-clearing code goes here
+ 
+    # Here, we clear the screen to white. Don't put other drawing commands
+    # above this, or they will be erased with this command.
+ 
+    # If you want a background image, replace this clear with blit'ing the
+    # background image.
+    screen.fill(WHITE)
+ 
+    # --- Drawing code should go here
+    surf.fill((255,0,0))
+    screen.blit(img,(x,y))
+    x = x + 0.01
+    print(x)
     
-
-objOfClass1 = class1()
-print(objOfClass1.var)
-objOfClass1.objOfClass2.callSetVarFunc(2)
-print(objOfClass1.var)
+    # --- Go ahead and update the screen with what we've drawn.
+    pygame.display.flip()
+ 
+    # --- Limit to 60 frames per second
+    clock.tick(60)
+ 
+# Close the window and quit.
+pygame.quit()

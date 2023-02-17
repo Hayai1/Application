@@ -1,6 +1,7 @@
 import pygame
 class Character:
     def __init__(self,x,y,width,height,velocity,acceleration=[0,0]):
+        
         self.hp = 100
         self.left = False
         self.right = False
@@ -10,6 +11,8 @@ class Character:
         self.velocity = velocity
         self.acceleration = acceleration
         self.rect = pygame.Rect(x,y,width,height)
+        self.x = x 
+        self.y = y
         self.rectsToCollideWith = []
         self.animations = self.getAnimations()
         self.hp = 100
@@ -17,26 +20,28 @@ class Character:
     def setRectsToCollideWith(self,rects):
         self.rectsToCollideWith = rects
     @property
-    def x(self):
-        return self.rect.x
-    @property
-    def y(self):
-        return self.rect.y
-    @property
     def width(self):
         return self.rect.width
     @property
     def height(self):
         return self.rect.height
+    @property
+    def x(self):
+        return self._x
+    @property
+    def y(self):
+        return self._y
     @x.setter
     def x(self,value):
-        self.rect.x = value
+        self._x = value
+        self.rect.x = value 
     @y.setter
     def y(self,value):
+        self._y = value
         self.rect.y = value
-    
     def draw(self,surface,scroll,img):
-        surface.blit(pygame.transform.flip(img,self.flip,False),(self.rect.x-scroll[0],self.rect.y-scroll[1]))
+        #pygame.draw.rect(surface,(255,0,0),self.rect)
+        surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-9-scroll[0],self.y-9-scroll[1]))
 
     def getCollisions(self,tiles):
         collisions = []
@@ -58,7 +63,7 @@ class Character:
             self.acceleration[1] = -6
 
     def move(self,rectsToCollide):
-        self.velocity = [0,0]
+        
         self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
         if self.acceleration[1] < 3:
             self.acceleration[1] += 0.2
@@ -93,5 +98,6 @@ class Character:
             self.flip = False
         if movement[0] < 0:
             self.flip = True
-        
+        self.velocity = [0,0]
+        self.acceleration[0] = 0
         return movement

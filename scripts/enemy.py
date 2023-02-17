@@ -24,6 +24,7 @@ class Enemy(Character):
         return animations
     def changeAnimationState(self,movement):
         self.attackTimer -= 1
+        
         if self.attackTimer < 0 and self.x - self.target.x < 50 and self.x - self.target.x > -50 and self.y - self.target.y < 50 and self.y - self.target.y > -50:
             print("attack")
             self.animations.changeState('attack')

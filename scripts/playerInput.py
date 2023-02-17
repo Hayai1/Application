@@ -7,18 +7,18 @@ class PlayerInput(Input):
     def specificUpdate(self,event):
         if self.player.takeInputs:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_a:
                     self.player.left = True
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     self.player.right = True
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_SPACE:
                     self.player.playerJump()
-                if event.key == pygame.K_0:
-                    self.enemy.attack()
+                if event.key == pygame.K_LSHIFT:
+                    self.player.dash = True
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_a:
                     self.player.left = False
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     self.player.right= False
                 if event.key == pygame.K_UP:
                     self.player.triggerJump = False

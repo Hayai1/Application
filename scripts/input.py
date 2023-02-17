@@ -15,5 +15,5 @@ class Input:
             self.specificUpdate(event)
     def slowDownUpdate(self):
         if self.slowDown:
-            time.sleep(0.1) 
+            time.sleep(0.5) 
         
