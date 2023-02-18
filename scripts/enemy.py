@@ -23,10 +23,8 @@ class Enemy(Character):
         animations.getAnimation('attack',[4,4,4,20,3,4,4,4])
         return animations
     def changeAnimationState(self,movement):
-        self.attackTimer -= 1
-        
+        self.attackTimer -= 1 
         if self.attackTimer < 0 and self.x - self.target.x < 50 and self.x - self.target.x > -50 and self.y - self.target.y < 50 and self.y - self.target.y > -50:
-            print("attack")
             self.animations.changeState('attack')
             if self.animations.getCurrentImg() == 'attack7':self.attackTimer = 100
         else:
@@ -43,6 +41,8 @@ class Enemy(Character):
     def update(self):  
         self.setDirectionToMove()
         #-------------------------------------------------------------#
+        self.x = self.rect.x 
+        self.y = self.rect.y
         movement = self.move(self.collisionRects)#call the move function
         self.changeAnimationState(movement)
         self.draw(self.surf,self.camera.scroll,self.animations.getImg())#draw the enemy

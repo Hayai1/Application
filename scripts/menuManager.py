@@ -37,7 +37,7 @@ class MenuManager:
         return self.createWorld()
     def createWorld(self):
         seed="5"
-        roomAmount =10
+        roomAmount =50
         for i in range(0,roomAmount-1):
             seed += str(random.randint(1,5))
         self.worldId = self.dbHandler.createWorldRecord(self.worldName,self.worldDifficulty,seed)

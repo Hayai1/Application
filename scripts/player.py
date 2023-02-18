@@ -80,11 +80,6 @@ class Player(Character):
                 self.slide = False
                 self.slideVel = None
                 self.slideAcc = None
-                
-     
-                
-        
-        
         self.weapons['sword'].update(self.x,self.y,self.surface,self.camera.scroll)
         self.draw(self.surface,self.camera.scroll,self.animations.getImg())
     
