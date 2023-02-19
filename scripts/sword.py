@@ -10,15 +10,17 @@ class Sword(Item):
         self.arcDone = True
         self.hitbox = pygame.Rect(x,y,20,40)
 
-    def update(self,x,y,surface,scroll):
+    def update(self,x,y,surface,scroll,enemies):
         
         
         if self.arc is not None:
-            self.hitbox.x = (self.arc.x)-scroll[0]
-            self.hitbox.y = (self.arc.y)-scroll[1]
+            self.hitbox.x = (self.arc.x)
+            self.hitbox.y = (self.arc.y)
             if self.arc.flip:
                 self.hitbox.x += 20
-
+            for enemy in enemies:
+                if enemy.rect.colliderect(self.hitbox):
+                    enemy.takeDamage(self.damage)
             #pygame.draw.rect(surface, (255,0,0), self.hitbox)
             self.arcDone = self.arc.update(x,y,surface,scroll)
             if self.arcDone:

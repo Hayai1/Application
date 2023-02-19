@@ -61,7 +61,7 @@ class Player(Character):
         self.slideVel = 3
         self.slideAcc = -1
         self.slide = True
-    def update(self):
+    def update(self,enemies):
         self.x = self.rect.x 
         self.y = self.rect.y
         self.input.update()
@@ -80,7 +80,7 @@ class Player(Character):
                 self.slide = False
                 self.slideVel = None
                 self.slideAcc = None
-        self.weapons['sword'].update(self.x,self.y,self.surface,self.camera.scroll)
+        self.weapons['sword'].update(self.x,self.y,self.surface,self.camera.scroll,enemies)
         self.draw(self.surface,self.camera.scroll,self.animations.getImg())
     
 

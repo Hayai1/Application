@@ -4,18 +4,42 @@ from scripts.ai import Ai
 from scripts.character import Character
 from scripts.animations import Animations
 class Enemy(Character):
-    def __init__(self,x, y, width, height,graph,imgPath,velocity=[],acceleration=[0,0],target=None,surf=None,camera=None,collisionRects=None):
+    def __init__(self,x, y, width, height,graph,hpImgPath,velocity=[],acceleration=[0,0],target=None,surf=None,camera=None,collisionRects=None):
         self.target=target
         self.surf=surf
         self.camera=camera
         self.collisionRects=collisionRects
         self.graph = graph
+        self.dead = False
         self.attackTimer = 100
-        self.img = pygame.image.load(imgPath)
-        self.img.set_colorkey((0,0,0))
+        self.imunityFrames = 0
+        self.hpBar= self.getHpBar(hpImgPath)
         super().__init__(x, y, width, height,velocity,acceleration)
         self.ai = Ai(self.rect, target,graph)
-    
+    def getHpBar(self,path):
+        hpBar = {} 
+        img = pygame.image.load(path)
+        img.set_colorkey((0,0,0))
+        hpBar['img'] = img
+        hpBar['height'] = img.get_height()
+        hpBar['hp'] = 100
+        return hpBar
+    @property
+    def hpBarWidth(self):
+        return self.hpBar['img'].get_width() * (self.hpBar['hp'] / 100)
+    def drawHpBar(self,surf,scroll):
+        pygame.draw.rect(surf,(172,50,50),(self.x-scroll[0],self.y-scroll[1]-10,self.hpBarWidth,self.hpBar['height']))
+        surf.blit(self.hpBar['img'],(self.x - scroll[0],self.y - scroll[1] - 10))
+    def takeDamage(self,damage):
+        if self.imunityFrames == 0:
+            self.imunityFrames = 10
+            self.hpBar['hp'] -= damage
+            if self.hpBar['hp'] <= 0:
+                self.kill()
+        else:
+            self.imunityFrames -= 1
+    def kill(self):
+        self.dead = True
     def getAnimations(self):
         animations = Animations('assets/enemyAnimations')
         animations.getAnimation('run',[4,4,4,4,4,4,4])
@@ -45,6 +69,7 @@ class Enemy(Character):
         self.y = self.rect.y
         movement = self.move(self.collisionRects)#call the move function
         self.changeAnimationState(movement)
+        self.drawHpBar(self.surf,self.camera.scroll)
         self.draw(self.surf,self.camera.scroll,self.animations.getImg())#draw the enemy
   
         

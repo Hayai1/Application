@@ -52,7 +52,7 @@ class Game:
         self.camera.update()
         self.world.update()
         self.enemyManger.update()
-        self.player.update()
+        self.player.update(self.enemyManger.enemies)
         self.window.update()
         
     def runGame(self):
