@@ -1,4 +1,4 @@
-import pygame
+import pygame,sys
 from scripts.character import Character
 from scripts.animations import Animations
 from scripts.sword import Sword
@@ -19,7 +19,9 @@ class Player(Character):
         self.slide = False
         self.slideVel = None
         self.slideAcc = None
-
+        self.imunityFrames = 0
+        self.dead = False
+        self.hpBar = self.getHpBar(hpBarImg)
         super().__init__(x, y, width, height,velocity,acceleration)
 
     def getAnimations(self):
@@ -29,9 +31,20 @@ class Player(Character):
         animations.getAnimation('attack',[4,4,4,4,4,4])
         animations.getAnimation('dash',[4,5,5,5,5,5])
         return animations
+    def getHpBar(self,path):
+        hpBar = {} 
+        img = pygame.image.load(path)
+        img.set_colorkey((0,0,0))
+        hpBar['img'] = img
+        hpBar['height'] = img.get_height()-10
+        hpBar['hp'] = 100
+        return hpBar
+    @property
+    def hpBarWidth(self):
+        return (self.hpBar['img'].get_width()-10) * (self.hpBar['hp'] / 100)
     def drawPlayerHpBar(self):
-        self.surface.blit(self.hpBarImg,(4,4))
-        pygame.draw.rect(self.surface,(255,0,0),(5,5,self.hp,6))
+        pygame.draw.rect(self.surface,(172,50,50),(9,9,self.hpBarWidth,self.hpBar['height']))
+        self.surface.blit(self.hpBar['img'],(4,4))
     def triggerAttack(self):
         self.animations.changeState('attack')
         currentImg = self.animations.getCurrentImg()
@@ -46,8 +59,6 @@ class Player(Character):
         else: 
             self.velocity[0] = (6 / self.dashAcceleration)
             self.dashAcceleration += 0.5
-        
-
         self.animations.changeState('dash')
         currentImg = self.animations.getCurrentImg()
         if currentImg == 'dash5':
@@ -57,11 +68,24 @@ class Player(Character):
         if movement[0] == 0:self.animations.changeState('idle')
         if movement[0] > 0:self.animations.changeState('run')
         if movement[0] < 0:self.animations.changeState('run')
+    def takeDamage(self,damage):
+        if self.imunityFrames == 0:
+            self.imunityFrames = 100
+            self.hpBar['hp'] -= damage
+            if self.hpBar['hp'] <= 0:
+                self.kill()
+        else:
+            self.imunityFrames -= 1
+    def kill(self):
+        print("dead")
+        self.dead = True
     def startSlide(self):
         self.slideVel = 3
         self.slideAcc = -1
         self.slide = True
     def update(self,enemies):
+        if self.dead:
+            sys.exit()
         self.x = self.rect.x 
         self.y = self.rect.y
         self.input.update()
@@ -82,6 +106,7 @@ class Player(Character):
                 self.slideAcc = None
         self.weapons['sword'].update(self.x,self.y,self.surface,self.camera.scroll,enemies)
         self.draw(self.surface,self.camera.scroll,self.animations.getImg())
+        self.drawPlayerHpBar()
     
 
 

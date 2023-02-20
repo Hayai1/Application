@@ -13,6 +13,8 @@ class Enemy(Character):
         self.dead = False
         self.attackTimer = 100
         self.imunityFrames = 0
+        self.attackRange = pygame.Rect(x,y,width,height)
+        self.attacking = False
         self.hpBar= self.getHpBar(hpImgPath)
         super().__init__(x, y, width, height,velocity,acceleration)
         self.ai = Ai(self.rect, target,graph)
@@ -49,8 +51,12 @@ class Enemy(Character):
     def changeAnimationState(self,movement):
         self.attackTimer -= 1 
         if self.attackTimer < 0 and self.x - self.target.x < 50 and self.x - self.target.x > -50 and self.y - self.target.y < 50 and self.y - self.target.y > -50:
+            self.attacking = True
+        if self.attacking == True:
             self.animations.changeState('attack')
-            if self.animations.getCurrentImg() == 'attack7':self.attackTimer = 100
+            if self.animations.getCurrentImg() == 'attack7':
+                self.attackTimer = 100
+                self.attacking = False
         else:
             if movement[0] == 0:self.animations.changeState('idle')
             if movement[0] > 0:self.animations.changeState('run')
@@ -61,16 +67,27 @@ class Enemy(Character):
         if ChangeInleft is not None:self.left = ChangeInleft
         if ChangeInright is not None:self.right = ChangeInright
         if jump:self.playerJump()        
-    
+    def checkForHits(self):
+        if self.attackRange.colliderect(self.target.rect):
+            self.target.takeDamage(10)
     def update(self):  
         self.setDirectionToMove()
         #-------------------------------------------------------------#
         self.x = self.rect.x 
         self.y = self.rect.y
-        movement = self.move(self.collisionRects)#call the move function
+        self.attackRange.x = self.rect.x
+        self.attackRange.y = self.rect.y
+        if self.flip: self.attackRange.x -= 8
+        else: self.attackRange.x += 8
+        #-------------------------------------------------------------#
+        if not self.attacking: movement = self.move(self.collisionRects)#call the move function
+        else:
+            movement = [0,0]
+            self.checkForHits()
         self.changeAnimationState(movement)
         self.drawHpBar(self.surf,self.camera.scroll)
+        
         self.draw(self.surf,self.camera.scroll,self.animations.getImg())#draw the enemy
-  
+        
         
            

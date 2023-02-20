@@ -36,7 +36,7 @@ class Game:
     def getPlayer(self,playerId,worldId):
         name,pos = self.dbHandler.getPlayerData(playerId,worldId)
         if pos == []:pos = self.world.getDefaultPos()
-        player = Player(name,pos[0],pos[1], 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar2.png')
+        player = Player(name,pos[0],pos[1], 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar.png')
         player.setRectsToCollideWith(self.world.collisionRects)
         return player
 
