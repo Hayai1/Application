@@ -13,7 +13,7 @@ class Enemy(Character):
         self.dead = False
         self.attackTimer = 100
         self.imunityFrames = 0
-        self.attackRange = pygame.Rect(x,y,width,height)
+        self.attackRange = pygame.Rect(x,y,width+40,height)
         self.attacking = False
         self.hpBar= self.getHpBar(hpImgPath)
         super().__init__(x, y, width, height,velocity,acceleration)
@@ -46,7 +46,7 @@ class Enemy(Character):
         animations = Animations('assets/enemyAnimations')
         animations.getAnimation('run',[4,4,4,4,4,4,4])
         animations.getAnimation('idle',[6,6,6,6,6,6,6,6])
-        animations.getAnimation('attack',[4,4,4,20,3,4,4,4])
+        animations.getAnimation('attack',[4,4,4,4,4,4,4,4,4,10,4,4,4,4,4,4])
         return animations
     def changeAnimationState(self,movement):
         self.attackTimer -= 1 
@@ -54,7 +54,9 @@ class Enemy(Character):
             self.attacking = True
         if self.attacking == True:
             self.animations.changeState('attack')
-            if self.animations.getCurrentImg() == 'attack7':
+            if self.animations.getCurrentImg() == 'attack10' or self.animations.getCurrentImg() == 'attack11':
+                self.checkForHits()
+            elif self.animations.getCurrentImg() == 'attack15':
                 self.attackTimer = 100
                 self.attacking = False
         else:
@@ -70,6 +72,13 @@ class Enemy(Character):
     def checkForHits(self):
         if self.attackRange.colliderect(self.target.rect):
             self.target.takeDamage(10)
+    def draw(self,surface,scroll,img):
+        #pygame.draw.rect(surface,(255,0,0),self.rect)
+        a = 0
+        if self.flip:
+            a = 48
+        surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-a-9-scroll[0],self.y-9-scroll[1]))
+
     def update(self):  
         self.setDirectionToMove()
         #-------------------------------------------------------------#
@@ -77,16 +86,15 @@ class Enemy(Character):
         self.y = self.rect.y
         self.attackRange.x = self.rect.x
         self.attackRange.y = self.rect.y
-        if self.flip: self.attackRange.x -= 8
+        if self.flip: self.attackRange.x -= 48
         else: self.attackRange.x += 8
         #-------------------------------------------------------------#
         if not self.attacking: movement = self.move(self.collisionRects)#call the move function
         else:
             movement = [0,0]
-            self.checkForHits()
+            
         self.changeAnimationState(movement)
         self.drawHpBar(self.surf,self.camera.scroll)
-        
         self.draw(self.surf,self.camera.scroll,self.animations.getImg())#draw the enemy
         
         

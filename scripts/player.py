@@ -69,13 +69,12 @@ class Player(Character):
         if movement[0] > 0:self.animations.changeState('run')
         if movement[0] < 0:self.animations.changeState('run')
     def takeDamage(self,damage):
-        if self.imunityFrames == 0:
+        if self.imunityFrames <= 0:
             self.imunityFrames = 100
             self.hpBar['hp'] -= damage
             if self.hpBar['hp'] <= 0:
                 self.kill()
-        else:
-            self.imunityFrames -= 1
+
     def kill(self):
         print("dead")
         self.dead = True
@@ -84,6 +83,7 @@ class Player(Character):
         self.slideAcc = -1
         self.slide = True
     def update(self,enemies):
+        self.imunityFrames -= 1
         if self.dead:
             sys.exit()
         self.x = self.rect.x 
