@@ -18,28 +18,28 @@ class Game:
         self.menu = MenuManager(self.window,self.dbHandler)
         playerId,worldId = self.runMenu()
         #self.runSqlCommands()
-        
-        
-        worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
-        self.world = World(worldName,WorldSeed)
-        self.background = BackGround('assets/bg/bg.png')
+        #<----------------------World--------------------------->
+        self.world = self.getWorld(worldId)
         #<----------------------Player-------------------------->
-        #self.player = self.getPlayer(playerId,worldId)
-        name,pos = self.dbHandler.getPlayerData(playerId,worldId)
-        if pos == []:pos = self.world.getDefaultPos()
-        self.player = Player(name,pos[0],pos[1], 16, 16,hpBarImg='assets/hpBar/hpBar.png')
-        self.player.setRectsToCollideWith(self.world.collisionRects)
-        #<------------------------------------------------------->
-        self.camera = Camera(self.player)
+        self.player = self.getPlayer(playerId,worldId)
+        #<----------------------EnemyManager-------------------------->
         self.enemyManager = EnemyManager(20,self.world.rooms,self.player,self.world.collisionRects,self.world.graph) 
+        #<----------------------Background-------------------------->
+        self.background = BackGround('assets/bg/bg.png')
+        #<----------------------Camera-------------------------->
+        self.camera = Camera(self.player)
+        
 
     def getPlayer(self,playerId,worldId):
-        name,pos = self.dbHandler.getPlayerData(playerId,worldId)
-        if pos == []:pos = self.world.getDefaultPos()
-        player = Player(name,pos[0],pos[1], 16, 16,self.window.GameSurface,self.camera,[0,0],hpBarImg='assets/hpBar/hpBar.png')
-        player.setRectsToCollideWith(self.world.collisionRects)
+        name,x,y = self.dbHandler.getPlayerData(playerId,worldId)
+        if x ==0 and y ==0:
+            x,y = self.world.getDefaultPos()
+        player = Player(name,x,y, 16, 16,self.world.collisionRects,'assets/hpBar/hpBar.png')
         return player
-
+    def getWorld(self,worldId):
+        worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
+        return World(worldName,WorldSeed)
+    
     def runSqlCommands(self):
         while True:
             sqlc = input("sql command:")

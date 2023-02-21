@@ -36,7 +36,9 @@ class DBHandler:
     def getPlayerData(self, playerID, worldID):
         playerName = str(self.db.manualSQLCommand(f'SELECT name FROM CHARACTER WHERE characterid = {playerID}')[0][0])
         playerPositionData = self.db.manualSQLCommand(f'SELECT xPos,yPos FROM CHARACTERPOSITIONS WHERE characterid = {playerID} and worldid = {worldID}')
-        return playerName, playerPositionData
+        if playerPositionData == []:
+            return playerName, 0,0
+        return playerName, playerPositionData[0],playerPositionData[1]
     def getWorldData(self, worldID):
         worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
         seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')

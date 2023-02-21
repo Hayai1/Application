@@ -6,7 +6,6 @@ from scripts.animations import Animations
 class Enemy(Character):
     def __init__(self,x, y, width, height,graph,hpImgPath,target=None,collisionRects=None):
         self.target=target
-        self.collisionRects=collisionRects
         self.graph = graph
         self.dead = False
         self.attackTimer = 100
@@ -14,7 +13,7 @@ class Enemy(Character):
         self.attackRange = pygame.Rect(x,y,width+40,height)
         self.attacking = False
         self.hpBar= self.getHpBar(hpImgPath)
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height,collisionRects)
         self.ai = Ai(self.rect, target,graph)
     
     def getHpBar(self,path):

@@ -4,7 +4,7 @@ from scripts.animations import Animations
 from scripts.sword import Sword
 from scripts.playerInput import PlayerInput
 class Player(Character):
-    def __init__(self,name,x, y, width, height,hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
+    def __init__(self,name,x, y, width, height,collisionRects,hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
         self.name = name
         self.weapons = {'sword' : Sword(x,y,swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
@@ -20,7 +20,7 @@ class Player(Character):
         self.imunityFrames = 0
         self.dead = False
         self.hpBar = self.getHpBar(hpBarImg)
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height,collisionRects)
 
     def getAnimations(self):
         animations = Animations('assets/playerAnimations')
@@ -88,7 +88,7 @@ class Player(Character):
         self.y = self.rect.y
         self.input.update()
         if not self.attack:
-            movement = self.move(self.rectsToCollideWith)
+            movement = self.move(self.collisionRects)
         if self.dash: self.triggerDash()
         elif self.attack: 
             self.triggerAttack()

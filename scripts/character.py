@@ -1,6 +1,6 @@
 import pygame
 class Character:
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y,width,height,collisionRects):
         
         self.hp = 100
         self.left = False
@@ -13,12 +13,10 @@ class Character:
         self.rect = pygame.Rect(x,y,width,height)
         self.x = x 
         self.y = y
-        self.rectsToCollideWith = []
+        self.collisionRects = collisionRects
         self.animations = self.getAnimations()
         self.hp = 100
         self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
-    def setRectsToCollideWith(self,rects):
-        self.rectsToCollideWith = rects
     @property
     def width(self):
         return self.rect.width
