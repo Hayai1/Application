@@ -4,10 +4,8 @@ from scripts.animations import Animations
 from scripts.sword import Sword
 from scripts.playerInput import PlayerInput
 class Player(Character):
-    def __init__(self,name,x, y, width, height,surface,camera,velocity,acceleration=[0,0],hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
+    def __init__(self,name,x, y, width, height,hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
         self.name = name
-        self.surface = surface
-        self.camera = camera
         self.weapons = {'sword' : Sword(x,y,swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
         self.attack = False
@@ -22,7 +20,7 @@ class Player(Character):
         self.imunityFrames = 0
         self.dead = False
         self.hpBar = self.getHpBar(hpBarImg)
-        super().__init__(x, y, width, height,velocity,acceleration)
+        super().__init__(x, y, width, height)
 
     def getAnimations(self):
         animations = Animations('assets/playerAnimations')
@@ -42,9 +40,9 @@ class Player(Character):
     @property
     def hpBarWidth(self):
         return (self.hpBar['img'].get_width()-10) * (self.hpBar['hp'] / 100)
-    def drawPlayerHpBar(self):
-        pygame.draw.rect(self.surface,(172,50,50),(9,9,self.hpBarWidth,self.hpBar['height']))
-        self.surface.blit(self.hpBar['img'],(4,4))
+    def drawPlayerHpBar(self,gameSurface):
+        pygame.draw.rect(gameSurface,(172,50,50),(9,9,self.hpBarWidth,self.hpBar['height']))
+        gameSurface.blit(self.hpBar['img'],(4,4))
     def triggerAttack(self):
         self.animations.changeState('attack')
         currentImg = self.animations.getCurrentImg()
@@ -82,7 +80,7 @@ class Player(Character):
         self.slideVel = 3
         self.slideAcc = -1
         self.slide = True
-    def update(self,enemies):
+    def update(self,gameSurface,scroll, enemies):
         self.imunityFrames -= 1
         if self.dead:
             sys.exit()
@@ -104,9 +102,9 @@ class Player(Character):
                 self.slide = False
                 self.slideVel = None
                 self.slideAcc = None
-        self.weapons['sword'].update(self.x,self.y,self.surface,self.camera.scroll,enemies)
-        self.draw(self.surface,self.camera.scroll,self.animations.getImg())
-        self.drawPlayerHpBar()
+        self.weapons['sword'].update(self.x,self.y,gameSurface,scroll,enemies)
+        self.draw(gameSurface,scroll,self.animations.getImg())
+        self.drawPlayerHpBar(gameSurface)
     
 
 

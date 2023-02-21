@@ -4,10 +4,8 @@ from scripts.ai import Ai
 from scripts.character import Character
 from scripts.animations import Animations
 class Enemy(Character):
-    def __init__(self,x, y, width, height,graph,hpImgPath,velocity=[],acceleration=[0,0],target=None,surf=None,camera=None,collisionRects=None):
+    def __init__(self,x, y, width, height,graph,hpImgPath,target=None,collisionRects=None):
         self.target=target
-        self.surf=surf
-        self.camera=camera
         self.collisionRects=collisionRects
         self.graph = graph
         self.dead = False
@@ -16,8 +14,9 @@ class Enemy(Character):
         self.attackRange = pygame.Rect(x,y,width+40,height)
         self.attacking = False
         self.hpBar= self.getHpBar(hpImgPath)
-        super().__init__(x, y, width, height,velocity,acceleration)
+        super().__init__(x, y, width, height)
         self.ai = Ai(self.rect, target,graph)
+    
     def getHpBar(self,path):
         hpBar = {} 
         img = pygame.image.load(path)
@@ -26,12 +25,15 @@ class Enemy(Character):
         hpBar['height'] = img.get_height()
         hpBar['hp'] = 100
         return hpBar
+    
     @property
     def hpBarWidth(self):
         return self.hpBar['img'].get_width() * (self.hpBar['hp'] / 100)
+    
     def drawHpBar(self,surf,scroll):
         pygame.draw.rect(surf,(172,50,50),(self.x-scroll[0],self.y-scroll[1]-10,self.hpBarWidth,self.hpBar['height']))
         surf.blit(self.hpBar['img'],(self.x - scroll[0],self.y - scroll[1] - 10))
+    
     def takeDamage(self,damage):
         if self.imunityFrames == 0:
             self.imunityFrames = 10
@@ -40,14 +42,17 @@ class Enemy(Character):
                 self.kill()
         else:
             self.imunityFrames -= 1
+    
     def kill(self):
         self.dead = True
+    
     def getAnimations(self):
         animations = Animations('assets/enemyAnimations')
         animations.getAnimation('run',[4,4,4,4,4,4,4])
         animations.getAnimation('idle',[6,6,6,6,6,6,6,6])
         animations.getAnimation('attack',[4,4,4,4,4,4,4,4,4,10,4,4,4,4,4,4])
         return animations
+    
     def changeAnimationState(self,movement):
         self.attackTimer -= 1 
         if self.attackTimer < 0 and self.x - self.target.x < 50 and self.x - self.target.x > -50 and self.y - self.target.y < 50 and self.y - self.target.y > -50:
@@ -88,7 +93,7 @@ class Enemy(Character):
             a = 48
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-a-9-scroll[0],self.y-9-scroll[1]))
 
-    def update(self):  
+    def update(self,gameSurface, scroll):  
         self.setDirectionToMove()
         #-------------------------------------------------------------#
         self.x = self.rect.x 
@@ -103,8 +108,8 @@ class Enemy(Character):
             movement = [0,0]
             
         self.changeAnimationState(movement)
-        self.drawHpBar(self.surf,self.camera.scroll)
-        self.draw(self.surf,self.camera.scroll,self.animations.getImg())#draw the enemy
+        self.drawHpBar(gameSurface,scroll)
+        self.draw(gameSurface,scroll,self.animations.getImg())#draw the enemy
         
         
            

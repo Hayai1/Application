@@ -1,6 +1,6 @@
 import pygame
 class Character:
-    def __init__(self,x,y,width,height,velocity,acceleration=[0,0]):
+    def __init__(self,x,y,width,height):
         
         self.hp = 100
         self.left = False
@@ -8,8 +8,8 @@ class Character:
         self.triggerJump = False
         self.airTimer = 0
         self.flip = False
-        self.velocity = velocity
-        self.acceleration = acceleration
+        self.velocity = [0,0]
+        self.acceleration = [0,0]
         self.rect = pygame.Rect(x,y,width,height)
         self.x = x 
         self.y = y

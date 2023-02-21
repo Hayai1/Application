@@ -10,28 +10,28 @@ from scripts.enemyManager import EnemyManager
 from scripts.menuManager import MenuManager
 from scripts.dbHandler import DBHandler
 from scripts.background import BackGround
-
 class Game:
     def __init__(self):
         pygame.init()
         self.window = Window((640,360),"Nea Project",60)
         self.dbHandler = DBHandler()
-        
         self.menu = MenuManager(self.window,self.dbHandler)
         playerId,worldId = self.runMenu()
         #self.runSqlCommands()
         
-        self.camera = Camera()
+        
         worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
-        self.world = World(self.window.GameSurface,self.camera,worldName,WorldSeed)
+        self.world = World(worldName,WorldSeed)
         self.background = BackGround('assets/bg/bg.png')
-        self.player = self.getPlayer(playerId,worldId)
-        self.camera.set_target(self.player)
-        self.enemyManger = EnemyManager(20,self.world.rooms,self.player,self.window.GameSurface,self.camera,self.world.collisionRects,self.world.graph) 
-
-        
-        
-        
+        #<----------------------Player-------------------------->
+        #self.player = self.getPlayer(playerId,worldId)
+        name,pos = self.dbHandler.getPlayerData(playerId,worldId)
+        if pos == []:pos = self.world.getDefaultPos()
+        self.player = Player(name,pos[0],pos[1], 16, 16,hpBarImg='assets/hpBar/hpBar.png')
+        self.player.setRectsToCollideWith(self.world.collisionRects)
+        #<------------------------------------------------------->
+        self.camera = Camera(self.player)
+        self.enemyManager = EnemyManager(20,self.world.rooms,self.player,self.world.collisionRects,self.world.graph) 
 
     def getPlayer(self,playerId,worldId):
         name,pos = self.dbHandler.getPlayerData(playerId,worldId)
@@ -46,13 +46,18 @@ class Game:
             if sqlc == "exit":
                 SystemExit
             print(self.dbHandler.db.manualSQLCommand(sqlc))
-    
+    @property
+    def scroll(self):
+        return self.camera.scroll
+    @property
+    def gameSurface(self):
+        return self.window.GameSurface
     def update(self):
-        self.background.update(self.window.GameSurface,self.camera.scroll)
         self.camera.update()
-        self.world.update()
-        self.enemyManger.update()
-        self.player.update(self.enemyManger.enemies)
+        self.background.update(self.gameSurface,self.scroll)
+        self.world.update(self.gameSurface,self.scroll)
+        self.enemyManager.update(self.gameSurface,self.scroll)
+        self.player.update(self.gameSurface,self.scroll,self.enemyManager.enemies)
         self.window.update()
         
     def runGame(self):

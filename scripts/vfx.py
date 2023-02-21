@@ -72,12 +72,11 @@ class Vfx:
 
         
     class particleManager:
-        def __init__(self,screen):
-            self.screen = screen
+        def __init__(self):
             self.particles = []
             self.timer = 0
 
-        def update(self,scroll):
+        def update(self,gameSurface, scroll):
             if self.timer >= 10:
                 self.timer = 0
                 self.newParticle()
@@ -85,7 +84,7 @@ class Vfx:
             deadParticles = []
             for particle in self.particles:
                 particle.update()
-                particle.draw(self.screen,scroll)
+                particle.draw(gameSurface,scroll)
             for particlesToRemove in deadParticles:
                 self.particles.remove(particlesToRemove)
         def newParticle(self):

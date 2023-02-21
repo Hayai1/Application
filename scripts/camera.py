@@ -1,10 +1,10 @@
 import pygame
 
 class Camera:
-    def __init__(self):
+    def __init__(self,target):
         self.true_scroll = [0,0]
         self.scroll = [0,0]
-        self.target = None
+        self.target = target
     def set_target(self,target):
         self.target = target
     def update(self):

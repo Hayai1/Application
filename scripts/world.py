@@ -9,10 +9,8 @@ ROOMSIZE = (20*16,8*16)
 
 
 class World:
-    def __init__(self,screen,camera,name,seed):
-        self.particleMangager = Vfx.particleManager(screen)
-        self.camera = camera
-        self.screen = screen
+    def __init__(self,name,seed):
+        self.particleMangager = Vfx.particleManager()
         self.seed = seed
         self.name = name
         self.rooms = []
@@ -47,10 +45,10 @@ class World:
             world[rect[1]][rect[0]] = 1
         return world
 
-    def update(self):
+    def update(self,gameSurface, scroll):
         for room in self.rooms:
-            self.screen.blit(room.roomImg,(room.x-self.camera.scroll[0],room.y-self.camera.scroll[1]))
-        self.particleMangager.update(self.camera.scroll)
+            gameSurface.blit(room.roomImg,(room.x-scroll[0],room.y-scroll[1]))
+        self.particleMangager.update(gameSurface,scroll)
         #self.graph.draw(self.screen,self.camera.scroll)
     #-------------------------------------------------------world generation---------------------------------------------------------------------------->
     def travel(self,pos,xDirection,yDirection,):
