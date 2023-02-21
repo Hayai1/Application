@@ -23,7 +23,6 @@ class EnemyManager():
         deadEnemies = []
         for enemy in self.enemies:
             enemy.update()
-            pygame.draw.rect(self.surface,(255,0,0),enemy.rect)
             if enemy.dead:
                 deadEnemies.append(enemy)
         for enemy in deadEnemies:

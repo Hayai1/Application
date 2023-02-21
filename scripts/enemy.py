@@ -52,8 +52,17 @@ class Enemy(Character):
         self.attackTimer -= 1 
         if self.attackTimer < 0 and self.x - self.target.x < 50 and self.x - self.target.x > -50 and self.y - self.target.y < 50 and self.y - self.target.y > -50:
             self.attacking = True
+            
         if self.attacking == True:
             self.animations.changeState('attack')
+            if ((self.animations.getCurrentImg() == 'attack1') or (self.animations.getCurrentImg() == 'attack2') or 
+                (self.animations.getCurrentImg() == 'attack3') or (self.animations.getCurrentImg() == 'attack4') or 
+                (self.animations.getCurrentImg() == 'attack5') or (self.animations.getCurrentImg() == 'attack6') or 
+                (self.animations.getCurrentImg() == 'attack7') or (self.animations.getCurrentImg() == 'attack8') or 
+                (self.animations.getCurrentImg() == 'attack9')):
+                    self.flip = False
+                    if self.target.x < self.x:
+                        self.flip = True
             if self.animations.getCurrentImg() == 'attack10' or self.animations.getCurrentImg() == 'attack11':
                 self.checkForHits()
             elif self.animations.getCurrentImg() == 'attack15':
