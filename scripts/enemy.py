@@ -61,9 +61,7 @@ class Enemy(Character):
             self.animations.changeState('attack')
             if ((self.animations.getCurrentImg() == 'attack1') or (self.animations.getCurrentImg() == 'attack2') or 
                 (self.animations.getCurrentImg() == 'attack3') or (self.animations.getCurrentImg() == 'attack4') or 
-                (self.animations.getCurrentImg() == 'attack5') or (self.animations.getCurrentImg() == 'attack6') or 
-                (self.animations.getCurrentImg() == 'attack7') or (self.animations.getCurrentImg() == 'attack8') or 
-                (self.animations.getCurrentImg() == 'attack9')):
+                (self.animations.getCurrentImg() == 'attack5')):
                     self.flip = False
                     if self.target.x < self.x:
                         self.flip = True

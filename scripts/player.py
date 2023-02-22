@@ -85,6 +85,7 @@ class Player(Character):
             self.attackCombo = 'firstAttack'
     
     def triggerDash(self):
+        self.attacking = False
         if self.flip: 
             self.velocity[0] = -(6 / self.dashAcceleration)
             self.dashAcceleration += 0.5
