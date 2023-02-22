@@ -28,5 +28,5 @@ class Sword(Item):
             
                 
       
-    def newBezeirArc(self,x,y,flip):
-        return Vfx.BezierArc((0, 0), (0, 200), (200, 100), (21, 244, 238), 5,x,y-16,revealSpeed = 160,flip=flip)
+    def newBezeirArc(self,x,y,flip,direction):
+        return Vfx.BezierArc((0, 0), (0, 200), (200, 100), (21, 244, 238), 5,direction,x,y-16,revealSpeed = 160,flip=flip)

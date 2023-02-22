@@ -26,5 +26,5 @@ class PlayerInput(Input):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if self.player.weapons["sword"].arcDone:
-                        self.player.attack = True
+                        self.player.attacking = True
                     

@@ -2,7 +2,7 @@ import pygame,math,random
 from pygame.locals import *
 class Vfx:  
     class BezierArc:
-        def __init__(self, start, end, control, color, width,x=0,y=0,flip=False,vel=1,acl=0.01,revealSpeed=1000):
+        def __init__(self, start, end, control, color, width,direction='down',x=0,y=0,flip=False,vel=1,acl=0.01,revealSpeed=1000):
             self.start = start
             self.end = end
             self.control = control
@@ -15,6 +15,7 @@ class Vfx:
             self.flip = flip
             self.alphaVelocity = 10
             self.time = 0
+            self.direction = direction
             if self.flip:
                 self.x = self.x - 32
                 self.vel = -self.vel
@@ -35,7 +36,10 @@ class Vfx:
             self.surf.fill((0,0,0))
             points = self.getPoints()
             pygame.draw.polygon(self.surf, self.color,points)
-            screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(x-scroll[0],y-16-scroll[1]))
+            if self.direction == 'down':
+                screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(x-scroll[0],y-16-scroll[1]))
+            else:
+                screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,True),(x-scroll[0],y-16-scroll[1]))
             
         def update(self,x,y,screen,scroll):
             x,y =self.getXY(x,y)

@@ -46,12 +46,14 @@ class Game:
             if sqlc == "exit":
                 SystemExit
             print(self.dbHandler.db.manualSQLCommand(sqlc))
+    
     @property
     def scroll(self):
         return self.camera.scroll
     @property
     def gameSurface(self):
         return self.window.GameSurface
+    
     def update(self):
         self.camera.update()
         self.background.update(self.gameSurface,self.scroll)
@@ -63,6 +65,7 @@ class Game:
     def runGame(self):
         while True:
             self.update()
+    
     def runMenu(self):
         while True:
             runGame = self.menu.update()
