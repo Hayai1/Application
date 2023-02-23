@@ -148,9 +148,12 @@ class Table:
                 vals = vals + ", " + str(values[i])
             else:
                 vals = vals + ", " + "'"+values[i]+"'"
-        return INSERT_SQL.format(name=cls._get_name().upper(), 
-                                fields=", ".join(fields), 
-                                placeholders = vals)
+        name=cls._get_name().upper()
+        fields=", ".join(fields)
+        placeholders = vals
+        return INSERT_SQL.format(name=name.upper(), 
+                                fields=fields, 
+                                placeholders =placeholders)
     """
     returns the sql for inserting a record into a table
     """

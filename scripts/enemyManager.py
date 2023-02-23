@@ -2,11 +2,12 @@ from scripts.enemy import Enemy
 from random import randint
 import pygame
 class EnemyManager():
-    def __init__(self,enemyAmount,roomData,player,rectsToCollideWith,graph):
+    def __init__(self,enemyAmount,roomData,worldid,dbhandler,player,rectsToCollideWith,graph):
         self.enemies= []
         self.enemyAmount = enemyAmount
         self.graph = graph
         self.player = player
+        self.damageMult, self.hpMult = dbhandler.getEnemyData(worldid)
         self.collisionRects = rectsToCollideWith
         self.createEnemies(roomData)
     def randomPos(self,roomData):
@@ -17,7 +18,7 @@ class EnemyManager():
     def createEnemies(self,roomData):
         for enemy in range(0,self.enemyAmount):
             x,y = self.randomPos(roomData)
-            self.enemies.append(Enemy(x,y,16, 16,self.graph,'assets/hpBar/enemy/enemyHpBar.png',target=self.player,collisionRects=self.collisionRects))
+            self.enemies.append(Enemy(x,y,16, 16,self.graph,'assets/hpBar/enemy/enemyHpBar.png',target=self.player,collisionRects=self.collisionRects,damageMult=self.damageMult, hpMult=self.hpMult))
         
     def update(self, gameSurface, scroll):
         deadEnemies = []

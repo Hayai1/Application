@@ -4,30 +4,33 @@ from scripts.ai import Ai
 from scripts.character import Character
 from scripts.animations import Animations
 class Enemy(Character):
-    def __init__(self,x, y, width, height,graph,hpImgPath,target=None,collisionRects=None):
+    def __init__(self,x, y, width, height,graph,hpImgPath,target=None,collisionRects=None, damageMult = 1,hpMult = 1):
         self.target=target
         self.graph = graph
         self.dead = False
+        self.damage = 10 * damageMult
         self.attackTimer = 100
         self.imunityFrames = 0
         self.attackRange = pygame.Rect(x,y,width+40,height)
         self.attacking = False
-        self.hpBar= self.getHpBar(hpImgPath)
+        self.maxHp = 100 * hpMult
+        self.hpBar= self.getHpBar(self.maxHp,hpImgPath)
         super().__init__(x, y, width, height,collisionRects)
         self.ai = Ai(self.rect, target,graph)
     
-    def getHpBar(self,path):
+    def getHpBar(self,hp,path):
         hpBar = {} 
         img = pygame.image.load(path)
         img.set_colorkey((0,0,0))
         hpBar['img'] = img
         hpBar['height'] = img.get_height()
-        hpBar['hp'] = 100
+        hpBar['hpPercentage'] = 100
+        hpBar['hp'] = hp
         return hpBar
     
     @property
     def hpBarWidth(self):
-        return self.hpBar['img'].get_width() * (self.hpBar['hp'] / 100)
+        return self.hpBar['img'].get_width() * (self.hpBar['hpPercentage'] / 100)
     
     def drawHpBar(self,surf,scroll):
         pygame.draw.rect(surf,(172,50,50),(self.x-scroll[0],self.y-scroll[1]-10,self.hpBarWidth,self.hpBar['height']))
@@ -37,6 +40,7 @@ class Enemy(Character):
         if self.imunityFrames == 0:
             self.imunityFrames = 10
             self.hpBar['hp'] -= damage
+            self.hpBar['hpPercentage'] = (self.hpBar['hp'] / self.maxHp) * 100
             if self.hpBar['hp'] <= 0:
                 self.kill()
         else:
@@ -82,7 +86,7 @@ class Enemy(Character):
         if jump:self.playerJump()        
     def checkForHits(self):
         if self.attackRange.colliderect(self.target.rect):
-            self.target.takeDamage(10)
+            self.target.takeDamage(self.damage)
     def draw(self,surface,scroll,img):
         #pygame.draw.rect(surface,(255,0,0),self.rect)
         a = 0

@@ -27,7 +27,7 @@ class Game:
         self.player = self.getPlayer(self.playerId,self.worldId)
         
         #<----------------------EnemyManager-------------------------->
-        self.enemyManager = EnemyManager(20,self.world.rooms,self.player,self.world.collisionRects,self.world.graph) 
+        self.enemyManager = EnemyManager(20,self.world.rooms,self.worldId ,self.dbHandler,self.player,self.world.collisionRects,self.world.graph) 
         #<----------------------Background-------------------------->
         self.background = BackGround('assets/bg/bg.png')
         #<----------------------Camera-------------------------->

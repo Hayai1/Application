@@ -14,9 +14,15 @@ class DBHandler:
         if createTables:
             for i in [self.CHARACTER,self.CHARACTERPOSITIONS,self.WORLD,self.DIFFICULTY,self.APPLICATIONSETTINGS]:
                 self.db.create(i)
-        #create the database
+        #create records
+        if self.db.manualSQLCommand('SELECT * FROM DIFFICULTY') == []:
+            easy = self.DIFFICULTY(difficultyLevel = 1, name = 'Easy',enemyHPMultiplier=0.5, enemyAttackMultiplier=0.5)
+            self.db.saveRecord(easy)
+            mid = self.DIFFICULTY(difficultyLevel = 2, name = 'Medium',enemyHPMultiplier=1, enemyAttackMultiplier=1)
+            self.db.saveRecord(mid)
+            hard = self.DIFFICULTY(difficultyLevel = 3, name = 'Hard',enemyHPMultiplier=2, enemyAttackMultiplier=2)
+            self.db.saveRecord(hard)
         
-        #create the tables
     def getAllWorldData(self):
         data=self.db.manualSQLCommand('SELECT worldid,worldName,seed FROM WORLD')
         return data
@@ -53,6 +59,13 @@ class DBHandler:
     def newCharacterPositionsRecord(self, playerId, worldId, playerPosition):
         newCharacterPosition = self.CHARACTERPOSITIONS(characterid = playerId, worldid = worldId, xPos = playerPosition[0], yPos = playerPosition[1])
         self.db.saveRecord(newCharacterPosition)
+    
+    def getEnemyData(self, worldID):
+        difficultyLevel = self.db.manualSQLCommand(f'SELECT difficultyLevel FROM WORLD WHERE worldid = {worldID}')[0][0]
+        damageMult,hpMult = self.db.manualSQLCommand(f'SELECT enemyAttackMultiplier,enemyHPMultiplier FROM DIFFICULTY WHERE difficultyLevel = {difficultyLevel}')[0]        
+        return damageMult, hpMult    
+        
+        
     class CHARACTER(Table):
         characterid = PrimaryKey(True)
         name = Column(str)
