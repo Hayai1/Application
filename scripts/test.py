@@ -1,13 +1,11 @@
-class enemy():
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.hp = 10
-    def kill(self):
-        del self
+class class1:
+    def __init__(self,x) -> None:
+        self.x = x
+    def getX(self):
+        return self.x
 
 
-
-enemy1 = enemy()
-enemy1.kill()
-del enemy1
+obj1 = class1(5)
+while True:
+    
+    print(obj1.getX())

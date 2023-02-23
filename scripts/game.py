@@ -17,12 +17,12 @@ class Game:
         self.window = Window((640,360),"Nea Project",60)
         self.dbHandler = DBHandler()
         self.menu = MainMenu(self.window,self.dbHandler)
-        playerId,worldId = self.runMenu()
+        self.playerId,self.worldId = self.runMenu()
         #self.runSqlCommands()
         #<----------------------World--------------------------->
-        self.world = self.getWorld(worldId)
+        self.world = self.getWorld(self.worldId)
         #<----------------------Player-------------------------->
-        self.player = self.getPlayer(playerId,worldId)
+        self.player = self.getPlayer(self.playerId,self.worldId)
         #<----------------------EnemyManager-------------------------->
         self.enemyManager = EnemyManager(20,self.world.rooms,self.player,self.world.collisionRects,self.world.graph) 
         #<----------------------Background-------------------------->
@@ -57,10 +57,13 @@ class Game:
     def extraUpdates(self):
         if self.player.input.runInGameMenu:
             x = True
-            inGameMenu = InGameMenu(self.gameSurface,self.dbHandler)
-            while x:
-                self.inGameMenu.update()
+            inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
+            resume = False
+            self.player.input.runInGameMenu = False
+            while not resume:
+                resume = inGameMenu.update()
                 self.window.update()
+                
             
     def update(self):
         self.camera.update()
@@ -69,6 +72,7 @@ class Game:
         self.enemyManager.update(self.gameSurface,self.scroll)
         self.player.update(self.gameSurface,self.scroll,self.enemyManager.enemies)
         self.window.update()
+        self.extraUpdates()
         
     def runGame(self):
         while True:

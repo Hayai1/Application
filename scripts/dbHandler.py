@@ -38,12 +38,13 @@ class DBHandler:
         playerPositionData = self.db.manualSQLCommand(f'SELECT xPos,yPos FROM CHARACTERPOSITIONS WHERE characterid = {playerID} and worldid = {worldID}')
         if playerPositionData == []:
             return playerName, 0,0
-        return playerName, playerPositionData[0],playerPositionData[1]
+        return playerName, playerPositionData[0][0],playerPositionData[0][1]
     def getWorldData(self, worldID):
         worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
         seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')
         return worldName, seed[0][0]
-    
+    def savePlayerData(self, playerId, worldId, playerPosition):
+        self.db.saveRecord(self.CHARACTERPOSITIONS(characterid = playerId, worldid = worldId, xPos =playerPosition[0], yPos = playerPosition[1]))
     class CHARACTER(Table):
         characterid = PrimaryKey(True)
         name = Column(str)

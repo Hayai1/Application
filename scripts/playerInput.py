@@ -2,7 +2,7 @@ from scripts.input import Input
 import pygame
 
 class PlayerInput(Input):
-    def __init__(self,player,window,dbhandler):
+    def __init__(self,player):
         self.player = player
         self.runInGameMenu = False
         super().__init__()
