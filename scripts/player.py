@@ -40,6 +40,8 @@ class Player(Character):
         hpBar['height'] = img.get_height()-10
         hpBar['hp'] = 100
         return hpBar
+    def resetHpBar(self):
+        self.hpBar['hp'] = 100
     @property
     def hpBarWidth(self):
         return (self.hpBar['img'].get_width()-10) * (self.hpBar['hp'] / 100)
@@ -108,7 +110,6 @@ class Player(Character):
                 self.kill()
 
     def kill(self):
-        print("dead")
         self.dead = True
     def startSlide(self):
         self.slideVel = 3
@@ -116,8 +117,6 @@ class Player(Character):
         self.slide = True
     def update(self,gameSurface,scroll, enemies):
         self.imunityFrames -= 1
-        if self.dead:
-            sys.exit()
         self.x = self.rect.x 
         self.y = self.rect.y
         self.input.update()

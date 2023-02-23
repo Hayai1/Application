@@ -11,6 +11,7 @@ from scripts.menuManager import MainMenu
 from scripts.dbHandler import DBHandler
 from scripts.background import BackGround
 from scripts.inGameMenu import InGameMenu
+from scripts.inGameMenu import DeathMenu
 class Game:
     def __init__(self):
         pygame.init()
@@ -55,14 +56,25 @@ class Game:
     def gameSurface(self):
         return self.window.GameSurface
     def extraUpdates(self):
+        if self.player.dead:
+            x,y=self.world.getDefaultPos()
+            self.player.x = x
+            self.player.y = y
+            self.player.resetHpBar()
+            deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
+            respawn = False
+            self.player.dead = False
+            while not respawn:
+                respawn = deathScreen.update()
+                self.window.update()
         if self.player.input.runInGameMenu:
-            x = True
-            inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
+            inGameMenu = InGameMenu(self.window,self.playerId,(),self.worldId,self.dbHandler)
             resume = False
             self.player.input.runInGameMenu = False
             while not resume:
                 resume = inGameMenu.update()
                 self.window.update()
+        
                 
             
     def update(self):
