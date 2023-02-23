@@ -2,7 +2,7 @@ import pygame, string,sys, os, random
 from scripts.menuInput import MenuInput
 from scripts.dbHandler import *
 
-class MenuManager:
+class MainMenu:
     def __init__(self,window,dbHandler):
         self.window = window
         self.dbHandler = dbHandler
@@ -10,13 +10,14 @@ class MenuManager:
         self.input = MenuInput()
         self.currentMenu = self.startMenu()
         self.click = False
+
         self.playerId = None
         self.playerName = None
         self.worldName = None
         self.worldDifficulty = None
-        
         self.playerId = None
         self.worldId = None
+
     def setPlayerId(self,value):
         self.playerId = value
     def setWorldId(self,value):
@@ -124,7 +125,7 @@ class MenuManager:
             runGame = True
         self.cursor.update()
         return runGame
-class ListBox():
+class ListBox:
     def __init__(self,window, pos,width,height,players,cursor,setIdFuntion):
         self.window = window 
         self.pos = pos

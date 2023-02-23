@@ -83,7 +83,6 @@ class Player(Character):
         elif currentImg == 'thirdAttack2':
             self.attacking = False
             self.attackCombo = 'firstAttack'
-    
     def triggerDash(self):
         self.attacking = False
         if self.flip: 

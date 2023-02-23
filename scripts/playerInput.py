@@ -1,8 +1,10 @@
 from scripts.input import Input
 import pygame
+
 class PlayerInput(Input):
-    def __init__(self,player):
+    def __init__(self,player,window,dbhandler):
         self.player = player
+        self.runInGameMenu = False
         super().__init__()
     def specificUpdate(self,event):
         if self.player.takeInputs:
@@ -15,6 +17,8 @@ class PlayerInput(Input):
                     self.player.playerJump()
                 if event.key == pygame.K_LSHIFT:
                     self.player.dash = True
+                if event.key == pygame.K_ESCAPE:
+                    self.runInGameMenu = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     self.player.left = False

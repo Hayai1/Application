@@ -1,5 +1,6 @@
 import pygame
 import time
+
 class Input:
     def __init__(self):
         self.slowDown = False

@@ -7,15 +7,16 @@ from scripts.player import Player
 from scripts.window import Window
 from scripts.camera import Camera
 from scripts.enemyManager import EnemyManager
-from scripts.menuManager import MenuManager
+from scripts.menuManager import MainMenu
 from scripts.dbHandler import DBHandler
 from scripts.background import BackGround
+from scripts.inGameMenu import InGameMenu
 class Game:
     def __init__(self):
         pygame.init()
         self.window = Window((640,360),"Nea Project",60)
         self.dbHandler = DBHandler()
-        self.menu = MenuManager(self.window,self.dbHandler)
+        self.menu = MainMenu(self.window,self.dbHandler)
         playerId,worldId = self.runMenu()
         #self.runSqlCommands()
         #<----------------------World--------------------------->
@@ -53,7 +54,14 @@ class Game:
     @property
     def gameSurface(self):
         return self.window.GameSurface
-    
+    def extraUpdates(self):
+        if self.player.input.runInGameMenu:
+            x = True
+            inGameMenu = InGameMenu(self.gameSurface,self.dbHandler)
+            while x:
+                self.inGameMenu.update()
+                self.window.update()
+            
     def update(self):
         self.camera.update()
         self.background.update(self.gameSurface,self.scroll)

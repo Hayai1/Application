@@ -1,5 +1,7 @@
 import pygame
 from scripts.input import Input
+
+                
 class MenuInput(Input):
     def __init__(self):
         self.key =[None, False]
@@ -27,5 +29,3 @@ class MenuInput(Input):
     @key.setter
     def key(self,value):
         self._key = value
-
-            
