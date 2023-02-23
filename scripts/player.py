@@ -4,7 +4,7 @@ from scripts.animations import Animations
 from scripts.sword import Sword
 from scripts.playerInput import PlayerInput
 class Player(Character):
-    def __init__(self,name,x, y, width, height,collisionRects,hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
+    def __init__(self,name,x, y,hp, width, height,collisionRects,hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
         self.name = name
         self.weapons = {'sword' : Sword(x,y,swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
@@ -18,7 +18,7 @@ class Player(Character):
         self.imunityFrames = 0
         self.dead = False
         self.attackCombo = 'firstAttack'
-        self.hpBar = self.getHpBar(hpBarImg)
+        self.hpBar = self.getHpBar(hp,hpBarImg)
         super().__init__(x, y, width, height,collisionRects)
 
     def getAnimations(self):
@@ -30,13 +30,13 @@ class Player(Character):
         animations.getAnimation('thirdAttack',[5,10,4])
         animations.getAnimation('dash',[4,5,5,5,5,5])
         return animations
-    def getHpBar(self,path):
+    def getHpBar(self,hp,path):
         hpBar = {} 
         img = pygame.image.load(path)
         img.set_colorkey((0,0,0))
         hpBar['img'] = img
         hpBar['height'] = img.get_height()-10
-        hpBar['hp'] = 100
+        hpBar['hp'] = hp
         return hpBar
     def resetHpBar(self):
         self.hpBar['hp'] = 100

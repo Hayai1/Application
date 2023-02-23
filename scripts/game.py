@@ -22,8 +22,10 @@ class Game:
         #self.runSqlCommands()
         #<----------------------World--------------------------->
         self.world = self.getWorld(self.worldId)
+        #self.runSqlCommands()
         #<----------------------Player-------------------------->
         self.player = self.getPlayer(self.playerId,self.worldId)
+        
         #<----------------------EnemyManager-------------------------->
         self.enemyManager = EnemyManager(20,self.world.rooms,self.player,self.world.collisionRects,self.world.graph) 
         #<----------------------Background-------------------------->
@@ -33,10 +35,8 @@ class Game:
         
 
     def getPlayer(self,playerId,worldId):
-        name,x,y = self.dbHandler.getPlayerData(playerId,worldId)
-        if x ==0 and y ==0:
-            x,y = self.world.getDefaultPos()
-        player = Player(name,x,y, 16, 16,self.world.collisionRects,'assets/hpBar/hpBar.png')
+        name,hp,x,y = self.dbHandler.getPlayerData(playerId,worldId,self.world.getDefaultPos())
+        player = Player(name,x,y,hp, 16, 16,self.world.collisionRects,'assets/hpBar/hpBar.png')
         return player
     def getWorld(self,worldId):
         worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
@@ -46,7 +46,7 @@ class Game:
         while True:
             sqlc = input("sql command:")
             if sqlc == "exit":
-                SystemExit
+                return
             print(self.dbHandler.db.manualSQLCommand(sqlc))
     
     @property

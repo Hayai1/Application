@@ -33,32 +33,21 @@ class DBHandler:
         self.db.saveRecord(newWorld)
         return str(self.db.manualSQLCommand('SELECT MAX(worldid) FROM WORLD')[0][0])
 
-    def getPlayerData(self, playerID, worldID):
-        playerName = str(self.db.manualSQLCommand(f'SELECT name FROM CHARACTER WHERE characterid = {playerID}')[0][0])
+    def getPlayerData(self, playerID, worldID,defaultPos):
+        playerName,hp = self.db.manualSQLCommand(f'SELECT name,HP FROM CHARACTER WHERE characterid = {playerID}')[0]
         playerPositionData = self.db.manualSQLCommand(f'SELECT xPos,yPos FROM CHARACTERPOSITIONS WHERE characterid = {playerID} and worldid = {worldID}')
         if playerPositionData == []:
-            return playerName, 0,0
-        return playerName, playerPositionData[0][0],playerPositionData[0][1]
+            newCharacterPosition = self.CHARACTERPOSITIONS(characterid = playerID, worldid = worldID, xPos = defaultPos[0], yPos = defaultPos[1])
+            self.db.saveRecord(newCharacterPosition)
+            return playerName, hp,defaultPos[0],defaultPos[1]
+        return playerName, hp,playerPositionData[0][0],playerPositionData[0][1]
     def getWorldData(self, worldID):
         worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
         seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')
         return worldName, seed[0][0]
     def updatePlayerPosInSpecificWorld(self, playerId, worldId, playerPosition):
-        x = True
-        while x:
-            sqlc = input("sql command:")
-            if sqlc == "exit":
-                x=False
-            else:
-                print(self.db.manualSQLCommand(sqlc))
         self.db.manualSQLCommand(f"UPDATE CHARACTERPOSITIONS SET xPos ={playerPosition[0]}, yPos = {playerPosition[1]} WHERE characterid = {playerId} and worldid = {worldId}")
-        x = True
-        while x:
-            sqlc = input("sql command:")
-            if sqlc == "exit":
-                x=False
-            else:
-                print(self.db.manualSQLCommand(sqlc))
+        
     def updatePlayerHp(self, playerId, hp):
         self.db.manualSQLCommand(f"UPDATE CHARACTER SET HP = {hp} WHERE characterid = {playerId}")
     def newCharacterPositionsRecord(self, playerId, worldId, playerPosition):

@@ -46,7 +46,10 @@ class Database:
         cursor = self._execute(table._get_insert_sql())
         self.conn.commit()
     def manualSQLCommand(self,sql):
-        return self._execute(sql).fetchall()
+        data = self._execute(sql).fetchall()
+        self.conn.commit()
+        return data
+
     """
     saves a record once the tables class has been instancited
     """

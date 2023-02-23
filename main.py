@@ -6,7 +6,4 @@ if __name__ == "__main__":
 
 '''
 TODO:
-    possibly make the player imune to damage when dashing
-    add in game menu 
-    add save feature to menu
 '''

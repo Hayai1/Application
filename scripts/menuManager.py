@@ -61,8 +61,6 @@ class MainMenu(Menu):
         self.newWorld = True
         return self.exitMenu()
     def exitMenu(self):
-        if self.newWorld == True or self.newPlayer == True:
-            self.dbHandler.newCharacterPositionsRecord()
         return True
     def createCharacter(self):
         #create the character
