@@ -32,7 +32,8 @@ class MainMenu(Menu):
         self.worldDifficulty = None
         self.playerId = None
         self.worldId = None
-
+        self.newWorld = False
+        self.newPlayer = False
     def setPlayerId(self,value):
         self.playerId = value
     def setWorldId(self,value):
@@ -57,12 +58,16 @@ class MainMenu(Menu):
         for i in range(0,roomAmount-1):
             seed += str(random.randint(1,5))
         self.worldId = self.dbHandler.createWorldRecord(self.worldName,self.worldDifficulty,seed)
-        return self.exitMenu
+        self.newWorld = True
+        return self.exitMenu()
     def exitMenu(self):
+        if self.newWorld == True or self.newPlayer == True:
+            self.dbHandler.newCharacterPositionsRecord()
         return True
     def createCharacter(self):
         #create the character
         self.playerId = self.dbHandler.createCharacterRecord(self.playerName)
+        self.newPlayer = True
         return self.worldMenu()
 
     def getCharacterData(self):

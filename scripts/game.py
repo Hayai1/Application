@@ -60,7 +60,7 @@ class Game:
             x,y=self.world.getDefaultPos()
             self.player.x = x
             self.player.y = y
-            self.player.resetHpBar()
+            self.player.resetHpBar = 100
             deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
             respawn = False
             self.player.dead = False
@@ -68,7 +68,7 @@ class Game:
                 respawn = deathScreen.update()
                 self.window.update()
         if self.player.input.runInGameMenu:
-            inGameMenu = InGameMenu(self.window,self.playerId,(),self.worldId,self.dbHandler)
+            inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.player.hpBar['hp'],self.worldId,self.dbHandler)
             resume = False
             self.player.input.runInGameMenu = False
             while not resume:

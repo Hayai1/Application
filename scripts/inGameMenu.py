@@ -3,18 +3,21 @@ import sys
 
 
 class InGameMenu(menuManager.Menu):
-    def __init__(self,window,playerid,playerLoc,worldid,dbHandler):
+    def __init__(self,window,playerid,playerLoc,playerHp,worldid,dbHandler):
         self.playerId = playerid
         self.worldId = worldid
+        self.playerHp = playerHp
         self.playerLoc = playerLoc
         self.dbHandler = dbHandler
+
 
         super().__init__(window, dbHandler, self.pauseMenu)
 
     def resume(self):
         return True
     def save(self):
-        self.dbHandler.savePlayerData(self.playerId,self.worldId,self.playerLoc)
+        self.dbHandler.updatePlayerPosInSpecificWorld(self.playerId,self.worldId,self.playerLoc)
+        self.dbHandler.updatePlayerHp(self.playerId,self.playerHp)
         return True
     def exit(self):
         sys.exit()
@@ -30,7 +33,7 @@ class InGameMenu(menuManager.Menu):
 class DeathMenu(menuManager.Menu):
     def __init__(self,window,playerId,spawnLoc,worldId,dbHandler):
         super().__init__(window, dbHandler, self.deathMenu)
-        self.dbHandler.savePlayerData(playerId,worldId,spawnLoc)
+        self.dbHandler.updatePlayerPosInSpecificWorld(playerId,worldId,spawnLoc)
         
 
     def respawn(self):

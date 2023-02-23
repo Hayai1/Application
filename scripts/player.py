@@ -11,8 +11,6 @@ class Player(Character):
         self.attacking = False
         self.dash = False
         self.input = PlayerInput(self)
-        self.hpBarImg = pygame.image.load(hpBarImg)
-        self.hpBarImg.set_colorkey((0,0,0))
         self.dashAcceleration = 0.5
         self.slide = False
         self.slideVel = None

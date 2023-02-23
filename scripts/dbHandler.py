@@ -43,8 +43,27 @@ class DBHandler:
         worldName = str(self.db.manualSQLCommand(f'SELECT worldName FROM WORLD WHERE worldid = {worldID}')[0][0])
         seed = self.db.manualSQLCommand(f'SELECT seed FROM WORLD WHERE worldid = {worldID}')
         return worldName, seed[0][0]
-    def savePlayerData(self, playerId, worldId, playerPosition):
-        self.db.saveRecord(self.CHARACTERPOSITIONS(characterid = playerId, worldid = worldId, xPos =playerPosition[0], yPos = playerPosition[1]))
+    def updatePlayerPosInSpecificWorld(self, playerId, worldId, playerPosition):
+        x = True
+        while x:
+            sqlc = input("sql command:")
+            if sqlc == "exit":
+                x=False
+            else:
+                print(self.db.manualSQLCommand(sqlc))
+        self.db.manualSQLCommand(f"UPDATE CHARACTERPOSITIONS SET xPos ={playerPosition[0]}, yPos = {playerPosition[1]} WHERE characterid = {playerId} and worldid = {worldId}")
+        x = True
+        while x:
+            sqlc = input("sql command:")
+            if sqlc == "exit":
+                x=False
+            else:
+                print(self.db.manualSQLCommand(sqlc))
+    def updatePlayerHp(self, playerId, hp):
+        self.db.manualSQLCommand(f"UPDATE CHARACTER SET HP = {hp} WHERE characterid = {playerId}")
+    def newCharacterPositionsRecord(self, playerId, worldId, playerPosition):
+        newCharacterPosition = self.CHARACTERPOSITIONS(characterid = playerId, worldid = worldId, xPos = playerPosition[0], yPos = playerPosition[1])
+        self.db.saveRecord(newCharacterPosition)
     class CHARACTER(Table):
         characterid = PrimaryKey(True)
         name = Column(str)
