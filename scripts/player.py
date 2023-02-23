@@ -108,6 +108,8 @@ class Player(Character):
                 self.kill()
 
     def kill(self):
+        self.hpBar['hp'] = 100
+
         self.dead = True
     def startSlide(self):
         self.slideVel = 3

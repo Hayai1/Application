@@ -270,7 +270,6 @@ class Cursor():
         mx,my = pygame.mouse.get_pos()
         self.rect.x = mx/(self.window.screen.get_width()/300)
         self.rect.y = my/(self.window.screen.get_height()/200)
-        pygame.draw.rect(self.window.GameSurface,(255,255,255),self.rect)
         self.click = False
     
 class Text:
