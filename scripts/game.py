@@ -1,7 +1,10 @@
-
+#import modules not created by me
+#----------------------------------
 import pygame
 import time
-
+#----------------------------------
+#import modules created by me
+#----------------------------------
 from scripts.world import World
 from scripts.player import Player
 from scripts.window import Window
@@ -12,12 +15,14 @@ from scripts.dbHandler import DBHandler
 from scripts.background import BackGround
 from scripts.inGameMenu import InGameMenu
 from scripts.inGameMenu import DeathMenu
-class Game:
-    def __init__(self):
-        pygame.init()
-        self.window = Window((640,360),"Nea Project",60)
-        self.dbHandler = DBHandler()
-        self.menu = MainMenu(self.window,self.dbHandler)
+#----------------------------------
+
+class Game:#game class
+    def __init__(self):#constructor function for the game class takes no arguments
+        pygame.init()#initialize pygame
+        self.window = Window((640,360),"Nea Project",60)#create a new window to display the game on
+        self.dbHandler = DBHandler()#create a new dbHandler to handle the database
+        self.menu = MainMenu(self.window,self.dbHandler)#create a new menu to display the main menu before starting the game
         self.playerId,self.worldId = self.runMenu()
         #self.runSqlCommands()
         #<----------------------World--------------------------->

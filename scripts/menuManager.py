@@ -2,11 +2,11 @@ import pygame, string,sys, os, random
 from scripts.menuInput import MenuInput
 from scripts.dbHandler import *
 
-class Menu:
-    def __init__(self,window,dbHandler,currentMenu):
-        self.window = window
-        self.dbHandler = dbHandler
-        self.cursor = Cursor(window)
+class Menu:#menu class
+    def __init__(self,window,dbHandler,currentMenu):#constructor function for the menu class takes a window which is the surface to display everything on and a dbHandler to store and retrieve from the database
+        self.window = window#window to display the menu on
+        self.dbHandler = dbHandler#dbHandler to store and retrieve from the database
+        self.cursor = Cursor(window)#
         self.input = MenuInput()
         self.currentMenu = currentMenu()
         self.click = False
