@@ -18,7 +18,10 @@ class MenuInput(Input):
             if event.key == 8:
                 key[0] = 'backspace'
             else:
-                key[0] = chr(event.key)
+                try: 
+                    key[0] = chr(event.key)
+                except:
+                    key = [None, False]
             self.key = key
             
     @property

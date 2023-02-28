@@ -47,13 +47,6 @@ class Game:#game class
         worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
         return World(worldName,WorldSeed)
     
-    def runSqlCommands(self):
-        while True:
-            sqlc = input("sql command:")
-            if sqlc == "exit":
-                return
-            print(self.dbHandler.db.manualSQLCommand(sqlc))
-    
     @property
     def scroll(self):
         return self.camera.scroll
