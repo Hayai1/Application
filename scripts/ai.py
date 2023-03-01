@@ -101,7 +101,7 @@ class Ai:
             if self.getAggro():
                 #if player is in aggro range then get a path to the player
                 self.newPathTimer = 0
-                self.path = self.FindAndDrawPath(self.graph.getNodeCloseTo(self.rect),self.target)   
+                self.path = self.findPath(self.graph.getNodeCloseTo(self.rect),self.target)   
             #check if currently in the process from moving to the next node
         else:
             if not self.moving:
@@ -150,7 +150,7 @@ class Ai:
                 self.frame += 1
         return left,right,jump
             
-    def FindAndDrawPath(self,currentLocation,player):
+    def getPath(self,currentLocation,player):
         target = self.graph.getNodeCloseTo(player)
         path = self.findPath(currentLocation,target)
         #self.drawPath(target,path)

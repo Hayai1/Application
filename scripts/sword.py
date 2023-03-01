@@ -1,9 +1,7 @@
-from scripts.item import Item
 from scripts.vfx import Vfx
 import random,pygame
-class Sword(Item):
+class Sword():
     def __init__(self,x,y,thumbnailPath,useImgPath,damage = 10, attackSpeed = 1):
-        Item.__init__(self,thumbnailPath,useImgPath)
         self.damage = damage
         self.attackSpeed = attackSpeed
         self.arc = None

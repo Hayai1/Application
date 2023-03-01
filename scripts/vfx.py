@@ -135,9 +135,6 @@ class Vfx:
                         (int(self.pos[0] - r)-scroll[0], int(self.pos[1] - r)-scroll[1]), special_flags=BLEND_RGB_ADD)
                 r = r * 2
                 
-            
-        def update():
-            pass
         def circle_surf(self, radius, color):
             surf = pygame.Surface((radius * 2, radius * 2))
             pygame.draw.circle(surf, color, (radius, radius), radius)

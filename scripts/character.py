@@ -1,8 +1,6 @@
 import pygame
 class Character:
     def __init__(self,x,y,width,height,collisionRects):
-        
-        self.hp = 100
         self.left = False
         self.right = False
         self.triggerJump = False
@@ -15,7 +13,6 @@ class Character:
         self.y = y
         self.collisionRects = collisionRects
         self.animations = self.getAnimations()
-        self.hp = 100
         self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
     @property
     def width(self):
