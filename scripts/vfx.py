@@ -28,40 +28,30 @@ class Vfx:
             self.firstPoints = self.bezeirCurveEquation(self.control)
             self.secondaryPoints = self.bezeirCurveEquation((self.control[0]-35,self.control[1]))
 
-        def getXY(self,x,y):
-            if self.flip:
-                x = x - 32
-            return x,y
-        def draw(self,x,y,screen,scroll):
+        def draw(self,points,x,y,screen,scroll,yFlip):
             self.surf.fill((0,0,0))
-            points = self.getPoints()
             pygame.draw.polygon(self.surf, self.color,points)
-            if self.direction == 'down':
-                screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,False),(x-scroll[0],y-16-scroll[1]))
-            else:
-                screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,True),(x-scroll[0],y-16-scroll[1]))
+            screen.blit(pygame.transform.flip(pygame.transform.scale(self.surf, (40,40)),self.flip,yFlip),(x-scroll[0],y-16-scroll[1]))
             
         def update(self,x,y,screen,scroll):
-            x,y =self.getXY(x,y)
-            self.draw(x,y,screen,scroll)
-            
+            if self.flip:x = x - 32
+            points = self.getPoints()
+            if self.direction == 'down':self.draw(points,x,y,screen,scroll,False)
+            else:self.draw(points,x,y,screen,scroll,True)
             alpha = 255*math.cos(abs(math.radians(self.time*self.alphaVelocity)))
             self.surf.set_alpha(alpha)
             self.time+=1
             self.revealAmount=self.revealAmount+1+self.revealSpeed 
             if self.revealAmount > len(self.firstPoints):
                 self.revealAmount=len(self.firstPoints)-1
-            
             return self.surf.get_alpha() == 0
             
         def getPoints(self):
             neededFirstPoints = self.firstPoints[:self.revealAmount]
             neededFirstPoints.reverse()
-            TempSecondaryPointsCopy = self.secondaryPoints.copy()
-            lastPoint = self.firstPoints[self.revealAmount-1]
-            TempSecondaryPointsCopy[self.revealAmount-1] = lastPoint
-            points = TempSecondaryPointsCopy[:self.revealAmount]+ neededFirstPoints
+            points = self.secondaryPoints[:self.revealAmount]+ neededFirstPoints
             return points
+        
         def bezeirCurveEquation(self,control):
             points = []
             for i in range(0, 1000):
@@ -69,7 +59,6 @@ class Vfx:
                 x = (1-t)**2*self.start[0] + 2*(1-t)*t*control[0] + t**2*self.end[0]
                 y = (1-t)**2*self.start[1] + 2*(1-t)*t*control[1] + t**2*self.end[1]
                 points.append((x, y))
-            
             return points
 
         

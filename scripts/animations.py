@@ -6,6 +6,8 @@ class Animations:
         self.animationDatabase = {}
         self.frame = 0
         self.state = 'idle'
+    
+        
     def getAnimation(self,animName,frameDurations):
         animationFrameData = []
         n = 0
@@ -19,6 +21,7 @@ class Animations:
                 animationFrameData.append(animationFrameId)
             n += 1
         self.animationDatabase[animName] = animationFrameData
+
     def getImg(self):
         if len(self.animationDatabase[self.state])-1 == self.frame:
             self.frame = 0

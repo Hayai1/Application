@@ -88,20 +88,35 @@ class World:
         for direction in self.seed:#generate "roomAmount" of rooms
             #generate a random number to move down or sideways
             #--------------------------------------------->
-            if direction in left:#if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
+            #if random number is 1 or 2 then place a room to the next empty left postion in the row of rooms
+            if direction in left:
+                #move current postion to the left and place a room to the left
                 self.moveSideWays('left')
-            elif direction in right:#else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
+            #else if random number is 3 or 4 then place a room to the next empty right postion in the row of rooms 
+            elif direction in right:
+                #move current postion to the right and place a room to the right
                 self.moveSideWays('right')
-            elif direction in down:#else if random number is 5 then place a room directly down
+            #else if random number is 5 then place a room directly up
+            elif direction in down:
+                #move current postion down
                 newPos = self.travel(self.currentPosition,0,1)    
+                #get the room above the new room
                 aboveRoom = self.rooms[-1]
+                #if the room above is a 1 then make the new room a 2NoTop
                 if aboveRoom.roomType == '1':
+                    #change the room above to a 2NoTop
                     self.rooms[-1] = Room('2NoTop','data/worldData/rooms/2NoTop.txt',loc=[aboveRoom.x,aboveRoom.y])
+                #if the room above is a 3 then make the new room a 2Top
                 elif aboveRoom.roomType == '3':
+                    #change the room above to a 2Top
                     self.rooms[-1] = Room('2Top','data/worldData/rooms/2Top.txt',loc=[aboveRoom.x,aboveRoom.y])
+                #set the current position to the new position
                 self.currentPosition = newPos
+                #add a new room to the world
                 self.rooms.append(Room('3','data/worldData/rooms/3.txt',loc=[aboveRoom.x,aboveRoom.y+ROOMSIZE[1]]))
+            #else if random number is 6 then place a room directly up
             else:
+                #move sideways
                 self.moveSideWays('right')
          
             

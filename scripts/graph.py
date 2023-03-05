@@ -37,7 +37,7 @@ class Graph:
             return mapdata[currentY+y][currentX+x]
     #returns a list of nodes created relative to the map passed in
     def getNodes(self,mapdata):
-        nodes = []
+        nodes = []  
         x = 0
         y = 0
         id = 0
@@ -85,10 +85,8 @@ class Graph:
                                 possibleConnection = self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y,nodes)#get the node at the current x and y
                                 if possibleConnection is not None:#if there is a possible connection
                                     #check for nodes that could obstuct the connection:
-                                    if ((x > 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None and 
-                                        self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is None) or 
-                                        (x < 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is None and 
-                                        self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None)):
+                                    if ((x > 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None and self.getRelativeStateOfNode(nodeIndex,rowIndex,1,0,nodes) is None) or 
+                                        (x < 0 and self.getRelativeStateOfNode(nodeIndex,rowIndex,-1,0,nodes) is None and self.getRelativeStateOfNode(nodeIndex,rowIndex,x,y-1,nodes) is None)):
                                             #make a connection
                                             node.add_connection(possibleConnection,[x,y])
         
