@@ -20,6 +20,10 @@ class Player(Character):
         self.attackCombo = 'firstAttack'
         self.hpBar = self.getHpBar(hp,hpBarImg)
         super().__init__(x, y, width, height,collisionRects)
+    
+    @property
+    def isInIngameMenu(self):
+        return self.input.runInGameMenu
 
     def getAnimations(self):
         animations = Animations('assets/playerAnimations')

@@ -61,10 +61,27 @@ class Vfx:
                 points.append((x, y))
             return points
 
-        
+    class ParticleManagerExplsion:
+        def __init__(self):
+            self.particles = []
+
+        def explode(self,pos):
+            for i in range(0,4):
+                pos = [pos[0] + random.uniform(-1,1),pos[1] + random.uniform(-10,10)]
+                self.newParticle(pos)
+            
+        def update(self,gameSurface, scroll):
+            deadParticles = []
+            for particle in self.particles:
+                particle.update()
+                particle.draw(gameSurface,scroll)
+            for particlesToRemove in deadParticles:
+                self.particles.remove(particlesToRemove)
+        def newParticle(self,pos):
+            self.particles.append(Vfx.Particle(pos, [-0.05,0.05],[-0.001,0.001], random.uniform(0.1,1), (125, 249, 255), 100))
 
         
-    class particleManager:
+    class particleManagerRain:
         def __init__(self):
             self.particles = []
             self.timer = 0

@@ -10,7 +10,7 @@ ROOMSIZE = (20*16,8*16)
 
 class World:
     def __init__(self,name,seed):
-        self.particleMangager = Vfx.particleManager()
+        self.particleMangager = Vfx.particleManagerRain()
         self.seed = seed
         self.name = name
         self.rooms = []

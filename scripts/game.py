@@ -1,7 +1,6 @@
 #import modules not created by me
 #----------------------------------
 import pygame
-import time
 #----------------------------------
 #import modules created by me
 #----------------------------------
@@ -12,7 +11,6 @@ from scripts.camera import Camera
 from scripts.enemyManager import EnemyManager
 from scripts.menuManager import MainMenu
 from scripts.dbHandler import DBHandler
-from scripts.background import BackGround
 from scripts.inGameMenu import InGameMenu
 from scripts.inGameMenu import DeathMenu
 #----------------------------------
@@ -24,28 +22,29 @@ class Game:#game class
         self.dbHandler = DBHandler()#create a new dbHandler to handle the database
         self.menu = MainMenu(self.window,self.dbHandler)#create a new menu to display the main menu before starting the game
         self.playerId,self.worldId = self.runMenu()
-        #self.runSqlCommands()
         #<----------------------World--------------------------->
-        self.world = self.getWorld(self.worldId)
-        #self.runSqlCommands()
+        self.world = self.createWorld()
         #<----------------------Player-------------------------->
-        self.player = self.getPlayer(self.playerId,self.worldId)
-        
+        self.player = self.createPlayer()
         #<----------------------EnemyManager-------------------------->
-        self.enemyManager = EnemyManager(20,self.world.rooms,self.worldId ,self.dbHandler,self.player,self.world.collisionRects,self.world.graph) 
-        #<----------------------Background-------------------------->
-        self.background = BackGround('assets/bg/bg.png')
+        self.enemyManager = self.createEnemyManager()
         #<----------------------Camera-------------------------->
-        self.camera = Camera(self.player)
-        
+        self.camera = self.createCamera()
 
-    def getPlayer(self,playerId,worldId):
-        name,hp,x,y = self.dbHandler.getPlayerData(playerId,worldId,self.world.getDefaultPos())
+    def createPlayer(self):
+        name,hp = self.dbHandler.getPlayerData(self.playerId)
+        x,y = self.dbHandler.getPlayerPositionData(self.playerId,self.worldId,self.world.getDefaultPos())
         player = Player(name,x,y,hp, 16, 16,self.world.collisionRects,'assets/hpBar/hpBar.png')
         return player
-    def getWorld(self,worldId):
-        worldName,WorldSeed = self.dbHandler.getWorldData(worldId)
+    def createWorld(self):
+        worldName,WorldSeed = self.dbHandler.getWorldData(self.worldId)
         return World(worldName,WorldSeed)
+    def createEnemyManager(self):
+        enemyManager = EnemyManager(20,self.player,self.worldId,self.dbHandler,self.world.rooms,self.world.collisionRects,self.world.graph) 
+        return enemyManager
+    def createCamera(self):
+        camera = Camera(self.player)
+        return camera
     
     @property
     def scroll(self):
@@ -53,47 +52,53 @@ class Game:#game class
     @property
     def gameSurface(self):
         return self.window.GameSurface
-    def extraUpdates(self):
-        if self.player.dead:
-            x,y=self.world.getDefaultPos()
-            self.player.x = x
-            self.player.y = y
-            self.player.resetHpBar = 100
-            deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
-            respawn = False
-            self.player.dead = False
-            while not respawn:
-                respawn = deathScreen.update()
-                self.window.update()
-        if self.player.input.runInGameMenu:
-            inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.player.hpBar['hp'],self.worldId,self.dbHandler)
-            resume = False
-            self.player.input.runInGameMenu = False
-            while not resume:
-                resume = inGameMenu.update()
-                self.window.update()
-        
+    
+    def inGameMenu(self):
+        inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.player.hpBar['hp'],self.worldId,self.dbHandler)
+        resume = False
+        self.player.input.runInGameMenu = False
+        while not resume:
+            resume = inGameMenu.update()
+            self.window.update()
+
+    def dead(self):
+        x,y=self.world.getDefaultPos()
+        self.player.x = x
+        self.player.y = y
+        self.player.resetHpBar()
+        deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
+        respawn = False
+        self.player.dead = False
+        while not respawn:
+            respawn = deathScreen.update()
+            self.window.update()
                 
             
-    def update(self):
+    def updateGame(self):
         self.camera.update()
-        self.background.update(self.gameSurface,self.scroll)
         self.world.update(self.gameSurface,self.scroll)
         self.enemyManager.update(self.gameSurface,self.scroll)
         self.player.update(self.gameSurface,self.scroll,self.enemyManager.enemies)
         self.window.update()
-        self.extraUpdates()
+        if self.player.dead:
+            self.dead()
+        if self.player.isInIngameMenu:
+            self.inGameMenu()
         
+    
+    def updateMenu(self):
+        self.window.update()
+        return self.menu.update()
+    
+
     def runGame(self):
         while True:
-            self.update()
+            self.updateGame()
     
     def runMenu(self):
         while True:
-            runGame = self.menu.update()
-            self.window.update()
-            if runGame:
-                break
+            startGame = self.updateMenu()
+            if startGame:break
         return self.menu.playerId, self.menu.worldId
          
     

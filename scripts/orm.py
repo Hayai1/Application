@@ -3,13 +3,12 @@ import sqlite3
 import inspect
 import sys
 
-SELECT_TABLES_SQL = "SELECT name FROM sqlite_master WHERE type = 'table';"
-CREATE_TABLE_SQL = "CREATE TABLE {name} ({fields});"
-INSERT_SQL = 'INSERT INTO {name} ({fields}) VALUES ({placeholders});'
-SELECT_ALL_SQL = 'SELECT {fields} FROM {name};'
-UPDATE_WHERE_SQL = 'UPDATE {table_name} set {fields} WHERE {query}'
+SELECTTABLES = "SELECT name FROM sqlite_master WHERE type = 'table';"
+CREATETABLE = "CREATE TABLE {name} ({fields});"
+INSERT = 'INSERT INTO {name} ({fields}) VALUES ({placeholders});'
+SELECTALL = 'SELECT {fields} FROM {name};'
 
-SQLITE_TYPE_MAP = {
+PYTHONTYPETOSQLITETYPE = {
     int: "INTEGER",
     float: "REAL",
     str: "TEXT",
@@ -38,22 +37,13 @@ class Database:
     creates a table using the class as a param
     """
     def saveRecord(self, table):
-        cursor = self._execute(table._get_insert_sql())
+        self._execute(table._get_insert_sql())
         self.conn.commit()
+    
     def manualSQLCommand(self,sql):
         data = self._execute(sql).fetchall()
         self.conn.commit()
         return data
-
-    def update(self, **kwargs):
-        tableAndCondition={}
-        for key, value in kwargs.items():
-            tableAndCondition[key] = value
-        table = tableAndCondition['table']
-        del tableAndCondition['table']
-        Condition = tableAndCondition
-        return self._execute(table._get_update_sql(Condition)).fetchall()
-
 
 class Table:
     def __init__(self, **kwargs):
@@ -96,7 +86,7 @@ class Table:
                 else:
                     fields.append((name, "INTEGER"))
         fields = [" ".join(x) for x in fields]
-        return CREATE_TABLE_SQL.format(name=cls._get_name(), fields=", ".join(fields))
+        return CREATETABLE.format(name=cls._get_name(), fields=", ".join(fields))
     """
     parameter cls = a class representing a table
     returns the sql for creating a table
@@ -119,7 +109,7 @@ class Table:
         name=cls._get_name().upper()
         fields=", ".join(fields)
         placeholders = vals
-        return INSERT_SQL.format(name=name.upper(), 
+        return INSERT.format(name=name.upper(), 
                                 fields=fields, 
                                 placeholders =placeholders)
     """
@@ -127,7 +117,7 @@ class Table:
     """
     @classmethod
     def _get_select_all_sql(cls):
-        return SELECT_ALL_SQL.format(name=cls._get_name(),fields="*")
+        return SELECTALL.format(name=cls._get_name(),fields="*")
     """
     returns sql for selecting all of a specified table
     """
@@ -138,7 +128,7 @@ class Column:
         self.type =type
     @property
     def sql_type(self):
-        return SQLITE_TYPE_MAP[self.type]
+        return PYTHONTYPETOSQLITETYPE[self.type]
     """
     returns the columns type
     """

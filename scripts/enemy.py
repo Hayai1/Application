@@ -3,6 +3,7 @@ import pygame, time
 from scripts.ai import Ai
 from scripts.character import Character
 from scripts.animations import Animations
+from scripts.vfx import Vfx
 class Enemy(Character):
     def __init__(self,x, y, width, height,graph,hpImgPath,target=None,collisionRects=None, damageMult = 1,hpMult = 1):
         self.target=target
@@ -15,6 +16,7 @@ class Enemy(Character):
         self.attacking = False
         self.maxHp = 100 * hpMult
         self.hpBar= self.getHpBar(self.maxHp,hpImgPath)
+        self.particles = Vfx.ParticleManagerExplsion()
         super().__init__(x, y, width, height,collisionRects)
         self.ai = Ai(self.rect, target,graph)
     
@@ -37,8 +39,9 @@ class Enemy(Character):
         surf.blit(self.hpBar['img'],(self.x - scroll[0],self.y - scroll[1] - 10))
     
     def takeDamage(self,damage):
-        if self.imunityFrames == 0:
+        if self.imunityFrames <= 0:
             self.imunityFrames = 10
+            self.particles.explode([self.x,self.y])
             self.hpBar['hp'] -= damage
             self.hpBar['hpPercentage'] = (self.hpBar['hp'] / self.maxHp) * 100
             if self.hpBar['hp'] <= 0:
@@ -94,7 +97,8 @@ class Enemy(Character):
             a = 48
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-a-9-scroll[0],self.y-9-scroll[1]))
 
-    def update(self,gameSurface, scroll):  
+    def update(self,gameSurface, scroll):
+        self.particles.update(gameSurface,scroll)  
         self.setDirectionToMove()
         #-------------------------------------------------------------#
         self.x = self.rect.x 
