@@ -20,36 +20,19 @@ class Player(Character):
         self.attackCombo = 'firstAttack'
         self.hpBar = self.getHpBar(hp,hpBarImg)
         super().__init__(x, y, width, height,collisionRects)
+        self.animations = self.getAnimations('assets/playerAnimations',run=[4,4,4,4,4],
+                                             idle=[1],firstAttack=[4,4,4,4,4,4],secondAttack=[5,5,4,4],
+                                             thirdAttack=[5,10,4],dash=[4,5,5,5,5,5])
     
     @property
     def isInIngameMenu(self):
         return self.input.runInGameMenu
-
-    def getAnimations(self):
-        animations = Animations('assets/playerAnimations')
-        animations.getAnimation('run',[4,4,4,4,4])
-        animations.getAnimation('idle',[1])
-        animations.getAnimation('firstAttack',[4,4,4,4,4,4])
-        animations.getAnimation('secondAttack',[5,5,4,4])
-        animations.getAnimation('thirdAttack',[5,10,4])
-        animations.getAnimation('dash',[4,5,5,5,5,5])
-        return animations
-    def getHpBar(self,hp,path):
-        hpBar = {} 
-        img = pygame.image.load(path)
-        img.set_colorkey((0,0,0))
-        hpBar['img'] = img
-        hpBar['height'] = img.get_height()-10
-        hpBar['hp'] = hp
-        return hpBar
-    def resetHpBar(self):
-        self.hpBar['hp'] = 100
-    @property
-    def hpBarWidth(self):
-        return (self.hpBar['img'].get_width()-10) * (self.hpBar['hp'] / 100)
+    
     def drawPlayerHpBar(self,gameSurface):
-        pygame.draw.rect(gameSurface,(172,50,50),(9,9+170,self.hpBarWidth,self.hpBar['height']))
+        pygame.draw.rect(gameSurface,(172,50,50),(9,9+170,self.hpBarWidth-10,self.hpBar['height']-10))
         gameSurface.blit(self.hpBar['img'],(4,4+170))
+    
+
     def attack(self):
         if self.attackCombo =='firstAttack':
             self.triggerAttack1()
@@ -82,8 +65,7 @@ class Player(Character):
         currentImg = self.animations.getCurrentImg()
         if currentImg == 'thirdAttack0':
             self.startSlide()
-            self.weapons["sword"].arc = self.weapons["sword"].newBezeirArc(self.x,self.y,self.flip,'down')
-            
+            self.weapons["sword"].arc = self.weapons["sword"].newBezeirArc(self.x,self.y,self.flip,'down')   
         elif currentImg == 'thirdAttack2':
             self.attacking = False
             self.attackCombo = 'firstAttack'
@@ -100,27 +82,32 @@ class Player(Character):
         if currentImg == 'dash5':
             self.dash = False
             self.dashAcceleration = 0.5
+    
     def changeAnimationState(self,movement):
         if movement[0] == 0:self.animations.changeState('idle')
         if movement[0] > 0:self.animations.changeState('run')
         if movement[0] < 0:self.animations.changeState('run')
-    def takeDamage(self,damage):
-        if self.imunityFrames <= 0:
-            self.imunityFrames = 100
-            self.hpBar['hp'] -= damage
-            if self.hpBar['hp'] <= 0:
-                self.kill()
 
     def kill(self):
         self.hpBar['hp'] = 100
-
         self.dead = True
+    
     def startSlide(self):
         self.slideVel = 3
         self.slideAcc = -1
         self.slide = True
+    
+    def slideUpdate(self):
+        if self.slide:
+            self.slideVel += self.slideAcc
+            if self.flip: self.x -=self.slideVel
+            else: self.x += self.slideVel
+            if self.slideVel <= 0:
+                self.slide = False
+                self.slideVel = None
+                self.slideAcc = None
+    
     def update(self,gameSurface,scroll, enemies):
-        self.imunityFrames -= 1
         self.x = self.rect.x 
         self.y = self.rect.y
         self.input.update()
@@ -131,14 +118,7 @@ class Player(Character):
             self.attack()
         else: self.changeAnimationState(movement)
 
-        if self.slide:
-            self.slideVel += self.slideAcc
-            if self.flip: self.x -=self.slideVel
-            else: self.x += self.slideVel
-            if self.slideVel <= 0:
-                self.slide = False
-                self.slideVel = None
-                self.slideAcc = None
+        self.slideUpdate()
         add = 0
         if self.animations.getCurrentImg()[:-1] == 'thirdAttack':
             if self.flip: add = -13
@@ -147,7 +127,8 @@ class Player(Character):
         
         self.draw(gameSurface,scroll,self.animations.getImg())
         self.drawPlayerHpBar(gameSurface)
-    
+        
+
 
 
 

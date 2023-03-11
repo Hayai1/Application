@@ -1,4 +1,5 @@
 import pygame
+from scripts.animations import Animations
 class Character:
     def __init__(self,x,y,width,height,collisionRects):
         self.left = False
@@ -11,8 +12,8 @@ class Character:
         self.rect = pygame.Rect(x,y,width,height)
         self.x = x 
         self.y = y
+        self.maxHp = 100
         self.collisionRects = collisionRects
-        self.animations = self.getAnimations()
         self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
     @property
     def width(self):
@@ -34,8 +35,23 @@ class Character:
     def y(self,value):
         self._y = value
         self.rect.y = value
+    def getAnimations(self,animationRootDir,**kwargs):
+        animations = Animations(animationRootDir)
+        for key,value in kwargs.items():
+            animations.getAnimation(key,value)
+        return animations
+    
+    def takeDamage(self,damage):
+        if self.imunityFrames <= 0:
+            self.imunityFrames = 10
+            self.hpBar['hp'] -=damage
+            if self.hpBar['hp'] <= 0:
+                self.kill()
+        else:
+            self.imunityFrames -= 1
+
+
     def draw(self,surface,scroll,img):
-        #pygame.draw.rect(surface,(255,0,0),self.rect)
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-9-scroll[0],self.y-9-scroll[1]))
 
     def getCollisions(self,tiles):
@@ -44,7 +60,22 @@ class Character:
             if self.rect.colliderect(tile):
                 collisions.append(tile)
         return collisions
-
+    
+    def getHpBar(self,hp,path):
+        hpBar = {} 
+        img = pygame.image.load(path)
+        img.set_colorkey((0,0,0))
+        hpBar['img'] = img
+        hpBar['height'] = img.get_height()
+        hpBar['hp'] = hp
+        hpBar['hpPercentage'] = 100
+        return hpBar
+    @property
+    def hpBarWidth(self):
+        width = self.hpBar['img'].get_width() 
+        percentage = (self.hpBar['hpPercentage'] / 100)
+        return width * percentage
+    
     def updateVelocity(self):
         self.velocity[0] += self.acceleration[0]
         self.velocity[1] += self.acceleration[1]
@@ -57,8 +88,11 @@ class Character:
         if self.airTimer < 6:
             self.acceleration[1] = -6
 
+    def updateCharacter(self):
+        self.x = self.rect.x 
+        self.y = self.rect.y
+
     def move(self,rectsToCollide):
-        
         self.collisionTypes = {'top':False,'bottom':False,'right':False,'left':False}
         if self.acceleration[1] < 3:
             self.acceleration[1] += 0.2

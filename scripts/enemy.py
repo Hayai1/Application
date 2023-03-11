@@ -14,50 +14,23 @@ class Enemy(Character):
         self.imunityFrames = 0
         self.attackRange = pygame.Rect(x,y,width+40,height)
         self.attacking = False
-        self.maxHp = 100 * hpMult
-        self.hpBar= self.getHpBar(self.maxHp,hpImgPath)
-        self.particles = Vfx.ParticleManagerExplsion()
         super().__init__(x, y, width, height,collisionRects)
+        self.animations = self.getAnimations('assets/enemyAnimations',run=[4,4,4,4,4,4,4],idle=[6,6,6,6,6,6,6,6],attack=[4,4,4,4,4,4,4,4,4,10,4,4,4,4,4,4])
+        self.maxHp = self.maxHp*hpMult
+        self.hpBar= self.getHpBar(self.maxHp,hpImgPath)
         self.ai = Ai(self.rect, target,graph)
     
-    def getHpBar(self,hp,path):
-        hpBar = {} 
-        img = pygame.image.load(path)
-        img.set_colorkey((0,0,0))
-        hpBar['img'] = img
-        hpBar['height'] = img.get_height()
-        hpBar['hpPercentage'] = 100
-        hpBar['hp'] = hp
-        return hpBar
     
-    @property
-    def hpBarWidth(self):
-        return self.hpBar['img'].get_width() * (self.hpBar['hpPercentage'] / 100)
     
     def drawHpBar(self,surf,scroll):
         pygame.draw.rect(surf,(172,50,50),(self.x-scroll[0],self.y-scroll[1]-10,self.hpBarWidth,self.hpBar['height']))
         surf.blit(self.hpBar['img'],(self.x - scroll[0],self.y - scroll[1] - 10))
     
-    def takeDamage(self,damage):
-        if self.imunityFrames <= 0:
-            self.imunityFrames = 10
-            self.particles.explode([self.x,self.y])
-            self.hpBar['hp'] -= damage
-            self.hpBar['hpPercentage'] = (self.hpBar['hp'] / self.maxHp) * 100
-            if self.hpBar['hp'] <= 0:
-                self.kill()
-        else:
-            self.imunityFrames -= 1
+
     
     def kill(self):
         self.dead = True
     
-    def getAnimations(self):
-        animations = Animations('assets/enemyAnimations')
-        animations.getAnimation('run',[4,4,4,4,4,4,4])
-        animations.getAnimation('idle',[6,6,6,6,6,6,6,6])
-        animations.getAnimation('attack',[4,4,4,4,4,4,4,4,4,10,4,4,4,4,4,4])
-        return animations
     
     def changeAnimationState(self,movement):
         self.attackTimer -= 1 
@@ -66,13 +39,11 @@ class Enemy(Character):
             
         if self.attacking == True:
             self.animations.changeState('attack')
-            if ((self.animations.getCurrentImg() == 'attack1') or (self.animations.getCurrentImg() == 'attack2') or 
-                (self.animations.getCurrentImg() == 'attack3') or (self.animations.getCurrentImg() == 'attack4') or 
-                (self.animations.getCurrentImg() == 'attack5')):
+            if ((self.animations.getCurrentImg()[:-1] == 'attack') and (self.animations.getCurrentImg()[-1] in (1,2,3))):
                     self.flip = False
                     if self.target.x < self.x:
                         self.flip = True
-            if self.animations.getCurrentImg() == 'attack10' or self.animations.getCurrentImg() == 'attack11':
+            if self.animations.getCurrentImg() in ('attack10','attack11'):
                 self.checkForHits()
             elif self.animations.getCurrentImg() == 'attack15':
                 self.attackTimer = 100
@@ -98,20 +69,16 @@ class Enemy(Character):
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-a-9-scroll[0],self.y-9-scroll[1]))
 
     def update(self,gameSurface, scroll):
-        self.particles.update(gameSurface,scroll)  
-        self.setDirectionToMove()
+        self.setDirectionToMove()#
+        self.updateCharacter()
         #-------------------------------------------------------------#
-        self.x = self.rect.x 
-        self.y = self.rect.y
         self.attackRange.x = self.rect.x
         self.attackRange.y = self.rect.y
         if self.flip: self.attackRange.x -= 48
         else: self.attackRange.x += 8
         #-------------------------------------------------------------#
         if not self.attacking: movement = self.move(self.collisionRects)#call the move function
-        else:
-            movement = [0,0]
-            
+        else:movement = [0,0]
         self.changeAnimationState(movement)
         self.drawHpBar(gameSurface,scroll)
         self.draw(gameSurface,scroll,self.animations.getImg())#draw the enemy

@@ -11,8 +11,7 @@ from scripts.camera import Camera
 from scripts.enemyManager import EnemyManager
 from scripts.menuManager import MainMenu
 from scripts.dbHandler import DBHandler
-from scripts.inGameMenu import InGameMenu
-from scripts.inGameMenu import DeathMenu
+from scripts.inGameMenu import InGameMenu,DeathMenu
 #----------------------------------
 
 class Game:#game class
@@ -62,17 +61,13 @@ class Game:#game class
             self.window.update()
 
     def dead(self):
-        x,y=self.world.getDefaultPos()
-        self.player.x = x
-        self.player.y = y
-        self.player.resetHpBar()
+        self.player.x,self.player.y=self.world.getDefaultPos()
         deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
         respawn = False
         self.player.dead = False
         while not respawn:
             respawn = deathScreen.update()
-            self.window.update()
-                
+            self.window.update() 
             
     def updateGame(self):
         self.camera.update()

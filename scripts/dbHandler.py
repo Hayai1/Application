@@ -40,7 +40,7 @@ class DBHandler:#Database handler class
     def getPlayerPositionData(self,playerID, worldID,defaultPos):
         playerPositionData = self.db.manualSQLCommand(f'SELECT xPos,yPos FROM CHARACTERPOSITIONS WHERE characterid = {playerID} and worldid = {worldID}')#get the players position from the database
         if playerPositionData == []:
-            self.createCharacterPositionsRecord(playerID, worldID, defaultPos[0],defaultPos[1])
+            self.createCharacterPositionsRecord(playerID, worldID, [defaultPos[0],defaultPos[1]])
             return defaultPos[0],defaultPos[1]
         return playerPositionData[0][0],playerPositionData[0][1]
     def getPlayerData(self, playerID):#this function gets the player data from the database takes 3 arguments: playerID which is an int of the players characterid, worldID which is an int of the worldid and defaultPos which is a tuple of the default position of the player

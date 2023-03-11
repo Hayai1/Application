@@ -125,8 +125,9 @@ class Vfx:
                 self.accelerationTimer = 0
             self.life -= 1
         def draw(self,screen,scroll):
-            pygame.draw.circle(screen, self.color, (self.pos[0]-scroll[0],self.pos[1]-scroll[1]), self.r)
             self.glow.draw(screen,scroll,self.r)
+            pygame.draw.circle(screen, self.color, (self.pos[0]-scroll[0],self.pos[1]-scroll[1]), self.r)
+            
 
     class Glow:
         def __init__(self, pos,color=(125, 249, 255)):
