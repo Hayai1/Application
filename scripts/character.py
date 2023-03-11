@@ -43,12 +43,11 @@ class Character:
     
     def takeDamage(self,damage):
         if self.imunityFrames <= 0:
-            self.imunityFrames = 10
+            self.imunityFrames = 20
             self.hpBar['hp'] -=damage
             if self.hpBar['hp'] <= 0:
                 self.kill()
-        else:
-            self.imunityFrames -= 1
+            
 
 
     def draw(self,surface,scroll,img):

@@ -69,6 +69,8 @@ class Enemy(Character):
         surface.blit(pygame.transform.flip(img,self.flip,False),(self.x-a-9-scroll[0],self.y-9-scroll[1]))
 
     def update(self,gameSurface, scroll):
+        self.imunityFrames -= 1
+        self.hpBar["hpPercentage"] = (self.hpBar["hp"]/self.maxHp)*100
         self.setDirectionToMove()#
         self.updateCharacter()
         #-------------------------------------------------------------#
