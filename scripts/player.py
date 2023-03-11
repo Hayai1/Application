@@ -108,10 +108,7 @@ class Player(Character):
                 self.slideAcc = None
     
     def update(self,gameSurface,scroll, enemies):
-        self.imunityFrames -= 1
-        self.hpBar["hpPercentage"] = (self.hpBar["hp"]/self.maxHp)*100
-        self.x = self.rect.x 
-        self.y = self.rect.y
+        self.updateCharacter()
         self.input.update()
         if not self.attacking:
             movement = self.move(self.collisionRects)

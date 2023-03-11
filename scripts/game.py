@@ -29,6 +29,7 @@ class Game:#game class
         self.enemyManager = self.createEnemyManager()
         #<----------------------Camera-------------------------->
         self.camera = self.createCamera()
+        
 
     def createPlayer(self):
         name,hp = self.dbHandler.getPlayerData(self.playerId)
@@ -45,12 +46,14 @@ class Game:#game class
         camera = Camera(self.player)
         return camera
     
+    
     @property
     def scroll(self):
         return self.camera.scroll
     @property
     def gameSurface(self):
         return self.window.GameSurface
+    
     
     def inGameMenu(self):
         inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.player.hpBar['hp'],self.worldId,self.dbHandler)
@@ -68,6 +71,7 @@ class Game:#game class
         while not respawn:
             respawn = deathScreen.update()
             self.window.update() 
+
             
     def updateGame(self):
         self.camera.update()
@@ -80,7 +84,6 @@ class Game:#game class
         if self.player.isInIngameMenu:
             self.inGameMenu()
         
-    
     def updateMenu(self):
         self.window.update()
         return self.menu.update()

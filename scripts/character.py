@@ -83,11 +83,13 @@ class Character:
         if self.right:
             self.velocity[0] += 2
             
-    def playerJump(self):
+    def jump(self):
         if self.airTimer < 6:
             self.acceleration[1] = -6
 
     def updateCharacter(self):
+        self.imunityFrames -= 1
+        self.hpBar["hpPercentage"] = (self.hpBar["hp"]/self.maxHp)*100
         self.x = self.rect.x 
         self.y = self.rect.y
 

@@ -14,7 +14,7 @@ class PlayerInput(Input):
                 if event.key == pygame.K_d:
                     self.player.right = True
                 if event.key == pygame.K_SPACE:
-                    self.player.playerJump()
+                    self.player.jump()
                 if event.key == pygame.K_LSHIFT:
                     self.player.dash = True
                 if event.key == pygame.K_ESCAPE:
