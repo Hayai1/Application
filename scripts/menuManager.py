@@ -273,16 +273,23 @@ class Text:
         self.isbutton = isButton
         self.menuAddress = menuAddress
         if isButton:
-            self.rect = pygame.Rect(self.pos[0],self.pos[1],len(text)*16,16)
+            self.rect = pygame.Rect(self.pos[0],self.pos[1],len(text)*9,16)
             
     def stringToSurface(self,text):
         surf = pygame.Surface((len(text)*16,16))
         space = 0
-        for i in range(len(text)):
-            if text[i] == ' ':
-                space -= 5
+        i = 0
+        for letter in text:
+            
+            if letter == ' ':
+                space += 5
                 continue
-            surf.blit(self.letters[text[i].upper()],(i*9+space,0))
+            else:
+                try: 
+                    (surf.blit(self.letters[letter.upper()],(i*9+space,0)))
+                except:
+                    i-=1
+            i+=1
         return surf
     def update(self,cursorRect=None, inputs=False):
         if inputs:
@@ -292,6 +299,7 @@ class Text:
         self.draw()
     def draw(self):
         self.window.blit(self.textSurface,self.pos)
+        
 
     def getLetters(self,path):
         letters = {}

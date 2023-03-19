@@ -5,6 +5,7 @@ from scripts.sword import Sword
 from scripts.playerInput import PlayerInput
 class Player(Character):
     def __init__(self,name,x, y,hp, width, height,collisionRects,hpBarImg=None,swordThumbnailPath=None, swordUseImgPath=None):
+        super().__init__(x, y, width, height,collisionRects)
         self.name = name
         self.weapons = {'sword' : Sword(x,y,swordThumbnailPath,swordUseImgPath)}
         self.takeInputs = True
@@ -19,7 +20,6 @@ class Player(Character):
         self.dead = False
         self.attackCombo = 'firstAttack'
         self.hpBar = self.getHpBar(hp,hpBarImg)
-        super().__init__(x, y, width, height,collisionRects)
         self.animations = self.getAnimations('assets/playerAnimations',run=[4,4,4,4,4],
                                              idle=[1],firstAttack=[4,4,4,4,4,4],secondAttack=[5,5,4,4],
                                              thirdAttack=[5,10,4],dash=[4,5,5,5,5,5])

@@ -31,8 +31,18 @@ class Node:
     def _gt__(self, other):
         return (self.f > other.f)
     def add_connection(self,node,g):
-        self.connections.append({'node' : node,'g' : g})
-        node.connections.append({'node' : self,'g' : g})
+        flag = True
+        for connection in self.connections:
+            if connection['node'].id == node.id:
+                flag = False
+        if flag:
+            self.connections.append({'node' : node,'g' : g})
+        flag = True
+        for connection in node.connections:
+            if connection['node'].id == self.id:
+                flag = False
+        if flag:
+            node.connections.append({'node' : self,'g' : g})
     def getG(self,node):
         for connection in self.connections:
             if connection['node'] == node:

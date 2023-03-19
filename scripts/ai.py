@@ -16,8 +16,8 @@ class Ai:
         self.rect = rect
         self.target = target
         self.currentNode = self.graph.getNodeCloseTo(rect)
-
-    def findPath(self,start,goal):
+    @staticmethod
+    def findPath(start,goal):
         #init the open list
         openList = PriorityQueue()#queue
         #init the closed list
@@ -47,6 +47,7 @@ class Ai:
                             connections.append(connection['node'])
                         if closedList[i] in connections:
                             path.append(closedList[i])
+                    path.append(goal)
                     return path
                 else:
                     #else, compute both g and h for successor

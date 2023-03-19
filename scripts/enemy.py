@@ -31,7 +31,7 @@ class Enemy(Character):
     def kill(self):
         self.dead = True
     
-    def inAggroRange(Pos,targetPos):
+    def inAggroRange(self,Pos,targetPos):
         if Pos[0] - targetPos[0] < 50 and Pos[0] - targetPos[0] > -50 and Pos[1] - targetPos[1] < 50 and Pos[1] - targetPos[1] > -50:return True
         return False
     def changeAnimationState(self,movement):
