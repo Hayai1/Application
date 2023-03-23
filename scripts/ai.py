@@ -1,21 +1,21 @@
 from queue import PriorityQueue
 class Ai:
     def __init__(self,rect,target,graph) -> None:
-        self.left = False
-        self.right = False
-        self.graph = graph
-        self.distanceBetweenNodes = 0
-        self.path = None
-        self.nextNode = None   
-        self.moving = False
-        self.jumping = False
-        self.nodePointer = 0
-        self.frame = 0
-        self.movingFrames = 0
-        self.newPathTimer = 0
-        self.rect = rect
-        self.target = target
-        self.currentNode = self.graph.getNodeCloseTo(rect)
+        self.left = False#is the ai moving left
+        self.right = False#is the ai moving right
+        self.graph = graph#the ai's graph
+        self.distanceBetweenNodes = 0#the distance between the ai's nodes
+        self.path = None#the ai's path
+        self.nextNode = None#the ai's next node to move to 
+        self.moving = False#is the ai moving
+        self.jumping = False#is the ai jumping
+        self.nodePointer = 0#the ai's node pointer
+        self.frame = 0#the ai's frame
+        self.movingFrames = 0#the ai's moving frames
+        self.newPathTimer = 0#the ai's new path timer
+        self.rect = rect#the ai's rect
+        self.target = target#the ai's target
+        self.currentNode = self.graph.getNodeCloseTo(rect)#the node currently on
     @staticmethod
     def findPath(start,goal):
         #init the open list
@@ -38,66 +38,66 @@ class Ai:
             for successor in successors:
                 #if successor is the goal, stop the search
                 if successor.id == goal.id:
-                    closedList.append(q)
-                    path = []
-                    path.append(closedList[0])
-                    for i in range(1,len(closedList)):
-                        connections = []
-                        for connection in path[-1].connections:
-                            connections.append(connection['node'])
-                        if closedList[i] in connections:
-                            path.append(closedList[i])
-                    path.append(goal)
-                    return path
+                    closedList.append(q)#add q to the closed list
+                    path = []#the path
+                    path.append(closedList[0])#add the starting node to the path
+                    for i in range(1,len(closedList)):#for each node in the closed list
+                        connections = []#the connections
+                        for connection in path[-1].connections:#for each connection in the last node in the path
+                            connections.append(connection['node'])#add the node to the connections
+                        if closedList[i] in connections:#if the node in the closed list is in the connections
+                            path.append(closedList[i])#add the node to the path
+                    path.append(goal)#add the goal to the path
+                    return path#return the path
                 else:
                     #else, compute both g and h for successor
-                    successor.setCosts(g=gScores[successors.index(successor)],end=goal,parent=q)
-                for node in openList.queue:
-                    if node.id == successor.id and node.f <= successor.f:
-                        skipSuccessor = True
-                        break
-                if skipSuccessor:
-                    skipSuccessor = False
-                    continue
-                for node in closedList:
-                    if node.id == successor.id and node.f <= successor.f:
-                        skipSuccessor = True
-                        break
-                if skipSuccessor:
-                    skipSuccessor = False
-                    continue
-                openList.put(successor)
-            closedList.append(q)
+                    successor.setCosts(g=gScores[successors.index(successor)],end=goal,parent=q)#set the costs
+                for node in openList.queue:#for each node in the open list
+                    if node.id == successor.id and node.f <= successor.f:#if the node in the open list has a lower f than the successor
+                        skipSuccessor = True#skip the successor
+                        break#break the loop
+                if skipSuccessor:#if the successor is to be skipped
+                    skipSuccessor = False#set skip successor to false
+                    continue#return to the start of the loop
+                for node in closedList:#for each node in the closed list
+                    if node.id == successor.id and node.f <= successor.f:#if the node in the closed list has a lower f than the successor
+                        skipSuccessor = True#skip the successor
+                        break#break the loop
+                if skipSuccessor:#if the successor is to be skipped
+                    skipSuccessor = False#set skip successor to false
+                    continue#return to the start of the loop
+                openList.put(successor)#add the successor to the open list
+            closedList.append(q)#add q to the closed list
 
     def getDirection(self,airTimer):
-        left = None
-        right = None
-        jump = False
-        self.newPathTimer +=1
+        left = None#is the ai moving left
+        right = None#is the ai moving right
+        jump = False#is the ai jumping
+        self.newPathTimer +=1#increment the new path timer
         #-------------------------------------------------------------#
         #check if a current path exists
-        if self.movingFrames == self.frame:
-            self.moving = False
+        if self.movingFrames == self.frame:#if the ai has finished moving to the next node
+            self.moving = False#set moving to false
 
         if self.movingFrames < self.frame:#error can occur here
-            self.path = None
-            self.nodePointer = 0
-            self.nextNode = None
-            self.frame = 0
+            self.path = None#set the path to none
+            self.nodePointer = 0#set the node pointer to 0
+            self.nextNode = None#set the next node to none
+            self.frame = 0#set the frame to 0
 
-        if self.jumping:
-            if self.nextNode is not None and self.nextNode.y > self.rect.y:
-                self.jumping = False
-                if self.nextNode.x > self.currentNode.x:
-                    left = False
-                    right = True
-                elif self.nextNode.x < self.currentNode.x:
-                    right = False
-                    left = True
-                self.movingFrames = abs(self.currentNode.getG(self.nextNode)[0]*8)
-                self.frame = 0
+        if self.jumping:#if the ai is jumping
+            if self.nextNode is not None and self.nextNode.y > self.rect.y:#if the next node is above the ai
+                self.jumping = False#set jumping to false
+                if self.nextNode.x > self.currentNode.x:#if the next node is to the right of the ai
+                    left = False#set left to false
+                    right = True#set right to true
+                elif self.nextNode.x < self.currentNode.x:#if the next node is to the left of the ai
+                    right = False#set right to false
+                    left = True#set left to true
+                self.movingFrames = abs(self.currentNode.getG(self.nextNode)[0]*8)#set the moving frames to the distance between the current node and the next node
+                self.frame = 0#set the frame to 0
 
-        if self.path == None:
+        if self.path == None:#if the path is none
             #check if player is in aggro range
             if self.getAggro():
                 #if player is in aggro range then get a path to the player
@@ -157,18 +157,18 @@ class Ai:
         #self.drawPath(target,path)
         return path
 
-    def drawPath(self,target,path):
+    def drawPath(self,target,path):#draw the path (used for testing)
 
-        for nodes in self.graph.nodes:
-            nodes.color = (255,255,0)
-        target.color = (0,255,0)
-        if path is not None:
-            for node in path:
-                node.color = (0,0,255)
-    def getAggro(self):
-        if self.rect.x - self.target.x < 300 and self.rect.x - self.target.x > -300 and self.rect.y - self.target.y < 300 and self.rect.y - self.target.y > -300:
-            return True
-        return False
-    def update(self,airTimer):
-        left,right,jump = self.getDirection(airTimer)
-        return left,right,jump
+        for nodes in self.graph.nodes:#for each node in the graph
+            nodes.color = (255,255,0)#set the color to yellow
+        target.color = (0,255,0)#set the target color to green
+        if path is not None:#if the path is not none
+            for node in path:#for each node in the path
+                node.color = (0,0,255)#set the color to blue
+    def getAggro(self):#check if the player is in aggro range
+        if self.rect.x - self.target.x < 300 and self.rect.x - self.target.x > -300 and self.rect.y - self.target.y < 300 and self.rect.y - self.target.y > -300:#if the player is in aggro range
+            return True#return true
+        return False#return false
+    def update(self,airTimer):#update the ai
+        left,right,jump = self.getDirection(airTimer)#get the direction to move in
+        return left,right,jump#return the direction to move in

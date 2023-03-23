@@ -24,8 +24,6 @@ class PlayerInput(Input):
                     self.player.left = False#set the player's left variable to false
                 if event.key == pygame.K_d:#if the key is d
                     self.player.right= False#set the player's right variable to false
-                if event.key == pygame.K_UP:#if the key is up
-                    self.player.triggerJump = False#set the player's triggerJump variable to false
                 
             if event.type == pygame.MOUSEBUTTONDOWN:#if the mouse is clicked
                 if event.button == 1:#if the left mouse button is clicked
