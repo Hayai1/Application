@@ -32,45 +32,45 @@ class Game:#game class
         
 
     def createPlayer(self):
-        name,hp = self.dbHandler.getPlayerData(self.playerId)
-        x,y = self.dbHandler.getPlayerPositionData(self.playerId,self.worldId,self.world.getDefaultPos())
-        player = Player(name,x,y,hp, 16, 16,self.world.collisionRects,'assets/hpBar/hpBar.png')
-        return player
+        name,hp = self.dbHandler.getPlayerData(self.playerId)#get the player's name and hp from the database
+        x,y = self.dbHandler.getPlayerPositionData(self.playerId,self.worldId,self.world.getDefaultPos())#get the player's position from the database
+        player = Player(name,x,y,hp, 16, 16,self.world.collisionRects,'assets/hpBar/hpBar.png')#create a new player
+        return player#return the player
     def createWorld(self):
-        worldName,WorldSeed = self.dbHandler.getWorldData(self.worldId)
-        return World(worldName,WorldSeed)
+        worldName,WorldSeed = self.dbHandler.getWorldData(self.worldId)#get the world's name and seed from the database
+        return World(worldName,WorldSeed)#create a new world
     def createEnemyManager(self):
-        enemyManager = EnemyManager(20,self.player,self.worldId,self.dbHandler,self.world.rooms,self.world.collisionRects,self.world.graph) 
-        return enemyManager
+        enemyManager = EnemyManager(20,self.player,self.worldId,self.dbHandler,self.world.rooms,self.world.collisionRects,self.world.graph) #create a new enemyManager with 20 enemies in the world
+        return enemyManager#return the enemyManager
     def createCamera(self):
-        camera = Camera(self.player)
-        return camera
+        camera = Camera(self.player)#create a new camera with the player as the target to focus on
+        return camera#return the camera
     
     
     @property
     def scroll(self):
-        return self.camera.scroll
+        return self.camera.scroll#return the camera's scroll
     @property
     def gameSurface(self):
-        return self.window.GameSurface
+        return self.window.GameSurface#return the window's game surface
     
     
-    def inGameMenu(self):
-        inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.player.hpBar['hp'],self.worldId,self.dbHandler)
-        resume = False
-        self.player.input.runInGameMenu = False
-        while not resume:
-            resume = inGameMenu.update()
-            self.window.update()
+    def inGameMenu(self):#create the in game menu
+        inGameMenu = InGameMenu(self.window,self.playerId,(self.player.x,self.player.y),self.player.hpBar['hp'],self.worldId,self.dbHandler)#create the in game menu
+        resume = False#set resume to false
+        self.player.input.runInGameMenu = False#set the player's input to not run the in game menu
+        while not resume:#while resume is false
+            resume = inGameMenu.update()#update the in game menu
+            self.window.update()#update the window
 
     def dead(self):
-        self.player.x,self.player.y=self.world.getDefaultPos()
-        deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)
-        respawn = False
-        self.player.dead = False
-        while not respawn:
-            respawn = deathScreen.update()
-            self.window.update() 
+        self.player.x,self.player.y=self.world.getDefaultPos()#set the player's position to the default position
+        deathScreen = DeathMenu(self.window,self.playerId,(self.player.x,self.player.y),self.worldId,self.dbHandler)#create the death menu
+        respawn = False#set respawn to false
+        self.player.dead = False#set the player's dead variable to false
+        while not respawn:#while the user hasn't clicked respawn
+            respawn = deathScreen.update()#update the death menu
+            self.window.update() #update the window
 
             
     def updateGame(self):
@@ -79,10 +79,8 @@ class Game:#game class
         self.enemyManager.update(self.gameSurface,self.scroll)
         self.player.update(self.gameSurface,self.scroll,self.enemyManager.enemies)
         self.window.update()
-        if self.player.dead:
-            self.dead()
-        if self.player.isInIngameMenu:
-            self.inGameMenu()
+        if self.player.dead:self.dead()
+        if self.player.isInIngameMenu:self.inGameMenu()
         
     def updateMenu(self):
         self.window.update()
