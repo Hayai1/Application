@@ -51,7 +51,7 @@ class Ai:
                     return path#return the path
                 else:
                     #else, compute both g and h for successor
-                    successor.setCosts(g=gScores[successors.index(successor)],end=goal,parent=q)#set the costs
+                    successor.setCosts(g=gScores[successors.index(successor)],end=goal)#set the costs
                 for node in openList.queue:#for each node in the open list
                     if node.id == successor.id and node.f <= successor.f:#if the node in the open list has a lower f than the successor
                         skipSuccessor = True#skip the successor
@@ -124,9 +124,16 @@ class Ai:
                     if self.nodePointer <= len(self.path) - 1:
                         self.nextNode = self.path[self.nodePointer]
                         #using the current node connection to the next node g score to get the next node
-                        gScore = self.currentNode.getG(self.nextNode)
-                        gScoreX = gScore[0]
-                        gScoreY = gScore[1]
+                        try:
+                            gScore = self.currentNode.getG(self.nextNode)
+                            gScoreX = gScore[0]
+                            gScoreY = gScore[1]
+                        except:
+                            self.path = None
+                            self.nodePointer = 0
+                            self.nextNode = None
+                            self.frame = 0
+                            return left,right,jump
                         #state which directions to move in and if jumping is needed
                         if gScoreY != 0 and self.currentNode.y > self.nextNode.y:
                             jump = True
